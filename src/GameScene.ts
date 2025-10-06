@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export default class GameScene extends Phaser.Scene {
-  private player!: Phaser.GameObjects.Rectangle;
+  private player!: Phaser.GameObjects.Sprite;
   private npc!: Phaser.GameObjects.Rectangle;
   private cursors!: {
     W: Phaser.Input.Keyboard.Key;
@@ -19,9 +19,24 @@ export default class GameScene extends Phaser.Scene {
     super('GameScene');
   }
 
+  preload() {
+
+    this.load.image('grassy_background', 'grassy_background.png');
+    
+    this.load.image('boar_knight_down', 'boar_knight_sprite/boar_knight_down.png');
+    this.load.image('boar_knight_up', 'boar_knight_sprite/boar_knight_up.png');
+    this.load.image('boar_knight_left', 'boar_knight_sprite/boar_knight_left.png');
+    this.load.image('boar_knight_right', 'boar_knight_sprite/boar_knight_right.png');
+  }
+
   create() {
-    // Draw grid
-    const graphics = this.add.graphics();
+
+    const background = this.add.image(0, 0, 'grassy_background');
+    background.setOrigin(0, 0);
+    background.setDisplaySize(this.GRID_WIDTH * this.TILE_SIZE, this.GRID_HEIGHT * this.TILE_SIZE);
+
+
+    /*const graphics = this.add.graphics();
     graphics.lineStyle(1, 0x333333, 1);
 
     for (let x = 0; x <= this.GRID_WIDTH; x++) {
@@ -40,16 +55,10 @@ export default class GameScene extends Phaser.Scene {
         this.GRID_WIDTH * this.TILE_SIZE,
         y * this.TILE_SIZE
       );
-    }
+    }*/
 
-    // Create player
-    this.player = this.add.rectangle(
-      this.TILE_SIZE * 10,
-      this.TILE_SIZE * 7,
-      this.TILE_SIZE - 4,
-      this.TILE_SIZE - 4,
-      0x00ff00
-    );
+    this.player = this.add.sprite(100, 100, 'boar_knight_down');
+    this.player.setScale(0.2); // Make sprite smaller
 
     // Create NPC
     this.npc = this.add.rectangle(
@@ -75,14 +84,18 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.cursors.W.isDown) {
       velocityY = -this.MOVE_SPEED;
+      this.player.setTexture('boar_knight_up');
     } else if (this.cursors.S.isDown) {
       velocityY = this.MOVE_SPEED;
+      this.player.setTexture('boar_knight_down');
     }
 
     if (this.cursors.A.isDown) {
       velocityX = -this.MOVE_SPEED;
+      this.player.setTexture('boar_knight_left');
     } else if (this.cursors.D.isDown) {
       velocityX = this.MOVE_SPEED;
+      this.player.setTexture('boar_knight_right');
     }
 
     // Update player position
