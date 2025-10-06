@@ -10,8 +10,8 @@ export default class GameScene extends Phaser.Scene {
     D: Phaser.Input.Keyboard.Key;
   };
   private readonly TILE_SIZE = 32;
-  private readonly GRID_WIDTH = 20;
-  private readonly GRID_HEIGHT = 15;
+  private readonly GRID_WIDTH = 30;
+  private readonly GRID_HEIGHT = 22;
   private readonly MOVE_SPEED = 200;
   private wasNearNpc = false
 
