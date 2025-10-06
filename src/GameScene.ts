@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 
 export default class GameScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Rectangle;
+  private npc!: Phaser.GameObjects.Rectangle;
   private cursors!: {
     W: Phaser.Input.Keyboard.Key;
     A: Phaser.Input.Keyboard.Key;
@@ -12,6 +13,7 @@ export default class GameScene extends Phaser.Scene {
   private readonly GRID_WIDTH = 20;
   private readonly GRID_HEIGHT = 15;
   private readonly MOVE_SPEED = 200;
+  private wasNearNpc = false
 
   constructor() {
     super('GameScene');
@@ -21,7 +23,7 @@ export default class GameScene extends Phaser.Scene {
     // Draw grid
     const graphics = this.add.graphics();
     graphics.lineStyle(1, 0x333333, 1);
-    
+
     for (let x = 0; x <= this.GRID_WIDTH; x++) {
       graphics.lineBetween(
         x * this.TILE_SIZE,
@@ -30,7 +32,7 @@ export default class GameScene extends Phaser.Scene {
         this.GRID_HEIGHT * this.TILE_SIZE
       );
     }
-    
+
     for (let y = 0; y <= this.GRID_HEIGHT; y++) {
       graphics.lineBetween(
         0,
@@ -47,6 +49,15 @@ export default class GameScene extends Phaser.Scene {
       this.TILE_SIZE - 4,
       this.TILE_SIZE - 4,
       0x00ff00
+    );
+
+    // Create NPC
+    this.npc = this.add.rectangle(
+      this.TILE_SIZE * 15,
+      this.TILE_SIZE * 7,
+      this.TILE_SIZE - 4,
+      this.TILE_SIZE - 4,
+      0x0000ff
     );
 
     // Setup WASD controls
@@ -90,6 +101,16 @@ export default class GameScene extends Phaser.Scene {
       halfSize,
       this.GRID_HEIGHT * this.TILE_SIZE - halfSize
     );
+
+    const dx = this.player.x - this.npc.x;
+    const dy = this.player.y - this.npc.y;
+    const dist = Math.hypot(dx, dy);
+    const threshold = this.TILE_SIZE;
+
+    const isNear = dist <= threshold;
+    if (isNear && !this.wasNearNpc) {
+      console.log('contact');
+    }
+    this.wasNearNpc = isNear
   }
 }
-
