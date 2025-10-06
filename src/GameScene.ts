@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 export default class GameScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Sprite;
-  private npc!: Phaser.GameObjects.Rectangle;
+  private npc!: Phaser.GameObjects.Sprite;
   private cursors!: {
     W: Phaser.Input.Keyboard.Key;
     A: Phaser.Input.Keyboard.Key;
@@ -20,13 +20,15 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
-
     this.load.image('grassy_background', 'grassy_background.png');
-    
     this.load.image('boar_knight_down', 'boar_knight_sprite/boar_knight_down.png');
     this.load.image('boar_knight_up', 'boar_knight_sprite/boar_knight_up.png');
     this.load.image('boar_knight_left', 'boar_knight_sprite/boar_knight_left.png');
     this.load.image('boar_knight_right', 'boar_knight_sprite/boar_knight_right.png');
+    this.load.spritesheet('farmer-sprite', "farmer-sprite.png", {
+      frameWidth: 250,
+      frameHeight: 250
+    })
   }
 
   create() {
@@ -60,14 +62,22 @@ export default class GameScene extends Phaser.Scene {
     this.player = this.add.sprite(100, 100, 'boar_knight_down');
     this.player.setScale(0.2); // Make sprite smaller
 
-    // Create NPC
-    this.npc = this.add.rectangle(
-      this.TILE_SIZE * 15,
-      this.TILE_SIZE * 7,
-      this.TILE_SIZE - 4,
-      this.TILE_SIZE - 4,
-      0x0000ff
+    this.npc = this.add.sprite(
+      700,
+      500,
+      "farmer-sprite"
     );
+    this.npc.setScale(0.6)
+    this.anims.create({
+      key: "farmer-idle",
+      frames: this.anims.generateFrameNumbers("farmer-sprite", {start: 0, end: 3}),
+      frameRate: 1.4,
+      repeat: -1
+    })
+
+    this.npc.play('farmer-idle')
+
+
 
     // Setup WASD controls
     this.cursors = {
