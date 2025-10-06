@@ -1,0 +1,1 @@
+This is a web game about a knight, riding on his trusty boar, delivering food to the inhabitants of a medieval village.
