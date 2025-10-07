@@ -18,6 +18,7 @@ export class Player {
         D: Phaser.Input.Keyboard.Key;
     };
     private attackKey: Phaser.Input.Keyboard.Key;
+    private spaceKey: Phaser.Input.Keyboard.Key;
     private readonly MOVE_SPEED = 200;
     private readonly TILE_SIZE = 32;
     private readonly GRID_WIDTH = 45;
@@ -38,6 +39,7 @@ export class Player {
             D: scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
         };
         this.attackKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+        this.spaceKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.sprite.play('knight-idle');
     }
@@ -82,23 +84,29 @@ export class Player {
     update(): void {
         let velocityX = 0;
         let velocityY = 0;
+        
+        // Apply speed multiplier if space is pressed
+        const speedMultiplier = this.spaceKey.isDown ? 2 : 1;
+        
+        // Adjust animation speed to match movement speed
+        this.sprite.anims.timeScale = speedMultiplier;
 
         if (this.cursors.W.isDown) {
-            velocityY = -this.MOVE_SPEED;
+            velocityY = -this.MOVE_SPEED * speedMultiplier;
             this.lastDirection = 'up';
             this.sprite.play(this.attackKey.isDown ? 'knight-attack-up' : 'knight-up', true);
         } else if (this.cursors.S.isDown) {
-            velocityY = this.MOVE_SPEED;
+            velocityY = this.MOVE_SPEED * speedMultiplier;
             this.lastDirection = 'down';
             this.sprite.play(this.attackKey.isDown ? 'knight-attack-down' : 'knight-down', true);
         }
 
         if (this.cursors.A.isDown) {
-            velocityX = -this.MOVE_SPEED;
+            velocityX = -this.MOVE_SPEED * speedMultiplier;
             this.lastDirection = 'left';
             this.sprite.play(this.attackKey.isDown ? 'knight-attack-left' : 'knight-left', true);
         } else if (this.cursors.D.isDown) {
-            velocityX = this.MOVE_SPEED;
+            velocityX = this.MOVE_SPEED * speedMultiplier;
             this.lastDirection = 'right';
             this.sprite.play(this.attackKey.isDown ? 'knight-attack-right' : 'knight-right', true);
         }

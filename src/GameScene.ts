@@ -44,7 +44,7 @@ export default class GameScene extends Phaser.Scene {
     background.setOrigin(0, 0);
     background.setDisplaySize(this.GRID_WIDTH * this.TILE_SIZE, this.GRID_HEIGHT * this.TILE_SIZE);
 
-    this.player = new Player(this, 100, 100);
+    this.player = new Player(this, 720, 528);
     
     this.uiGameState = new UIGameState()
     this.titleList = new TitleList(

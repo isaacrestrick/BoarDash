@@ -31,7 +31,22 @@ export class Vampire extends NPC {
         if (this.killed) return;
         this.killed = true;
         const s = this.getSprite();
+        const scene = s.scene as any;
+        
+
+        
         s.play('vampire-death', true);
-        s.once('animationcomplete', () => s.setVisible(false));
+        s.once('animationcomplete', () => 
+            {
+                if (scene.uiGameState && typeof scene.uiGameState.incrementTitleCount === 'function') {
+                    scene.uiGameState.incrementTitleCount("Slayer of Vampires 🧛");
+                    scene.uiGameState.setScoreBasedOnTitles();
+                    
+                    if (scene.titleList && typeof scene.titleList.updateTitles === 'function') {
+                      scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
+                    }
+                  }
+                s.setVisible(false)
+            });
     }
 }
