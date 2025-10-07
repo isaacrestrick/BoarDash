@@ -1,10 +1,18 @@
 import Phaser from 'phaser';
 import { Player } from './Player';
 import { NPC } from './NPC';
+import {TitleList} from './TitleList';
+import { UIGameState } from './gamestate/UIGameState';
+
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
   private npc!: NPC;
+
+  public uiGameState: UIGameState;
+  public titleList!: TitleList;
+  public foodsList!: TitleList;
+
   private readonly TILE_SIZE = 32;
   private readonly GRID_WIDTH = 30;
   private readonly GRID_HEIGHT = 22;
@@ -31,10 +39,31 @@ export default class GameScene extends Phaser.Scene {
 
     this.player = new Player(this, 100, 100);
     this.npc = new NPC(this, this.TILE_SIZE * 15, this.TILE_SIZE * 7);
+
+    
+    this.uiGameState = new UIGameState()
+    this.titleList = new TitleList(
+      this,
+      ["Titles", ...this.uiGameState.getTitlesList()],
+      20,
+      20,
+      28
+    );
+    this.foodsList = new TitleList(
+      this,
+      ["Foods", ...this.uiGameState.getFoodCountsList()],
+      this.GRID_WIDTH * this.TILE_SIZE - 20,
+      20,
+      28,
+      'right'
+    );
   }
 
+
   update() {
+
     this.player.update();
     this.npc.checkPlayerInteraction(this.player.getX(), this.player.getY());
+
   }
 }
