@@ -51,14 +51,14 @@ export default class GameScene extends Phaser.Scene {
       this,
       ["Titles", ...this.uiGameState.getTitlesList()],
       40,
-      40,
+      60,
       28
     );
     this.foodsList = new TitleList(
       this,
       ["Foods", ...this.uiGameState.getFoodCountsList()],
       this.GRID_WIDTH * this.TILE_SIZE - 40,
-      40,
+      60,
       28,
       'right'
     );
