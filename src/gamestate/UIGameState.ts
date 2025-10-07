@@ -12,7 +12,7 @@ export class UIGameState {
 
     this.titleScoreAndCountMap = new Map<string, [number, number]>([
       ["Lord of Boars 🐗", [0, 1]],
-      ["Slayer of Skeletons 💀", [1, 2]],
+      ["Slayer of Vampires 🧛", [1, 0]],
       ["Deliverer of Ham Sandwiches 🥪", [2, 3]],
       ["Favors owed by the king 👑", [3, 4]],
     ]);
@@ -62,6 +62,13 @@ export class UIGameState {
       } else {
         this.foodCounts.delete(food);
       }
+    }
+  }
+
+  incrementTitleCount(title: string): void {
+    if (this.titleScoreAndCountMap.has(title)) {
+      const [score, count] = this.titleScoreAndCountMap.get(title)!;
+      this.titleScoreAndCountMap.set(title, [score, count + 1]);
     }
   }
 
