@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { NPC } from './NPC';
+import { NPC } from './Npc';
 
 export class Vampire extends NPC {
     static getRequiredAssets() {
