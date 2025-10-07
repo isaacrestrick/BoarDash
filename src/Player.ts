@@ -28,7 +28,7 @@ export class Player {
     constructor(scene: Phaser.Scene, x: number, y: number) {
         this.scene = scene;
         this.sprite = scene.add.sprite(x, y, 'knight-sprite');
-        this.sprite.setScale(0.8);
+        this.sprite.setScale(0.6);
 
         Player.registerAnimations(scene);
 
@@ -100,7 +100,7 @@ export class Player {
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
         if (!has('knight-idle')) {
-            scene.anims.create({ key: 'knight-idle', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 0, end: 3 }), frameRate: 3, repeat: -1 });
+            scene.anims.create({ key: 'knight-idle', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 0, end: 35 }), frameRate: 3, repeat: -1 });
         }
         if (!has('knight-walk-right')) {
             scene.anims.create({ key: 'knight-walk-right', frames: scene.anims.generateFrameNumbers('knight-walk-right', { start: 0, end: 35 }), frameRate: 16, repeat: 1 });
@@ -118,16 +118,16 @@ export class Player {
 
 
         if (!has('knight-attack-right')) {
-            scene.anims.create({ key: 'knight-attack-right', frames: scene.anims.generateFrameNumbers('knight-attack-right', { start: 0, end: 5 }), frameRate: 3, repeat: 1 });
+            scene.anims.create({ key: 'knight-attack-right', frames: scene.anims.generateFrameNumbers('knight-attack-right', { start: 0, end: 35 }), frameRate: 30, repeat: 1 });
         }
         if (!has('knight-attack-left')) {
-            scene.anims.create({ key: 'knight-attack-left', frames: scene.anims.generateFrameNumbers('knight-attack-left', { start: 0, end: 5 }), frameRate: 3, repeat: 1 });
+            scene.anims.create({ key: 'knight-attack-left', frames: scene.anims.generateFrameNumbers('knight-attack-left', { start: 0, end: 35 }), frameRate: 30, repeat: 1 });
         }
         if (!has('knight-attack-back')) {
-            scene.anims.create({ key: 'knight-attack-back', frames: scene.anims.generateFrameNumbers('knight-attack-back', { start: 0, end: 5 }), frameRate: 3, repeat: 1 });
+            scene.anims.create({ key: 'knight-attack-back', frames: scene.anims.generateFrameNumbers('knight-attack-back', { start: 0, end: 35 }), frameRate: 30, repeat: 1 });
         }
         if (!has('knight-attack-front')) {
-            scene.anims.create({ key: 'knight-attack-front', frames: scene.anims.generateFrameNumbers('knight-attack-front', { start: 0, end: 5 }), frameRate: 3, repeat: 1 });
+            scene.anims.create({ key: 'knight-attack-front', frames: scene.anims.generateFrameNumbers('knight-attack-front', { start: 0, end: 35 }), frameRate: 30, repeat: 1 });
         }
 
 
