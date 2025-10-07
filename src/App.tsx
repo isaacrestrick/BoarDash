@@ -15,7 +15,16 @@ function App() {
       backgroundColor: '#000000',
       scene: [GameScene],
       scale: {
-        mode: Phaser.Scale.NONE,
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 1440,
+        height: 1056,
+        parent: 'game-container',
+        expandParent: false,
+        max: {
+          width: 1440,
+          height: 1056
+        }
       },
     }
 
