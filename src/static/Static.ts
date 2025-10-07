@@ -1,0 +1,39 @@
+import Phaser from 'phaser';
+
+export type StaticConfig = {
+    key: string; // texture key
+    scale?: number;
+};
+
+export class Static {
+    protected sprite: Phaser.GameObjects.Sprite;
+    protected readonly TILE_SIZE = 32;
+    protected wasNearPlayer = false;
+
+    constructor(scene: Phaser.Scene, x: number, y: number, config?: StaticConfig) {
+        const key = config?.key ?? 'farmer-sprite';
+        this.sprite = scene.add.sprite(x, y, key);
+        if (config?.scale !== undefined) this.sprite.setScale(config.scale);
+    }
+
+    getX(): number { return this.sprite.x; }
+    getY(): number { return this.sprite.y; }
+    getSprite(): Phaser.GameObjects.Sprite { return this.sprite; }
+
+    // Default proximity interaction (log only). Subclasses can override to add behavior.
+    checkPlayerInteraction(playerX: number, playerY: number): void {
+        const dx = playerX - this.sprite.x;
+        const dy = playerY - this.sprite.y;
+        const dist = Math.hypot(dx, dy);
+        const threshold = 2 * this.TILE_SIZE;
+        const isNear = dist <= threshold;
+        if (isNear && !this.wasNearPlayer) {
+            console.log('contact');
+        }
+        this.wasNearPlayer = isNear;
+    }
+
+    isPlayerNear(): boolean {
+        return this.wasNearPlayer;
+    }
+}
