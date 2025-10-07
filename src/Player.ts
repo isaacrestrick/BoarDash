@@ -19,6 +19,7 @@ export class Player {
     };
     private attackKey: Phaser.Input.Keyboard.Key;
     private spaceKey: Phaser.Input.Keyboard.Key;
+    private foodKey: Phaser.Input.Keyboard.Key;
     private readonly MOVE_SPEED = 200;
     private readonly TILE_SIZE = 32;
     private readonly GRID_WIDTH = 45;
@@ -39,6 +40,7 @@ export class Player {
             D: scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
         };
         this.attackKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+        this.foodKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.J);
         this.spaceKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.sprite.play('knight-idle');

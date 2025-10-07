@@ -20,4 +20,16 @@ export class Farmer extends NPC {
         Farmer.registerAnimations(scene);
         this.getSprite().play('farmer-idle', true);
     }
+
+    checkPlayerInteraction(playerX: number, playerY: number): void {
+        const dx = playerX - this.sprite.x;
+        const dy = playerY - this.sprite.y;
+        const dist = Math.hypot(dx, dy);
+        const threshold = 2 * this.TILE_SIZE;
+        const isNear = dist <= threshold;
+        if (isNear && !this.wasNearPlayer) {
+            console.log('farmer says hi');
+        }
+        this.wasNearPlayer = isNear;
+    }
 }

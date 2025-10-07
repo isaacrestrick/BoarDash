@@ -104,6 +104,10 @@ export default class GameScene extends Phaser.Scene {
     // Proximity checks handled by base NPC class; death trigger is vampire-specific
     this.vampireOne.checkPlayerInteraction(playerX, playerY);
     this.vampireTwo.checkPlayerInteraction(playerX, playerY);
+    this.farmer.checkPlayerInteraction(playerX, playerY);
+    this.king.checkPlayerInteraction(playerX, playerY);
+    this.villager.checkPlayerInteraction(playerX, playerY);
+
 
     if (this.player.isAttacking()) {
       if (this.vampireOne.isPlayerNear()) this.vampireOne.triggerDeath();
