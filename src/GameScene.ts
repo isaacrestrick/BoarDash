@@ -7,6 +7,7 @@ import { Vampire } from './npcs/Vampire';
 import { King } from './npcs/King';
 import { Villager } from './npcs/Villager'
 import { Farmer } from './npcs/Farmer';
+import DialogueMessage from './DialogueMessage';
 
 
 export default class GameScene extends Phaser.Scene {
@@ -66,6 +67,8 @@ export default class GameScene extends Phaser.Scene {
     background.setOrigin(0, 0);
     background.setDisplaySize(this.GRID_WIDTH * this.TILE_SIZE, this.GRID_HEIGHT * this.TILE_SIZE);
 
+    new DialogueMessage(this, "The journey of a thousand Ham Sandwiches 🥪 begins with a single boar.")
+
     this.player = new Player(this, 720, 528);
 
     this.uiGameState = new UIGameState()
@@ -115,10 +118,9 @@ export default class GameScene extends Phaser.Scene {
     }
 
     if (this.player.justPressedFoodKey()) {
-      console.log("Food key pressed");
-      console.log("farmer near: ", this.farmer.isPlayerNear());
-      console.log("king near: ", this.king.isPlayerNear());
-      console.log("villager near: ", this.villager.isPlayerNear());
+      // console.log("farmer near: ", this.farmer.isPlayerNear());
+      // console.log("king near: ", this.king.isPlayerNear());
+      // console.log("villager near: ", this.villager.isPlayerNear());
       if (this.farmer.isPlayerNear()) this.farmer.triggerPickUp()
       if (this.king.isPlayerNear()) this.king.triggerDelivery()
       if (this.villager.isPlayerNear()) this.villager.triggerDelivery()

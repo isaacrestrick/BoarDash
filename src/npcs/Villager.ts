@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
 import type GameScene from '../GameScene';
+import DialogueMessage from '../DialogueMessage';
 
 export class Villager extends NPC {
     static getRequiredAssets() {
@@ -35,7 +36,10 @@ export class Villager extends NPC {
         const threshold = 2 * this.TILE_SIZE;
         const isNear = dist <= threshold;
         if (isNear && !this.wasNearPlayer) {
-            console.log('villager says hello!');
+            const s = this.getSprite();
+            const scene = s.scene as GameScene;
+            const msg = 'Good morning!'
+            new DialogueMessage(scene, msg)
         }
         this.wasNearPlayer = isNear;
     }
@@ -57,9 +61,12 @@ export class Villager extends NPC {
         if (hasSandwich) {
             scene.uiGameState.decrementFoodStuff(sandwichFood);
             scene.uiGameState.incrementTitleCount("Deliverer of Ham Sandwiches 🥪");
+            new DialogueMessage(scene, "You are a true Deliverer of Ham Sandwiches 🥪!")
             scene.uiGameState.setScoreBasedOnTitles();
             scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
             scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
+        } else {
+            new DialogueMessage(scene, "I believe I ordered a ham sandwich?")
         }
     }
 }

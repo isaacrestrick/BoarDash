@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
 import type GameScene from '../GameScene'
+import DialogueMessage from '../DialogueMessage';
 
 export class King extends NPC {
     static getRequiredAssets() {
@@ -35,7 +36,11 @@ export class King extends NPC {
         const threshold = 2 * this.TILE_SIZE;
         const isNear = dist <= threshold;
         if (isNear && !this.wasNearPlayer) {
-            console.log('king says hi');
+            const s = this.getSprite();
+            const scene = s.scene as GameScene;
+            const msg = 'Another beautiful day in the kingdom.'
+            new DialogueMessage(scene, msg)
+            console.log(msg);
         }
         this.wasNearPlayer = isNear;
     }
@@ -58,8 +63,11 @@ export class King extends NPC {
             scene.uiGameState.decrementFoodStuff(burgerFood);
             scene.uiGameState.incrementTitleCount("Favors owed by the king 👑");
             scene.uiGameState.setScoreBasedOnTitles();
+            new DialogueMessage(scene, "Thanks. I owe you one!")
             scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
             scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
+        } else {
+            new DialogueMessage(scene, "I believe I ordered a burger?")
         }
     }
 }

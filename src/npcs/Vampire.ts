@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
 import GameScene from '../GameScene'
+import DialogueMessage from '../DialogueMessage';
 
 export class Vampire extends NPC {
     static getRequiredAssets() {
@@ -28,6 +29,21 @@ export class Vampire extends NPC {
         this.getSprite().play('vampire-idle', true);
     }
 
+    checkPlayerInteraction(playerX: number, playerY: number): void {
+        const dx = playerX - this.sprite.x;
+        const dy = playerY - this.sprite.y;
+        const dist = Math.hypot(dx, dy);
+        const threshold = 2 * this.TILE_SIZE;
+        const isNear = dist <= threshold;
+        if (isNear && !this.wasNearPlayer) {
+            const s = this.getSprite();
+            const scene = s.scene as GameScene;
+            const msg = 'It sure is bright out.'
+            new DialogueMessage(scene, msg)
+        }
+        this.wasNearPlayer = isNear;
+    }
+
     triggerDeath(): void {
         if (this.killed) return;
         this.killed = true;
@@ -38,6 +54,7 @@ export class Vampire extends NPC {
             {
                 scene.uiGameState.incrementTitleCount("Slayer of Vampires 🧛");
                 scene.uiGameState.setScoreBasedOnTitles();
+                new DialogueMessage(scene, "I've McFallen.")
                 scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);                  
                 s.setVisible(false)
             });
