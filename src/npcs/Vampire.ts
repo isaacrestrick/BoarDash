@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
+import GameScene from '../GameScene'
 
 export class Vampire extends NPC {
     static getRequiredAssets() {
@@ -31,18 +32,13 @@ export class Vampire extends NPC {
         if (this.killed) return;
         this.killed = true;
         const s = this.getSprite();
-        const scene = s.scene as any;
+        const scene = s.scene as GameScene;
         s.play('vampire-death', true);
         s.once('animationcomplete', () => 
             {
-                if (scene.uiGameState && typeof scene.uiGameState.incrementTitleCount === 'function') {
-                    scene.uiGameState.incrementTitleCount("Slayer of Vampires 🧛");
-                    scene.uiGameState.setScoreBasedOnTitles();
-
-                    if (scene.titleList && typeof scene.titleList.updateTitles === 'function') {
-                      scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
-                    }
-                  }
+                scene.uiGameState.incrementTitleCount("Slayer of Vampires 🧛");
+                scene.uiGameState.setScoreBasedOnTitles();
+                scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);                  
                 s.setVisible(false)
             });
     }

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
+import type GameScene from '../GameScene';
 
 export class Villager extends NPC {
     static getRequiredAssets() {
@@ -27,9 +28,38 @@ export class Villager extends NPC {
         this.getSprite().play('villager-idle', true);
     }
 
+    checkPlayerInteraction(playerX: number, playerY: number): void {
+        const dx = playerX - this.sprite.x;
+        const dy = playerY - this.sprite.y;
+        const dist = Math.hypot(dx, dy);
+        const threshold = 2 * this.TILE_SIZE;
+        const isNear = dist <= threshold;
+        if (isNear && !this.wasNearPlayer) {
+            console.log('villager says hello!');
+        }
+        this.wasNearPlayer = isNear;
+    }
+
     triggerDeath(): void {
         const s = this.getSprite();
         s.play('villager-death', true);
         s.once('animationcomplete', () => s.setVisible(false));
+    }
+
+    triggerDelivery(): void {
+        const s = this.getSprite();
+        const scene = s.scene as GameScene;
+        const sandwichFood = "Ham Sandwiches 🥪";
+        
+        const foodCountsList = scene.uiGameState.getFoodCountsList();
+        const hasSandwich = foodCountsList.some((item: string) => item.includes(sandwichFood) && !item.includes("x0"));
+        
+        if (hasSandwich) {
+            scene.uiGameState.decrementFoodStuff(sandwichFood);
+            scene.uiGameState.incrementTitleCount("Deliverer of Ham Sandwiches 🥪");
+            scene.uiGameState.setScoreBasedOnTitles();
+            scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
+            scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
+        }
     }
 }

@@ -5,16 +5,16 @@ export class UIGameState {
 
   constructor() {
     this.foodCounts = new Map<string, number>([
-      ["Ham Sandwiches 🥪", 3],
-      ["Kingly Burgers 🍔", 1]
+      ["Ham Sandwiches 🥪", 0],
+      ["Kingly Burgers 🍔", 0]
     ]);
     this.currentScore = 0;
 
     this.titleScoreAndCountMap = new Map<string, [number, number]>([
       ["Lord of Boars 🐗", [0, 1]],
       ["Slayer of Vampires 🧛", [1, 0]],
-      ["Deliverer of Ham Sandwiches 🥪", [2, 3]],
-      ["Favors owed by the king 👑", [3, 4]],
+      ["Deliverer of Ham Sandwiches 🥪", [2, 0]],
+      ["Favors owed by the king 👑", [3, 0]],
     ]);
   }
 
@@ -54,13 +54,11 @@ export class UIGameState {
     }
   }
 
-  removeFoodStuff(food: string): void {
+  decrementFoodStuff(food: string): void {
     if (this.foodCounts.has(food)) {
       const currentCount = this.foodCounts.get(food)!;
-      if (currentCount > 1) {
+      if (currentCount > 0) {
         this.foodCounts.set(food, currentCount - 1);
-      } else {
-        this.foodCounts.delete(food);
       }
     }
   }

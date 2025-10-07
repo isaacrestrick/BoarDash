@@ -6,17 +6,20 @@ import { UIGameState } from './gamestate/UIGameState';
 import { Vampire } from './npcs/Vampire';
 import { King } from './npcs/King';
 import { Villager } from './npcs/Villager'
+import { Farmer } from './npcs/Farmer';
+
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
-  public uiGameState: UIGameState;
+  public uiGameState!: UIGameState;
   public titleList!: TitleList;
   public foodsList!: TitleList;
   private vampireOne!: Vampire;
   private vampireTwo!: Vampire;
   private king!: King;
   private villager!: Villager;
+  private farmer!: Farmer;
   private readonly TILE_SIZE = 32;
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
@@ -51,6 +54,11 @@ export default class GameScene extends Phaser.Scene {
     Villager.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
+
+    // farmer assets
+    Farmer.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
   }
 
   create() {
@@ -82,6 +90,7 @@ export default class GameScene extends Phaser.Scene {
     this.vampireTwo = new Vampire(this, 300, 300, 2.5);
     this.king = new King(this, 500, 300, 2.5)
     this.villager = new Villager(this, 500, 700, 2.5)
+    this.farmer = new Farmer(this, this.GRID_WIDTH * this.TILE_SIZE - 90, this.GRID_HEIGHT * this.TILE_SIZE - 90, 0.7);
   }
 
 
@@ -95,10 +104,24 @@ export default class GameScene extends Phaser.Scene {
     // Proximity checks handled by base NPC class; death trigger is vampire-specific
     this.vampireOne.checkPlayerInteraction(playerX, playerY);
     this.vampireTwo.checkPlayerInteraction(playerX, playerY);
+    this.farmer.checkPlayerInteraction(playerX, playerY);
+    this.king.checkPlayerInteraction(playerX, playerY);
+    this.villager.checkPlayerInteraction(playerX, playerY);
+
 
     if (this.player.isAttacking()) {
       if (this.vampireOne.isPlayerNear()) this.vampireOne.triggerDeath();
       if (this.vampireTwo.isPlayerNear()) this.vampireTwo.triggerDeath();
+    }
+
+    if (this.player.justPressedFoodKey()) {
+      console.log("Food key pressed");
+      console.log("farmer near: ", this.farmer.isPlayerNear());
+      console.log("king near: ", this.king.isPlayerNear());
+      console.log("villager near: ", this.villager.isPlayerNear());
+      if (this.farmer.isPlayerNear()) this.farmer.triggerPickUp()
+      if (this.king.isPlayerNear()) this.king.triggerDelivery()
+      if (this.villager.isPlayerNear()) this.villager.triggerDelivery()
     }
 
   }
