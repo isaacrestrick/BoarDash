@@ -153,10 +153,6 @@ export default class GameScene extends Phaser.Scene {
     );
 
     // npcs placement
-    this.vampireOne = new Vampire(this, 700, 300, 2.5);
-    this.vampireTwo = new Vampire(this, 300, 300, 2.5);
-    this.king = new King(this, 500, 300, 2.5)
-    this.villager = new Villager(this, 500, 700, 2.5)
     this.farmer = new Farmer(this, this.GRID_WIDTH * this.TILE_SIZE - 90, this.GRID_HEIGHT * this.TILE_SIZE - 90, 0.7);
   }
 
