@@ -18,8 +18,7 @@ export default class GameScene extends Phaser.Scene {
   private wasNearNpc = false
   private wasNearNpcTwo = false
   private lastDir : string = "";
-  private vampireOneKilled = false;
-  private vampireTwoKilled = false;
+
 
   constructor() {
     super('GameScene');
@@ -61,6 +60,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.player = this.add.sprite(100, 100, 'knight-sprite');
     this.player.setScale(4.5)
+    this.player.setDepth(10); // Knight always on top
     this.anims.create({
       key: "knight-idle",
       frames: this.anims.generateFrameNumbers("knight-sprite", {start: 0, end: 3}),
@@ -161,21 +161,7 @@ export default class GameScene extends Phaser.Scene {
 
 
 
-    
-    // this.npc = this.add.sprite(
-    //   700,
-    //   500,
-    //   "farmer-sprite"
-    // );
-    // this.npc.setScale(0.6)
-    // this.anims.create({
-    //   key: "farmer-idle",
-    //   frames: this.anims.generateFrameNumbers("farmer-sprite", {start: 0, end: 3}),
-    //   frameRate: 1.4,
-    //   repeat: -1
-    // })
 
-    // this.npc.play('farmer-idle')
 
 
 
