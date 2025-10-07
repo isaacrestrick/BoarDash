@@ -8,8 +8,6 @@ import { Vampire } from './Vampire';
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
-  private npc!: NPC;
-
   public uiGameState: UIGameState;
   public titleList!: TitleList;
   public foodsList!: TitleList;
