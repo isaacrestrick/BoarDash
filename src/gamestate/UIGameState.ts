@@ -66,7 +66,7 @@ export class UIGameState {
   }
 
 }
-
+/*
 const uiState = new UIGameState();
 
 
@@ -74,18 +74,18 @@ uiState.addFoodStuff('Ham Sandwiches 🥪');
 uiState.addFoodStuff('Ham Sandwiches 🥪');
 uiState.addFoodStuff('Apples 🍎');
 
-console.log('Food Counts List:', uiState.getFoodCountsList()); // Should show ['Ham Sandwich x2', 'Apple']
+console.log('Food Counts List:', uiState.getFoodCountsList());
 
 
 uiState.removeFoodStuff('Ham Sandwiches 🥪');
-console.log('Food Counts List after removing one Ham Sandwich:', uiState.getFoodCountsList()); // Should show ['Ham Sandwich', 'Apple']
+console.log('Food Counts List after removing one Ham Sandwich:', uiState.getFoodCountsList());
 
 uiState.removeFoodStuff('Ham Sandwiches 🥪');
-console.log('Food Counts List after removing another Ham Sandwich:', uiState.getFoodCountsList()); // Should show ['Apple']
+console.log('Food Counts List after removing another Ham Sandwich:', uiState.getFoodCountsList());
 
-// Test getTitlesList (assuming titleScoreAndCountMap is populated)
 if (uiState['titleScoreAndCountMap']) {
   uiState['titleScoreAndCountMap'].set('Slayer of Bandits 💀', [100, 2]);
   uiState['titleScoreAndCountMap'].set('Lord of Boars 🐗', [50, 1]);
-  console.log('Titles List:', uiState.getTitlesList()); // Should show ['Slayer of Bandits x2', 'Lord of Boars']
+  console.log('Titles List:', uiState.getTitlesList());
 }
+*/

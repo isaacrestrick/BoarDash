@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Player } from './Player';
-import { NPC } from './NPC';
+import { NPC } from './Npc';
 import {TitleList} from './TitleList';
 import { UIGameState } from './gamestate/UIGameState';
 
