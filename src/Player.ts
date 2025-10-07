@@ -4,6 +4,8 @@ interface AssetDefinition {
     key: string;
     path: string;
     type: 'image' | 'spritesheet' | 'audio' | 'json';
+    frameWidth?: number;
+    frameHeight?: number;
 }
 
 export class Player {
@@ -15,15 +17,19 @@ export class Player {
         S: Phaser.Input.Keyboard.Key;
         D: Phaser.Input.Keyboard.Key;
     };
+    private attackKey: Phaser.Input.Keyboard.Key;
     private readonly MOVE_SPEED = 200;
     private readonly TILE_SIZE = 32;
     private readonly GRID_WIDTH = 45;
     private readonly GRID_HEIGHT = 33;
+    private lastDirection: 'up' | 'down' | 'left' | 'right' = 'down';
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         this.scene = scene;
-        this.sprite = scene.add.sprite(x, y, 'boar_knight_down');
-        this.sprite.setScale(0.2);
+        this.sprite = scene.add.sprite(x, y, 'knight-sprite');
+        this.sprite.setScale(4.5);
+
+        Player.registerAnimations(scene);
 
         this.cursors = {
             W: scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W),
@@ -31,21 +37,47 @@ export class Player {
             S: scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S),
             D: scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
         };
+        this.attackKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+
+        this.sprite.play('knight-idle');
     }
 
-    /**
-     * Define the assets required by this Player
-     * This method should be called by the scene during its preload phase
-     */
     static getRequiredAssets(): AssetDefinition[] {
         return [
-            { key: 'boar_knight_down', path: 'boar_knight_sprite/boar_knight_down.png', type: 'image' },
-            { key: 'boar_knight_up', path: 'boar_knight_sprite/boar_knight_up.png', type: 'image' },
-            { key: 'boar_knight_left', path: 'boar_knight_sprite/boar_knight_left.png', type: 'image' },
-            { key: 'boar_knight_right', path: 'boar_knight_sprite/boar_knight_right.png', type: 'image' }
+            { key: 'knight-sprite', path: 'knight-sprite.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
         ];
     }
 
+    static registerAnimations(scene: Phaser.Scene): void {
+        const has = (key: string) => scene.anims.exists(key);
+        if (!has('knight-idle')) {
+            scene.anims.create({ key: 'knight-idle', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 0, end: 3 }), frameRate: 3, repeat: -1 });
+        }
+        if (!has('knight-right')) {
+            scene.anims.create({ key: 'knight-right', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 10, end: 17 }), frameRate: 8, repeat: 1 });
+        }
+        if (!has('knight-up')) {
+            scene.anims.create({ key: 'knight-up', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 20, end: 27 }), frameRate: 8, repeat: 1 });
+        }
+        if (!has('knight-left')) {
+            scene.anims.create({ key: 'knight-left', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 30, end: 37 }), frameRate: 8, repeat: 1 });
+        }
+        if (!has('knight-down')) {
+            scene.anims.create({ key: 'knight-down', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 40, end: 47 }), frameRate: 8, repeat: 1 });
+        }
+        if (!has('knight-attack-right')) {
+            scene.anims.create({ key: 'knight-attack-right', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 160, end: 165 }), frameRate: 8, repeat: 1 });
+        }
+        if (!has('knight-attack-up')) {
+            scene.anims.create({ key: 'knight-attack-up', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 170, end: 175 }), frameRate: 8, repeat: 1 });
+        }
+        if (!has('knight-attack-left')) {
+            scene.anims.create({ key: 'knight-attack-left', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 180, end: 185 }), frameRate: 8, repeat: 1 });
+        }
+        if (!has('knight-attack-down')) {
+            scene.anims.create({ key: 'knight-attack-down', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 190, end: 195 }), frameRate: 8, repeat: 1 });
+        }
+    }
 
     update(): void {
         let velocityX = 0;
@@ -53,25 +85,31 @@ export class Player {
 
         if (this.cursors.W.isDown) {
             velocityY = -this.MOVE_SPEED;
-            this.sprite.setTexture('boar_knight_up');
+            this.lastDirection = 'up';
+            this.sprite.play(this.attackKey.isDown ? 'knight-attack-up' : 'knight-up', true);
         } else if (this.cursors.S.isDown) {
             velocityY = this.MOVE_SPEED;
-            this.sprite.setTexture('boar_knight_down');
+            this.lastDirection = 'down';
+            this.sprite.play(this.attackKey.isDown ? 'knight-attack-down' : 'knight-down', true);
         }
 
         if (this.cursors.A.isDown) {
             velocityX = -this.MOVE_SPEED;
-            this.sprite.setTexture('boar_knight_left');
+            this.lastDirection = 'left';
+            this.sprite.play(this.attackKey.isDown ? 'knight-attack-left' : 'knight-left', true);
         } else if (this.cursors.D.isDown) {
             velocityX = this.MOVE_SPEED;
-            this.sprite.setTexture('boar_knight_right');
+            this.lastDirection = 'right';
+            this.sprite.play(this.attackKey.isDown ? 'knight-attack-right' : 'knight-right', true);
         }
 
-        // Update player position
+        if (velocityX === 0 && velocityY === 0) {
+            this.sprite.play(this.attackKey.isDown ? `knight-attack-${this.lastDirection}` : 'knight-idle', true);
+        }
+
         this.sprite.x += velocityX * (this.scene.game.loop.delta / 1000);
         this.sprite.y += velocityY * (this.scene.game.loop.delta / 1000);
 
-        // Keep player in bounds
         this.constrainToBounds();
     }
 
@@ -97,13 +135,7 @@ export class Player {
         return this.sprite.y;
     }
 
-    getSprite(): Phaser.GameObjects.Sprite {
-        return this.sprite;
-    }
-
-    getDistanceTo(x: number, y: number): number {
-        const dx = this.sprite.x - x;
-        const dy = this.sprite.y - y;
-        return Math.hypot(dx, dy);
+    isAttacking(): boolean {
+        return this.attackKey.isDown;
     }
 }
