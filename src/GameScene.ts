@@ -6,6 +6,8 @@ import { UIGameState } from './gamestate/UIGameState';
 import { Vampire } from './npcs/Vampire';
 import { King } from './npcs/King';
 import { Villager } from './npcs/Villager'
+import { Farmer } from './npcs/Farmer';
+
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
@@ -17,6 +19,7 @@ export default class GameScene extends Phaser.Scene {
   private vampireTwo!: Vampire;
   private king!: King;
   private villager!: Villager;
+  private farmer!: Farmer;
   private readonly TILE_SIZE = 32;
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
@@ -51,6 +54,11 @@ export default class GameScene extends Phaser.Scene {
     Villager.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
+
+    // farmer assets
+    Farmer.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
   }
 
   create() {
@@ -82,6 +90,7 @@ export default class GameScene extends Phaser.Scene {
     this.vampireTwo = new Vampire(this, 300, 300, 2.5);
     this.king = new King(this, 500, 300, 2.5)
     this.villager = new Villager(this, 500, 700, 2.5)
+    this.farmer = new Farmer(this, this.GRID_WIDTH * this.TILE_SIZE - 90, this.GRID_HEIGHT * this.TILE_SIZE - 90, 0.7);
   }
 
 
