@@ -1,9 +1,11 @@
 import Phaser from 'phaser';
 import { Player } from './Player';
-import { NPC } from './Npc';
-import {TitleList} from './TitleList';
+// import { NPC } from './npcs/Npc';
+import { TitleList } from './TitleList';
 import { UIGameState } from './gamestate/UIGameState';
-import { Vampire } from './Vampire';
+import { Vampire } from './npcs/Vampire';
+import { King } from './npcs/King';
+import { Villager } from './npcs/Villager'
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
@@ -13,6 +15,8 @@ export default class GameScene extends Phaser.Scene {
   public foodsList!: TitleList;
   private vampireOne!: Vampire;
   private vampireTwo!: Vampire;
+  private king!: King;
+  private villager!: Villager;
   private readonly TILE_SIZE = 32;
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
@@ -37,6 +41,16 @@ export default class GameScene extends Phaser.Scene {
     Vampire.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
+
+    // king assets
+    King.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
+
+    // villager assets
+    Villager.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
   }
 
   create() {
@@ -45,7 +59,7 @@ export default class GameScene extends Phaser.Scene {
     background.setDisplaySize(this.GRID_WIDTH * this.TILE_SIZE, this.GRID_HEIGHT * this.TILE_SIZE);
 
     this.player = new Player(this, 100, 100);
-    
+
     this.uiGameState = new UIGameState()
     this.titleList = new TitleList(
       this,
@@ -63,9 +77,11 @@ export default class GameScene extends Phaser.Scene {
       'right'
     );
 
-    // Two vampire NPCs with idle and death animations
+    // npcs placement
     this.vampireOne = new Vampire(this, 700, 300, 2.5);
     this.vampireTwo = new Vampire(this, 300, 300, 2.5);
+    this.king = new King(this, 500, 300, 2.5)
+    this.villager = new Villager(this, 500, 700, 2.5)
   }
 
 
