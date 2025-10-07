@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
+import type GameScene from '../GameScene'
 
 export class Farmer extends NPC {
     static getRequiredAssets() {
@@ -36,18 +37,10 @@ export class Farmer extends NPC {
 
     triggerPickUp(): void {
         const s = this.getSprite();
-        const scene = s.scene as any;
-        
-        if (scene.uiGameState && typeof scene.uiGameState.addFoodStuff === 'function') {
-
-            const foods = ["Ham Sandwiches 🥪", "Kingly Burgers 🍔"];
-            const randomFood = foods[Math.floor(Math.random() * foods.length)];
-            
-            scene.uiGameState.addFoodStuff(randomFood);
-
-            if (scene.foodsList && typeof scene.foodsList.updateTitles === 'function') {
-                scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
-            }
-        }
+        const scene = s.scene as GameScene;
+        const foods = ["Ham Sandwiches 🥪", "Kingly Burgers 🍔"];
+        const randomFood = foods[Math.floor(Math.random() * foods.length)];
+        scene.uiGameState.addFoodStuff(randomFood);
+        scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
     }
 }

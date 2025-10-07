@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
+import type GameScene from '../GameScene';
 
 export class Villager extends NPC {
     static getRequiredAssets() {
@@ -47,26 +48,18 @@ export class Villager extends NPC {
 
     triggerDelivery(): void {
         const s = this.getSprite();
-        const scene = s.scene as any;
+        const scene = s.scene as GameScene;
+        const sandwichFood = "Ham Sandwiches 🥪";
         
-        if (scene.uiGameState && typeof scene.uiGameState.decrementFoodStuff === 'function') {
-            const sandwichFood = "Ham Sandwiches 🥪";
-            
-            const foodCountsList = scene.uiGameState.getFoodCountsList();
-            const hasSandwich = foodCountsList.some((item: string) => item.includes(sandwichFood) && !item.includes("x0"));
-            
-            if (hasSandwich) {
-                scene.uiGameState.decrementFoodStuff(sandwichFood);
-                scene.uiGameState.incrementTitleCount("Deliverer of Ham Sandwiches 🥪");
-                scene.uiGameState.setScoreBasedOnTitles();
-
-                if (scene.foodsList && typeof scene.foodsList.updateTitles === 'function') {
-                    scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
-                }
-                if (scene.titleList && typeof scene.titleList.updateTitles === 'function') {
-                    scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
-                }
-            }
+        const foodCountsList = scene.uiGameState.getFoodCountsList();
+        const hasSandwich = foodCountsList.some((item: string) => item.includes(sandwichFood) && !item.includes("x0"));
+        
+        if (hasSandwich) {
+            scene.uiGameState.decrementFoodStuff(sandwichFood);
+            scene.uiGameState.incrementTitleCount("Deliverer of Ham Sandwiches 🥪");
+            scene.uiGameState.setScoreBasedOnTitles();
+            scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
+            scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
         }
     }
 }
