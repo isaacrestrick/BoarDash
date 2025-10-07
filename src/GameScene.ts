@@ -14,8 +14,8 @@ export default class GameScene extends Phaser.Scene {
   public foodsList!: TitleList;
 
   private readonly TILE_SIZE = 32;
-  private readonly GRID_WIDTH = 30;
-  private readonly GRID_HEIGHT = 22;
+  private readonly GRID_WIDTH = 45;
+  private readonly GRID_HEIGHT = 33;
 
   constructor() {
     super('GameScene');
@@ -45,15 +45,15 @@ export default class GameScene extends Phaser.Scene {
     this.titleList = new TitleList(
       this,
       ["Titles", ...this.uiGameState.getTitlesList()],
-      20,
-      20,
+      40,
+      40,
       28
     );
     this.foodsList = new TitleList(
       this,
       ["Foods", ...this.uiGameState.getFoodCountsList()],
-      this.GRID_WIDTH * this.TILE_SIZE - 20,
-      20,
+      this.GRID_WIDTH * this.TILE_SIZE - 40,
+      40,
       28,
       'right'
     );

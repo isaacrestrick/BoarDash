@@ -9,11 +9,14 @@ function App() {
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      width: 960,
-      height: 704,
+      width: 1440,
+      height: 1056,
       parent: 'game-container',
       backgroundColor: '#000000',
       scene: [GameScene],
+      scale: {
+        mode: Phaser.Scale.NONE,
+      },
     }
 
     gameRef.current = new Phaser.Game(config)
