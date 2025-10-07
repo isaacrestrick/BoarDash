@@ -54,13 +54,11 @@ export class UIGameState {
     }
   }
 
-  removeFoodStuff(food: string): void {
+  decrementFoodStuff(food: string): void {
     if (this.foodCounts.has(food)) {
       const currentCount = this.foodCounts.get(food)!;
-      if (currentCount > 1) {
+      if (currentCount > 0) {
         this.foodCounts.set(food, currentCount - 1);
-      } else {
-        this.foodCounts.delete(food);
       }
     }
   }

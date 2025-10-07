@@ -12,7 +12,7 @@ import { Farmer } from './npcs/Farmer';
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
-  public uiGameState: UIGameState;
+  public uiGameState!: UIGameState;
   public titleList!: TitleList;
   public foodsList!: TitleList;
   private vampireOne!: Vampire;
@@ -112,6 +112,16 @@ export default class GameScene extends Phaser.Scene {
     if (this.player.isAttacking()) {
       if (this.vampireOne.isPlayerNear()) this.vampireOne.triggerDeath();
       if (this.vampireTwo.isPlayerNear()) this.vampireTwo.triggerDeath();
+    }
+
+    if (this.player.justPressedFoodKey()) {
+      console.log("Food key pressed");
+      console.log("farmer near: ", this.farmer.isPlayerNear());
+      console.log("king near: ", this.king.isPlayerNear());
+      console.log("villager near: ", this.villager.isPlayerNear());
+      if (this.farmer.isPlayerNear()) this.farmer.triggerPickUp()
+      if (this.king.isPlayerNear()) this.king.triggerDelivery()
+      if (this.villager.isPlayerNear()) this.villager.triggerDelivery()
     }
 
   }

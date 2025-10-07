@@ -29,7 +29,25 @@ export class Farmer extends NPC {
         const isNear = dist <= threshold;
         if (isNear && !this.wasNearPlayer) {
             console.log('farmer says hi');
+            
         }
         this.wasNearPlayer = isNear;
+    }
+
+    triggerPickUp(): void {
+        const s = this.getSprite();
+        const scene = s.scene as any;
+        
+        if (scene.uiGameState && typeof scene.uiGameState.addFoodStuff === 'function') {
+
+            const foods = ["Ham Sandwiches 🥪", "Kingly Burgers 🍔"];
+            const randomFood = foods[Math.floor(Math.random() * foods.length)];
+            
+            scene.uiGameState.addFoodStuff(randomFood);
+
+            if (scene.foodsList && typeof scene.foodsList.updateTitles === 'function') {
+                scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
+            }
+        }
     }
 }
