@@ -20,8 +20,8 @@ export class Player {
     private attackKey: Phaser.Input.Keyboard.Key;
     private readonly MOVE_SPEED = 200;
     private readonly TILE_SIZE = 32;
-    private readonly GRID_WIDTH = 30;
-    private readonly GRID_HEIGHT = 22;
+    private readonly GRID_WIDTH = 45;
+    private readonly GRID_HEIGHT = 33;
     private lastDirection: 'up' | 'down' | 'left' | 'right' = 'down';
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
