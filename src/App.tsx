@@ -16,6 +16,11 @@ function App() {
       height: 1056,
       parent: 'game-container',
       backgroundColor: '#000000',
+      render: {
+        pixelArt: true,
+        antialias: false,
+        roundPixels: true
+      },
       scene: [TitleScene, GameScene, GameOverScene],
       scale: {
         mode: Phaser.Scale.FIT,
