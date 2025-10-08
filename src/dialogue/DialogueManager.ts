@@ -1,4 +1,4 @@
-import GameScene from '../GameScene';
+import GameScene from '../scenes/GameScene';
 import DialogueMessage from './DialogueMessage';
 
 export default class DialogueManager {

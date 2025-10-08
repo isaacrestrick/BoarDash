@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
-import GameScene from '../GameScene'
+import GameScene from '../scenes/GameScene'
 
 export class Skeleton extends NPC {
     static getRequiredAssets() {

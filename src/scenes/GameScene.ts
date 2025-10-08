@@ -1,19 +1,18 @@
 import Phaser from 'phaser';
-import { Player } from './Player';
+import { Player } from '../Player';
 // import { NPC } from './npcs/Npc';
-import { TitleList } from './TitleList';
-import { UIGameState } from './gamestate/UIGameState';
-import { Skeleton } from './npcs/Skeleton';
-import { King } from './npcs/King';
-import { Villager } from './npcs/Villager'
-import { House } from './static/House'
-import { Stone } from './static/Stone'
-import { Bush } from './static/Bush'
-import { Tree } from './static/Tree'
-import { Castle } from './static/Castle'
-import { Farmer } from './npcs/Farmer';
-import DialogueMessage from './dialogue/DialogueMessage';
-import DialogueManager from './dialogue/DialogueManager';
+import { TitleList } from '../TitleList';
+import { UIGameState } from '../gamestate/UIGameState';
+import { Skeleton } from '../npcs/Skeleton';
+import { King } from '../npcs/King';
+import { Villager } from '../npcs/Villager'
+import { House } from '../static/House'
+import { Stone } from '../static/Stone'
+import { Bush } from '../static/Bush'
+import { Tree } from '../static/Tree'
+import { Castle } from '../static/Castle'
+import { Farmer } from '../npcs/Farmer';
+import DialogueManager from '../dialogue/DialogueManager';
 
 
 export default class GameScene extends Phaser.Scene {
@@ -158,7 +157,6 @@ export default class GameScene extends Phaser.Scene {
 
     this.dialogueManager = new DialogueManager(this, 0)
 
-    //new DialogueMessage(this, "The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
     this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
     // npcs placement
     this.farmer = new Farmer(this, this.GRID_WIDTH * this.TILE_SIZE - 90, this.GRID_HEIGHT * this.TILE_SIZE - 90, 0.7);
@@ -166,6 +164,10 @@ export default class GameScene extends Phaser.Scene {
 
 
   update() {
+
+    if (this.uiGameState.getTitleCount() > 10) {
+      this.scene.start('GameOverScene', { score: this.uiGameState.getScore() });
+    }
 
     this.player.update();
 
