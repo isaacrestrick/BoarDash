@@ -6,7 +6,7 @@ export class Skeleton extends NPC {
     static getRequiredAssets() {
         return [
             { key: 'skeleton-idle', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
-            { key: 'skeleton-death', path: 'Cute_Fantasy/Enemies/Bombschroom/Toxic_Gas_Cloud_VFX.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
+            { key: 'skeleton-death', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
         ] as const;
     }
 
@@ -16,7 +16,7 @@ export class Skeleton extends NPC {
             scene.anims.create({ key: 'skeleton-idle', frames: scene.anims.generateFrameNames('skeleton-idle', { start: 0, end: 5 }), frameRate: 10, repeat: -1 });
         }
         if (!has('skeleton-death')) {
-            scene.anims.create({ key: 'skeleton-death', frames: scene.anims.generateFrameNames('skeleton-death', { start: 0, end: 5 }), frameRate: 12, repeat: 0 });
+            scene.anims.create({ key: 'skeleton-death', frames: scene.anims.generateFrameNames('skeleton-death', { start: 36, end: 39 }), frameRate: 8, repeat: 0 });
         }
     }
 
@@ -44,19 +44,23 @@ export class Skeleton extends NPC {
     }
 
     triggerDeath(): void {
-        if (this.killed) return;
-        this.killed = true;
-        const s = this.getSprite();
-        const scene = s.scene as GameScene;
-        s.play('skeleton-death', true);
-        s.once('animationcomplete', () => 
-            {
-                scene.uiGameState.incrementTitleCount("Slayer of Skeletons ☠️");
-                scene.uiGameState.setScoreBasedOnTitles();
-                scene.dialogueManager.show("I died? Not again!")
-                scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);                  
-                s.setVisible(false)
-            });
+        if (this.killed) return
+        this.killed = true
+        const s = this.getSprite()
+        const scene = s.scene as GameScene
+        s.play('skeleton-death', true)
+        s.once('animationcomplete', () => {
+            scene.uiGameState.incrementTitleCount("Slayer of Skeletons ☠️")
+            scene.uiGameState.setScoreBasedOnTitles()
+            scene.dialogueManager.show("I died? Not again!")
+            scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()])
+            const index = scene.skeletons.indexOf(this);
+            if (index > -1) {
+                scene.skeletons.splice(index, 1);
+            }
+            s.destroy()
+            console.log(scene.skeletons)    
+        });
     }
 
     private lastAttackTime = 0
