@@ -21,7 +21,7 @@ export class Player {
     private attackKey: Phaser.Input.Keyboard.Key;
     private spaceKey: Phaser.Input.Keyboard.Key;
     private foodKey: Phaser.Input.Keyboard.Key;
-    private readonly MOVE_SPEED = 200;
+    private readonly MOVE_SPEED = 120;
     private readonly TILE_SIZE = 32;
     private readonly GRID_WIDTH = 45;
     private readonly GRID_HEIGHT = 33;
@@ -144,7 +144,7 @@ export class Player {
         let velocityX = 0;
         let velocityY = 0;
 
-        const speedMultiplier = this.spaceKey.isDown ? 2 : 1;
+        const speedMultiplier = this.spaceKey.isDown ? 2.5 : 1;
 
         this.sprite.anims.timeScale = speedMultiplier;
 

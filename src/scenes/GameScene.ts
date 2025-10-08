@@ -205,98 +205,22 @@ export default class GameScene extends Phaser.Scene {
 
     this.player = new Player(this, 720, 528);
     this.cameras.main.startFollow(this.player.sprite, true, 0.1, 0.1);
-    // // where all the shit is
-    // this.vampireOne = new Vampire(this, 700, 300, 2.5);
-    // this.vampireTwo = new Vampire(this, 300, 300, 2.5);
-    // this.king = new King(this, 250, 850, 2.5)
-    // this.villager = new Villager(this, 500, 700, 2.5)
-    // this.houses = [
-    //   new House(this, 1170, 190, 0.25),
-    //   new House(this, 410, 400, 0.25),
-    //   new House(this, 650, 850, 0.25),
-    //   new House(this, 840, 460, 0.25),
-    //   new House(this, 940, 220, 0.25),
-    //   new House(this, 1220, 500, 0.25)
-    // ];
-    // this.stones = [
-    //   new Stone(this, 200, 300, 2.5),
-    //   new Stone(this, 800, 200, 2.5),
-    //   new Stone(this, 1000, 400, 2.5),
-    //   new Stone(this, 250, 500, 2.5),
-    //   new Stone(this, 800, 700, 2.5),
-    //   new Stone(this, 500, 800, 2.5)
-    // ]
-    // this.bushes = [
-    //   new Bush(this, 430, 120, 4),
-    //   new Bush(this, 550, 210, 4),
-    //   new Bush(this, 100, 340, 4),
-    //   new Bush(this, 1100, 400, 4),
-    //   new Bush(this, 340, 580, 4),
-    //   new Bush(this, 1160, 690, 4),
-    //   new Bush(this, 510, 900, 4)
-    // ]
-    // this.trees = [
-    //   new Tree(this, 370, 100, 4),
-    //   new Tree(this, 650, 240, 4),
-    //   new Tree(this, 120, 480, 4),
-    //   new Tree(this, 1250, 300, 4),
-    //   new Tree(this, 390, 700, 4),
-    //   new Tree(this, 1300, 720, 4),
-    //   new Tree(this, 810, 900, 4)
-    // ]
-    // // FIX THIS SHIT
-    // // this.castle = new Castle(this, 170, 760, 3.3)
-    //     // npcs placement
-    // this.farmer = new Farmer(this, this.GRID_WIDTH * this.TILE_SIZE - 90, this.GRID_HEIGHT * this.TILE_SIZE - 90, 0.7);
 
-
-
-
-
+    
+    
     // where all the shit is
     this.skeletons = [
-      new Skeleton(this, 700, 300, 3.5),
-      new Skeleton(this, 300, 300, 3.5)
+      new Skeleton(this, 700, 300, 3.5 / 3.333),
+      new Skeleton(this, 300, 300, 3.5  / 3.333)
     ]
-    this.king = new King(this, 250, 850, 2.5)
-    this.villager = new Villager(this, 500, 700, 2.5)
-    // this.houses = [
-    //   new House(this, 1170, 190, 0.25),
-    //   new House(this, 410, 400, 0.25),
-    //   new House(this, 650, 850, 0.25),
-    //   new House(this, 840, 460, 0.25),
-    //   new House(this, 940, 220, 0.25),
-    //   new House(this, 1220, 500, 0.25)
-    // ];
-    // this.stones = [
-    //   new Stone(this, 200, 300, 2.5),
-    //   new Stone(this, 800, 200, 2.5),
-    //   new Stone(this, 1000, 400, 2.5),
-    //   new Stone(this, 250, 500, 2.5),
-    //   new Stone(this, 800, 700, 2.5),
-    //   new Stone(this, 500, 800, 2.5)
-    // ]
-    // this.bushes = [
-    //   new Bush(this, 430, 120, 4),
-    //   new Bush(this, 550, 210, 4),
-    //   new Bush(this, 100, 340, 4),
-    //   new Bush(this, 1100, 400, 4),
-    //   new Bush(this, 340, 580, 4),
-    //   new Bush(this, 1160, 690, 4),
-    //   new Bush(this, 510, 900, 4)
-    // ]
-    // this.trees = [
-    //   new Tree(this, 370, 100, 4),
-    //   new Tree(this, 650, 240, 4),
-    //   new Tree(this, 120, 480, 4),
-    //   new Tree(this, 1250, 300, 4),
-    //   new Tree(this, 390, 700, 4),
-    //   new Tree(this, 1300, 720, 4),
-    //   new Tree(this, 810, 900, 4)
-    // ]
-    // FIX THIS SHIT
-    // this.castle = new Castle(this, 170, 760, 3.3)
-
+    
+    //WHERE??
+    // Place Farmer, King, and Villager near each other in the middle of the map
+    const centerX = this.GRID_WIDTH * this.TILE_SIZE / 2 - 200;
+    const centerY = this.GRID_HEIGHT * this.TILE_SIZE / 2 - 200;
+    this.farmer = new Farmer(this, centerX - 80, centerY, 0.7 / 3.333);
+    this.king = new King(this, centerX, centerY - 30, 2.5 / 3.333);
+    this.villager = new Villager(this, centerX + 80, centerY, 2.5 / 3.333);
     this.uiGameState = new UIGameState()
     this.titleList = new TitleList(
       this,
@@ -324,16 +248,17 @@ export default class GameScene extends Phaser.Scene {
     this.dialogueManager = new DialogueManager(this, 0)
 
     this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
-    // npcs placement
-    this.farmer = new Farmer(this, this.GRID_WIDTH * this.TILE_SIZE - 90, this.GRID_HEIGHT * this.TILE_SIZE - 90, 0.7);
+
   }
 
 
-  update(time: number, delta: number) {
+  update() {
 
-    //this.controls.update(delta);
 
     this.player.update();
+
+    const playerX = this.player.getX()
+    const playerY = this.player.getY()
 
     // follow player
     this.skeletons.forEach(v => v.updateFollow(playerX, playerY, 50))
