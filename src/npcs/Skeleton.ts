@@ -28,6 +28,21 @@ export class Skeleton extends NPC {
         this.getSprite().play('skeleton-idle', true);
     }
 
+    checkPlayerInteraction(playerX: number, playerY: number): void {
+        const dx = playerX - this.sprite.x;
+        const dy = playerY - this.sprite.y;
+        const dist = Math.hypot(dx, dy);
+        const threshold = 2 * this.TILE_SIZE;
+        const isNear = dist <= threshold;
+        if (isNear && !this.wasNearPlayer) {
+            const s = this.getSprite();
+            const scene = s.scene as GameScene;
+            const msg = 'Braaaaaaaaaaaaaaaaaains'
+            scene.dialogueManager.show(msg)
+        }
+        this.wasNearPlayer = isNear;
+    }
+
     triggerDeath(): void {
         if (this.killed) return;
         this.killed = true;
@@ -38,6 +53,7 @@ export class Skeleton extends NPC {
             {
                 scene.uiGameState.incrementTitleCount("Slayer of Skeletons ☠️");
                 scene.uiGameState.setScoreBasedOnTitles();
+                scene.dialogueManager.show("I died? Not again!")
                 scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);                  
                 s.setVisible(false)
             });

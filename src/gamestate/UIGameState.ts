@@ -12,7 +12,7 @@ export class UIGameState {
 
     this.titleScoreAndCountMap = new Map<string, [number, number]>([
       ["Lord of Boars 🐗", [0, 1]],
-      ["Slayer of Vampires 🧛", [1, 0]],
+      ["Slayer of Skeletons ☠️", [1, 0]],
       ["Deliverer of Turkey Sandwiches 🥪", [2, 0]],
       ["Favors owed by the king 👑", [3, 0]],
     ]);
