@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import type GameScene from './scenes/GameScene';
 
 interface AssetDefinition {
     key: string;
@@ -25,11 +26,13 @@ export class Player {
     private readonly GRID_WIDTH = 45;
     private readonly GRID_HEIGHT = 33;
     private lastDirection: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
+    private health = 3
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         this.scene = scene;
         this.sprite = scene.add.sprite(x, y, 'knight-sprite');
         this.sprite.setScale(0.6);
+        this.health = 3
 
         Player.registerAnimations(scene);
 
@@ -48,46 +51,46 @@ export class Player {
 
     static getRequiredAssets(): AssetDefinition[] {
         return [
-            { key: 'knight-sprite', path: 'boar_knight/right/Knight-Idle-Right.png', type: 'spritesheet', frameWidth: (1584/6), frameHeight: (1506/6)},
-            
-            
-            
+            { key: 'knight-sprite', path: 'boar_knight/right/Knight-Idle-Right.png', type: 'spritesheet', frameWidth: (1584 / 6), frameHeight: (1506 / 6) },
+
+
+
             { key: 'knight-attack-back', path: 'boar_knight/back/Knight-Attack-Back.png', type: 'spritesheet', frameWidth: 432, frameHeight: 361 },
-            { key: 'knight-walk-back', path: 'boar_knight/back/Knight-Walk-Back.png', type: 'spritesheet', frameWidth: 174, frameHeight: 274},
-            { 
-                key: 'knight-attack-front', 
-                path: 'boar_knight/front/Knight-Attack-Front.png', 
-                type: 'spritesheet', 
-                frameWidth: 2520/6,
-                frameHeight: 1974/6
-            }, 
+            { key: 'knight-walk-back', path: 'boar_knight/back/Knight-Walk-Back.png', type: 'spritesheet', frameWidth: 174, frameHeight: 274 },
+            {
+                key: 'knight-attack-front',
+                path: 'boar_knight/front/Knight-Attack-Front.png',
+                type: 'spritesheet',
+                frameWidth: 2520 / 6,
+                frameHeight: 1974 / 6
+            },
             {
                 key: 'knight-walk-front',
                 path: 'boar_knight/front/Knight-Walk-Front.png',
                 type: 'spritesheet',
-                frameWidth: 1104/6,
-                frameHeight:  1614/6
+                frameWidth: 1104 / 6,
+                frameHeight: 1614 / 6
             },
             {
                 key: 'knight-attack-left',
                 path: 'boar_knight/left/Knight-Attack-Left.png',
                 type: 'spritesheet',
-                frameWidth: 2568/6,
-                frameHeight: 2016/6
+                frameWidth: 2568 / 6,
+                frameHeight: 2016 / 6
             },
             {
                 key: 'knight-walk-left',
                 path: 'boar_knight/left/Knight-Walk-Left.png',
                 type: 'spritesheet',
-                frameWidth: 1638/6,
-                frameHeight: 1476/6
+                frameWidth: 1638 / 6,
+                frameHeight: 1476 / 6
             },
             {
                 key: 'knight-attack-right',
                 path: 'boar_knight/right/Knight-Attack-Right.png',
                 type: 'spritesheet',
-                frameWidth: 1902/6,
-                frameHeight: 1902/6
+                frameWidth: 1902 / 6,
+                frameHeight: 1902 / 6
             },
             {
                 key: 'knight-walk-right',
@@ -133,7 +136,7 @@ export class Player {
         }
 
 
-        
+
     }
 
     update(): void {
@@ -144,7 +147,7 @@ export class Player {
 
         this.sprite.anims.timeScale = speedMultiplier;
 
-        if (this.cursors.W.isDown && this.cursors.A.isDown) {  
+        if (this.cursors.W.isDown && this.cursors.A.isDown) {
             this.lastDirection = 'left';
 
             velocityX = -this.MOVE_SPEED * speedMultiplier * 0.7071;
@@ -210,6 +213,26 @@ export class Player {
             halfSize,
             this.GRID_HEIGHT * this.TILE_SIZE - halfSize
         );
+    }
+
+    getHealth(): number {
+        return this.health;
+    }
+
+    isDead(): boolean {
+        return this.health <= 0;
+    }
+
+    damageReceived(): boolean {
+        const s = this.sprite
+        this.health = this.health - 1
+        console.log(this.health)
+        s.setTintFill(0xffaaaa)
+        s.scene.time.delayedCall(120, () => s.clearTint())
+        const scene = s.scene as GameScene
+        scene.healthBar.updateText(this.health)
+        console.log('did it')
+        return true
     }
 
     getX(): number {
