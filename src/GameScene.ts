@@ -12,12 +12,15 @@ import { Bush } from './static/Bush'
 import { Tree } from './static/Tree'
 import { Castle } from './static/Castle'
 import { Farmer } from './npcs/Farmer';
+import DialogueMessage from './dialogue/DialogueMessage';
+import DialogueManager from './dialogue/DialogueManager';
 
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
   public uiGameState!: UIGameState;
+  public dialogueManager!: DialogueManager;
   public titleList!: TitleList;
   public foodsList!: TitleList;
   private vampireOne!: Vampire;
@@ -152,6 +155,10 @@ export default class GameScene extends Phaser.Scene {
       'right'
     );
 
+    this.dialogueManager = new DialogueManager(this, 0)
+
+    //new DialogueMessage(this, "The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
+    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
     // npcs placement
     this.farmer = new Farmer(this, this.GRID_WIDTH * this.TILE_SIZE - 90, this.GRID_HEIGHT * this.TILE_SIZE - 90, 0.7);
   }
@@ -178,10 +185,9 @@ export default class GameScene extends Phaser.Scene {
     }
 
     if (this.player.justPressedFoodKey()) {
-      console.log("Food key pressed");
-      console.log("farmer near: ", this.farmer.isPlayerNear());
-      console.log("king near: ", this.king.isPlayerNear());
-      console.log("villager near: ", this.villager.isPlayerNear());
+      // console.log("farmer near: ", this.farmer.isPlayerNear());
+      // console.log("king near: ", this.king.isPlayerNear());
+      // console.log("villager near: ", this.villager.isPlayerNear());
       if (this.farmer.isPlayerNear()) this.farmer.triggerPickUp()
       if (this.king.isPlayerNear()) this.king.triggerDelivery()
       if (this.villager.isPlayerNear()) this.villager.triggerDelivery()
