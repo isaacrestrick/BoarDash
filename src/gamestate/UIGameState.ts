@@ -5,7 +5,7 @@ export class UIGameState {
 
   constructor() {
     this.foodCounts = new Map<string, number>([
-      ["Ham Sandwiches 🥪", 0],
+      ["Turkey Sandwiches 🥪", 0],
       ["Kingly Burgers 🍔", 0]
     ]);
     this.currentScore = 0;
@@ -13,7 +13,7 @@ export class UIGameState {
     this.titleScoreAndCountMap = new Map<string, [number, number]>([
       ["Lord of Boars 🐗", [0, 1]],
       ["Slayer of Vampires 🧛", [1, 0]],
-      ["Deliverer of Ham Sandwiches 🥪", [2, 0]],
+      ["Deliverer of Turkey Sandwiches 🥪", [2, 0]],
       ["Favors owed by the king 👑", [3, 0]],
     ]);
   }
@@ -75,18 +75,18 @@ export class UIGameState {
 const uiState = new UIGameState();
 
 
-uiState.addFoodStuff('Ham Sandwiches 🥪');
-uiState.addFoodStuff('Ham Sandwiches 🥪');
+uiState.addFoodStuff('Turkey Sandwiches 🥪');
+uiState.addFoodStuff('Turkey Sandwiches 🥪');
 uiState.addFoodStuff('Apples 🍎');
 
 console.log('Food Counts List:', uiState.getFoodCountsList());
 
 
-uiState.removeFoodStuff('Ham Sandwiches 🥪');
-console.log('Food Counts List after removing one Ham Sandwich:', uiState.getFoodCountsList());
+uiState.removeFoodStuff('Turkey Sandwiches 🥪');
+console.log('Food Counts List after removing one Turkey Sandwich:', uiState.getFoodCountsList());
 
-uiState.removeFoodStuff('Ham Sandwiches 🥪');
-console.log('Food Counts List after removing another Ham Sandwich:', uiState.getFoodCountsList());
+uiState.removeFoodStuff('Turkey Sandwiches 🥪');
+console.log('Food Counts List after removing another Turkey Sandwich:', uiState.getFoodCountsList());
 
 if (uiState['titleScoreAndCountMap']) {
   uiState['titleScoreAndCountMap'].set('Slayer of Bandits 💀', [100, 2]);

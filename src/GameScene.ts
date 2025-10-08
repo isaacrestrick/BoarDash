@@ -67,7 +67,7 @@ export default class GameScene extends Phaser.Scene {
     background.setOrigin(0, 0);
     background.setDisplaySize(this.GRID_WIDTH * this.TILE_SIZE, this.GRID_HEIGHT * this.TILE_SIZE);
 
-    new DialogueMessage(this, "The journey of a thousand Ham Sandwiches 🥪 begins with a single boar.")
+    new DialogueMessage(this, "The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
     this.player = new Player(this, 720, 528);
 

@@ -14,6 +14,6 @@ Good morning!
 Near farmer:
 Good day on the farm today.
 
-The journey of 1000 ham sandwiches begins with a single boar.
+The journey of 1000 Turkey sandwiches begins with a single boar.
 
 Message spam is a problem.

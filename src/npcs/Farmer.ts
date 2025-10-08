@@ -42,9 +42,9 @@ export class Farmer extends NPC {
     triggerPickUp(): void {
         const s = this.getSprite();
         const scene = s.scene as GameScene;
-        const foods = ["Ham Sandwiches 🥪", "Kingly Burgers 🍔"];
+        const foods = ["Turkey Sandwiches 🥪", "Kingly Burgers 🍔"];
         const foodSingulars = {
-            "Ham Sandwiches 🥪": "Ham Sandwich 🥪",
+            "Turkey Sandwiches 🥪": "Turkey Sandwich 🥪",
             "Kingly Burgers 🍔": "Kingly Burger 🍔"
         };
         const randomFood = foods[Math.floor(Math.random() * foods.length)];

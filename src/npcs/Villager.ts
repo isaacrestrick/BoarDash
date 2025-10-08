@@ -53,20 +53,20 @@ export class Villager extends NPC {
     triggerDelivery(): void {
         const s = this.getSprite();
         const scene = s.scene as GameScene;
-        const sandwichFood = "Ham Sandwiches 🥪";
+        const sandwichFood = "Turkey Sandwiches 🥪";
         
         const foodCountsList = scene.uiGameState.getFoodCountsList();
         const hasSandwich = foodCountsList.some((item: string) => item.includes(sandwichFood) && !item.includes("x0"));
         
         if (hasSandwich) {
             scene.uiGameState.decrementFoodStuff(sandwichFood);
-            scene.uiGameState.incrementTitleCount("Deliverer of Ham Sandwiches 🥪");
-            new DialogueMessage(scene, "You are a true Deliverer of Ham Sandwiches 🥪!")
+            scene.uiGameState.incrementTitleCount("Deliverer of Turkey Sandwiches 🥪");
+            new DialogueMessage(scene, "You are a true Deliverer of Turkey Sandwiches 🥪!")
             scene.uiGameState.setScoreBasedOnTitles();
             scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
             scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
         } else {
-            new DialogueMessage(scene, "I believe I ordered a ham sandwich?")
+            new DialogueMessage(scene, "I believe I ordered a Turkey sandwich?")
         }
     }
 }
