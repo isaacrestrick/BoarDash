@@ -173,7 +173,20 @@ export default class GameScene extends Phaser.Scene {
     const playerY = this.player.getY();
 
     // follow player
-    this.skeletons.forEach(v => v.updateFollow(playerX, playerY, 50));
+    this.skeletons.forEach(v => v.updateFollow(playerX, playerY, 50))
+
+    // attack player
+    this.skeletons.forEach(s => {
+      if (s.triggerAttack(playerX, playerY)) {
+        this.player.damageReceived()
+      }
+    })
+
+    // handle player's death
+    if (this.player.isDead()) {
+      console.log('dead')
+      this.scene.restart() // REPLACE WITH GAME OVER
+    }
 
     // Proximity checks handled by base NPC class; death trigger is skeleton-specific
     this.skeletons[0].checkPlayerInteraction(playerX, playerY);
