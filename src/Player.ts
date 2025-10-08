@@ -236,9 +236,7 @@ export class Player {
         console.log(this.health)
         s.setTintFill(0xffaaaa)
         s.scene.time.delayedCall(120, () => s.clearTint())
-        const scene = s.scene as unknown as GameScene
-        scene.healthBar.updateText(this.health)
-        console.log('did it')
+        s.scene.events.emit("health:update", this.health)
         return true
     }
 

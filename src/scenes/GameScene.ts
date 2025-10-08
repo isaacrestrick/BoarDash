@@ -1,8 +1,6 @@
 import Phaser from 'phaser';
 import { Player } from '../Player';
 // import { NPC } from './npcs/Npc';
-import { TitleList } from '../TitleList';
-import { HealthBar } from '../HealthBar';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
 import { King } from '../npcs/King';
@@ -13,17 +11,12 @@ import { Bush } from '../static/Bush'
 import { Tree } from '../static/Tree'
 import { Castle } from '../static/Castle'
 import { Farmer } from '../npcs/Farmer';
-import DialogueManager from '../dialogue/DialogueManager';
 
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
   public uiGameState!: UIGameState;
-  public dialogueManager!: DialogueManager;
-  public titleList!: TitleList;
-  public foodsList!: TitleList;
-  public healthBar: HealthBar;
   public skeletons!: Skeleton[];
   private king!: King;
   private villager!: Villager;
@@ -249,32 +242,17 @@ export default class GameScene extends Phaser.Scene {
     this.king = new King(this, centerX, centerY - 30, 2.5 / 3.333);
     this.villager = new Villager(this, centerX + 80, centerY, 2.5 / 3.333);
     this.uiGameState = new UIGameState()
-    this.titleList = new TitleList(
-      this,
-      ["Titles", ...this.uiGameState.getTitlesList()],
-      40,
-      60,
-      28
-    );
-    this.foodsList = new TitleList(
-      this,
-      ["Foods", ...this.uiGameState.getFoodCountsList()],
-      this.GRID_WIDTH * this.TILE_SIZE - 40,
-      60,
-      28,
-      'right'
-    );
-    this.healthBar = new HealthBar(
-      this,
-      40,
-      15,
-      this.player.getHealth(),
-      'left'
-    )
 
-    this.dialogueManager = new DialogueManager(this, 0)
+//    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
-    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
+    this.scene.launch('ui', { 
+      playerHealth: this.player.getHealth(),
+      titles: this.uiGameState.getTitlesList(),
+      foods: this.uiGameState.getFoodCountsList(),
+    });
+
+    this.scene.bringToTop('ui');
+    this.events.emit("dialogue:show", "The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
   }
 
@@ -301,6 +279,7 @@ export default class GameScene extends Phaser.Scene {
     if (this.player.isDead()) {
       console.log('dead')
       //this.scene.restart() // REPLACE WITH GAME OVER
+      this.scene.stop('ui');
       this.scene.start('GameOverScene', { score: this.uiGameState.getScore() });
     }
 
