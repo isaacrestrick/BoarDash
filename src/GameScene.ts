@@ -6,6 +6,11 @@ import { UIGameState } from './gamestate/UIGameState';
 import { Vampire } from './npcs/Vampire';
 import { King } from './npcs/King';
 import { Villager } from './npcs/Villager'
+import { House } from './static/House'
+import { Stone } from './static/Stone'
+import { Bush } from './static/Bush'
+import { Tree } from './static/Tree'
+import { Castle } from './static/Castle'
 import { Farmer } from './npcs/Farmer';
 import DialogueMessage from './DialogueMessage';
 
@@ -20,6 +25,11 @@ export default class GameScene extends Phaser.Scene {
   private vampireTwo!: Vampire;
   private king!: King;
   private villager!: Villager;
+  private houses!: House[];
+  private stones!: Stone[];
+  private bushes!: Bush[];
+  private trees!: Tree[];
+  private castle!: Castle;
   private farmer!: Farmer;
   private readonly TILE_SIZE = 32;
   private readonly GRID_WIDTH = 45;
@@ -32,7 +42,6 @@ export default class GameScene extends Phaser.Scene {
   preload() {
     this.load.image('grassy_background', 'grassy_background.png');
 
-    // Player assets (spritesheet for knight)
     Player.getRequiredAssets().forEach(asset => {
       if (asset.type === 'spritesheet') {
         this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
@@ -41,22 +50,38 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    // Vampire assets
     Vampire.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
 
-    // king assets
     King.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
 
-    // villager assets
     Villager.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
 
-    // farmer assets
+    House.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
+
+    Stone.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
+
+    Bush.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
+
+    Tree.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
+
+    Castle.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
+    
     Farmer.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
@@ -70,6 +95,48 @@ export default class GameScene extends Phaser.Scene {
     new DialogueMessage(this, "The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
     this.player = new Player(this, 720, 528);
+
+    // where all the shit is
+    this.vampireOne = new Vampire(this, 700, 300, 2.5);
+    this.vampireTwo = new Vampire(this, 300, 300, 2.5);
+    this.king = new King(this, 250, 850, 2.5)
+    this.villager = new Villager(this, 500, 700, 2.5)
+    this.houses = [
+      new House(this, 1170, 190, 0.25),
+      new House(this, 410, 400, 0.25),
+      new House(this, 650, 850, 0.25),
+      new House(this, 840, 460, 0.25),
+      new House(this, 940, 220, 0.25),
+      new House(this, 1220, 500, 0.25)
+    ];
+    this.stones = [
+      new Stone(this, 200, 300, 2.5),
+      new Stone(this, 800, 200, 2.5),
+      new Stone(this, 1000, 400, 2.5),
+      new Stone(this, 250, 500, 2.5),
+      new Stone(this, 800, 700, 2.5),
+      new Stone(this, 500, 800, 2.5)
+    ]
+    this.bushes = [
+      new Bush(this, 430, 120, 4),
+      new Bush(this, 550, 210, 4),
+      new Bush(this, 100, 340, 4),
+      new Bush(this, 1100, 400, 4),
+      new Bush(this, 340, 580, 4),
+      new Bush(this, 1160, 690, 4),
+      new Bush(this, 510, 900, 4)
+    ]
+    this.trees = [
+      new Tree(this, 370, 100, 4),
+      new Tree(this, 650, 240, 4),
+      new Tree(this, 120, 480, 4),
+      new Tree(this, 1250, 300, 4),
+      new Tree(this, 390, 700, 4),
+      new Tree(this, 1300, 720, 4),
+      new Tree(this, 810, 900, 4)
+    ]
+    // FIX THIS SHIT
+    // this.castle = new Castle(this, 170, 760, 3.3)
 
     this.uiGameState = new UIGameState()
     this.titleList = new TitleList(
@@ -89,10 +156,6 @@ export default class GameScene extends Phaser.Scene {
     );
 
     // npcs placement
-    this.vampireOne = new Vampire(this, 700, 300, 2.5);
-    this.vampireTwo = new Vampire(this, 300, 300, 2.5);
-    this.king = new King(this, 500, 300, 2.5)
-    this.villager = new Villager(this, 500, 700, 2.5)
     this.farmer = new Farmer(this, this.GRID_WIDTH * this.TILE_SIZE - 90, this.GRID_HEIGHT * this.TILE_SIZE - 90, 0.7);
   }
 

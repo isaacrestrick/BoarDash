@@ -144,21 +144,45 @@ export class Player {
 
         this.sprite.anims.timeScale = speedMultiplier;
 
-        if (this.cursors.W.isDown) {
+        if (this.cursors.W.isDown && this.cursors.A.isDown) {  
+            this.lastDirection = 'left';
+
+            velocityX = -this.MOVE_SPEED * speedMultiplier * 0.7071;
+            velocityY = -this.MOVE_SPEED * speedMultiplier * 0.7071;
+            this.lastDirection = 'left';
+            this.sprite.play(this.attackKey.isDown ? 'knight-attack-left' : 'knight-walk-left', true);
+        } else if (this.cursors.W.isDown && this.cursors.D.isDown) {
+            this.lastDirection = 'right';
+            velocityX = this.MOVE_SPEED * speedMultiplier * 0.7071;
+            velocityY = -this.MOVE_SPEED * speedMultiplier * 0.7071;
+            this.sprite.play(this.attackKey.isDown ? 'knight-attack-right' : 'knight-walk-right', true);
+        } else if (this.cursors.S.isDown && this.cursors.A.isDown) {
+            this.lastDirection = 'left';
+            velocityX = -this.MOVE_SPEED * speedMultiplier * 0.7071;
+            velocityY = this.MOVE_SPEED * speedMultiplier * 0.7071;
+            this.sprite.play(this.attackKey.isDown ? 'knight-attack-left' : 'knight-walk-left', true);
+        } else if (this.cursors.S.isDown && this.cursors.D.isDown) {
+            this.lastDirection = 'right';
+            velocityX = this.MOVE_SPEED * speedMultiplier * 0.7071;
+            velocityY = this.MOVE_SPEED * speedMultiplier * 0.7071;
+            this.sprite.play(this.attackKey.isDown ? 'knight-attack-right' : 'knight-walk-right', true);
+        } else if (this.cursors.W.isDown) {
+            console.log("W key pressed");
             velocityY = -this.MOVE_SPEED * speedMultiplier;
             this.lastDirection = 'back';
             this.sprite.play(this.attackKey.isDown ? 'knight-attack-back' : 'knight-walk-back', true);
         } else if (this.cursors.S.isDown) {
+            console.log("S key pressed");
             velocityY = this.MOVE_SPEED * speedMultiplier;
             this.lastDirection = 'front';
             this.sprite.play(this.attackKey.isDown ? 'knight-attack-front' : 'knight-walk-front', true);
-        }
-
-        if (this.cursors.A.isDown) {
+        } else if (this.cursors.A.isDown) {
+            console.log("A key pressed");
             velocityX = -this.MOVE_SPEED * speedMultiplier;
             this.lastDirection = 'left';
             this.sprite.play(this.attackKey.isDown ? 'knight-attack-left' : 'knight-walk-left', true);
         } else if (this.cursors.D.isDown) {
+            console.log("D key pressed");
             velocityX = this.MOVE_SPEED * speedMultiplier;
             this.lastDirection = 'right';
             this.sprite.play(this.attackKey.isDown ? 'knight-attack-right' : 'knight-walk-right', true);
