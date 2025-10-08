@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { Player } from '../Player';
 // import { NPC } from './npcs/Npc';
 import { TitleList } from '../TitleList';
+import { HealthBar } from '../HealthBar';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
 import { King } from '../npcs/King';
@@ -22,6 +23,7 @@ export default class GameScene extends Phaser.Scene {
   public dialogueManager!: DialogueManager;
   public titleList!: TitleList;
   public foodsList!: TitleList;
+  public healthBar: HealthBar;
   private skeletons!: Skeleton[];
   private king!: King;
   private villager!: Villager;
@@ -154,6 +156,13 @@ export default class GameScene extends Phaser.Scene {
       28,
       'right'
     );
+    this.healthBar = new HealthBar(
+      this,
+      40,
+      15,
+      this.player.getHealth(),
+      'left'
+    )
 
     this.dialogueManager = new DialogueManager(this, 0)
 
