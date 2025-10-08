@@ -38,7 +38,7 @@ export class King extends NPC {
             const s = this.getSprite();
             const scene = s.scene as GameScene;
             const msg = 'Another beautiful day in the kingdom.'
-            scene.dialogueManager.show(msg)
+            scene.events.emit("dialogue:show", msg)
             console.log(msg);
         }
         this.wasNearPlayer = isNear;
@@ -62,11 +62,13 @@ export class King extends NPC {
             scene.uiGameState.decrementFoodStuff(burgerFood);
             scene.uiGameState.incrementTitleCount("Favors owed by the king 👑");
             scene.uiGameState.setScoreBasedOnTitles();
-            scene.dialogueManager.show("Thanks. I owe you one!")
-            scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
-            scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
+            scene.events.emit("dialogue:show", "Thanks. I owe you one!")
+            //scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
+            s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
+            //scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
+            s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
         } else {
-            scene.dialogueManager.show("I believe I ordered a burger?")
+            scene.events.emit("dialogue:show", "I believe I ordered a burger?")
         }
     }
 }

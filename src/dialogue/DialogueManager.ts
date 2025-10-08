@@ -1,13 +1,12 @@
-import GameScene from '../scenes/GameScene';
 import DialogueMessage from './DialogueMessage';
 
 export default class DialogueManager {
-  private scene: GameScene;
+  private scene: Phaser.Scene;
   private currentDialogueMessage?: DialogueMessage;
   private queue: string[] = [];
   private microDelay = 120; // Ms
 
-  constructor(scene: GameScene, microDelay = 120) {
+  constructor(scene: Phaser.Scene, microDelay = 120) {
     this.scene = scene;
     this.microDelay = microDelay;
   }
