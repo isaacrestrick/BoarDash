@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import type GameScene from './scenes/GameScene';
 
 interface AssetDefinition {
     key: string;
@@ -228,6 +229,9 @@ export class Player {
         console.log(this.health)
         s.setTintFill(0xffaaaa)
         s.scene.time.delayedCall(120, () => s.clearTint())
+        const scene = s.scene as GameScene
+        scene.healthBar.updateText(this.health)
+        console.log('did it')
         return true
     }
 
