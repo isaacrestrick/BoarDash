@@ -24,7 +24,7 @@ export default class GameScene extends Phaser.Scene {
   public titleList!: TitleList;
   public foodsList!: TitleList;
   public healthBar: HealthBar;
-  private skeletons!: Skeleton[];
+  public skeletons!: Skeleton[];
   private king!: King;
   private villager!: Villager;
   private houses!: House[];
@@ -197,16 +197,19 @@ export default class GameScene extends Phaser.Scene {
     }
 
     // Proximity checks handled by base NPC class; death trigger is skeleton-specific
-    this.skeletons[0].checkPlayerInteraction(playerX, playerY);
-    this.skeletons[1].checkPlayerInteraction(playerX, playerY);
+    this.skeletons.forEach(skeleton => {
+      skeleton.checkPlayerInteraction(playerX, playerY);
+    })
     this.farmer.checkPlayerInteraction(playerX, playerY);
     this.king.checkPlayerInteraction(playerX, playerY);
     this.villager.checkPlayerInteraction(playerX, playerY);
 
-
     if (this.player.isAttacking()) {
-      if (this.skeletons[0].isPlayerNear()) this.skeletons[0].triggerDeath();
-      if (this.skeletons[1].isPlayerNear()) this.skeletons[1].triggerDeath();
+      this.skeletons.forEach(skeleton => {
+        if (skeleton.isPlayerNear()) {
+          skeleton.triggerDeath();
+        }
+      })
     }
 
     if (this.player.justPressedFoodKey()) {
@@ -217,6 +220,5 @@ export default class GameScene extends Phaser.Scene {
       if (this.king.isPlayerNear()) this.king.triggerDelivery()
       if (this.villager.isPlayerNear()) this.villager.triggerDelivery()
     }
-
   }
 }
