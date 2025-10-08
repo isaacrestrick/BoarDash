@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
 import type GameScene from '../GameScene'
-import DialogueMessage from '../DialogueMessage';
+import DialogueMessage from '../dialogue/DialogueMessage';
 
 export class Farmer extends NPC {
     static getRequiredAssets() {
@@ -33,7 +33,7 @@ export class Farmer extends NPC {
             const s = this.getSprite();
             const scene = s.scene as GameScene;
             const msg = 'Good day on the farm today.'
-            new DialogueMessage(scene, msg)
+            scene.dialogueManager.show(msg)
             console.log(msg);
         }
         this.wasNearPlayer = isNear;
@@ -49,7 +49,7 @@ export class Farmer extends NPC {
         };
         const randomFood = foods[Math.floor(Math.random() * foods.length)];
         scene.uiGameState.addFoodStuff(randomFood);
-        new DialogueMessage(scene, "Here is your food: 1x " + foodSingulars[randomFood]);
+        scene.dialogueManager.show("Here is your food: 1x " + foodSingulars[randomFood]);
         scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
     }
 }

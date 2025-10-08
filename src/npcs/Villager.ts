@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
 import type GameScene from '../GameScene';
-import DialogueMessage from '../DialogueMessage';
+import DialogueMessage from '../dialogue/DialogueMessage';
 
 export class Villager extends NPC {
     static getRequiredAssets() {
@@ -39,7 +39,7 @@ export class Villager extends NPC {
             const s = this.getSprite();
             const scene = s.scene as GameScene;
             const msg = 'Good morning!'
-            new DialogueMessage(scene, msg)
+            scene.dialogueManager.show(msg)
         }
         this.wasNearPlayer = isNear;
     }
@@ -61,12 +61,12 @@ export class Villager extends NPC {
         if (hasSandwich) {
             scene.uiGameState.decrementFoodStuff(sandwichFood);
             scene.uiGameState.incrementTitleCount("Deliverer of Turkey Sandwiches 🥪");
-            new DialogueMessage(scene, "You are a true Deliverer of Turkey Sandwiches 🥪!")
+            scene.dialogueManager.show("You are a true Deliverer of Turkey Sandwiches 🥪!")
             scene.uiGameState.setScoreBasedOnTitles();
             scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
             scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
         } else {
-            new DialogueMessage(scene, "I believe I ordered a Turkey sandwich?")
+            scene.dialogueManager.show("I believe I ordered a Turkey Sandwich 🥪?")
         }
     }
 }

@@ -12,13 +12,15 @@ import { Bush } from './static/Bush'
 import { Tree } from './static/Tree'
 import { Castle } from './static/Castle'
 import { Farmer } from './npcs/Farmer';
-import DialogueMessage from './DialogueMessage';
+import DialogueMessage from './dialogue/DialogueMessage';
+import DialogueManager from './dialogue/DialogueManager';
 
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
   public uiGameState!: UIGameState;
+  public dialogueManager!: DialogueManager;
   public titleList!: TitleList;
   public foodsList!: TitleList;
   private vampireOne!: Vampire;
@@ -92,8 +94,6 @@ export default class GameScene extends Phaser.Scene {
     background.setOrigin(0, 0);
     background.setDisplaySize(this.GRID_WIDTH * this.TILE_SIZE, this.GRID_HEIGHT * this.TILE_SIZE);
 
-    new DialogueMessage(this, "The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
-
     this.player = new Player(this, 720, 528);
 
     // where all the shit is
@@ -155,6 +155,10 @@ export default class GameScene extends Phaser.Scene {
       'right'
     );
 
+    this.dialogueManager = new DialogueManager(this, 0)
+
+    //new DialogueMessage(this, "The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
+    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
     // npcs placement
     this.farmer = new Farmer(this, this.GRID_WIDTH * this.TILE_SIZE - 90, this.GRID_HEIGHT * this.TILE_SIZE - 90, 0.7);
   }
