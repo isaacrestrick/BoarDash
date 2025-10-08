@@ -35,6 +35,12 @@ function App() {
           height: 1056
         }
       },
+      physics: {
+        default: 'arcade',
+        arcade: {
+          debug: false
+        }
+      }
     }
 
     gameRef.current = new Phaser.Game(config)
