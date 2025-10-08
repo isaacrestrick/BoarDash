@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react'
 import Phaser from 'phaser'
-import GameScene from './GameScene'
+import TitleScene from './scenes/TitleScene'
+import GameScene from './scenes/GameScene'
+import GameOverScene from './scenes/GameOverScene'
+
 import './App.css'
 
 function App() {
@@ -13,7 +16,7 @@ function App() {
       height: 1056,
       parent: 'game-container',
       backgroundColor: '#000000',
-      scene: [GameScene],
+      scene: [TitleScene, GameScene, GameOverScene],
       scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,

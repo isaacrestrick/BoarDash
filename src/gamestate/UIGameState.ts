@@ -18,6 +18,14 @@ export class UIGameState {
     ]);
   }
 
+  getTitleCount(): number {
+    let total = 0;
+    for (const [, [, count]] of this.titleScoreAndCountMap.entries()) {
+      total += count;
+    }
+    return total;
+  }
+
   setScoreBasedOnTitles(): void {
     let totalScore = 0;
     for (const [, [score, count]] of this.titleScoreAndCountMap.entries()) {
@@ -67,6 +75,7 @@ export class UIGameState {
     if (this.titleScoreAndCountMap.has(title)) {
       const [score, count] = this.titleScoreAndCountMap.get(title)!;
       this.titleScoreAndCountMap.set(title, [score, count + 1]);
+      this.currentScore += score;
     }
   }
 

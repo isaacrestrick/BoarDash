@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { NPC } from './Npc';
-import type GameScene from '../GameScene';
-import DialogueMessage from '../dialogue/DialogueMessage';
+import type GameScene from '../scenes/GameScene';
 
 export class Villager extends NPC {
     static getRequiredAssets() {

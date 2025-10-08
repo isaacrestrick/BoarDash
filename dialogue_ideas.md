@@ -23,3 +23,18 @@ Maybe one dialogue object, need way to have it not spam too hard. Maybe a queue 
 
 
 New Game and Restart Menus
+
+
+Game Start:
+Rules and controls
+
+Game:
+Perhaps UI on the sides
+
+Game Over:
+Victory: titles
+Loss: upside down, frozen, try again?
+
+Show titles on game over, along w score
+
+Flip him upside down and freeze him if we lose
