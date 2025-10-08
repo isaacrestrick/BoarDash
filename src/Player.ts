@@ -25,7 +25,7 @@ export class Player {
     private readonly TILE_SIZE = 32;
     private readonly GRID_WIDTH = 45;
     private readonly GRID_HEIGHT = 33;
-    private lastDirection: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
+    private Direction: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
     private health = 3
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -232,7 +232,6 @@ export class Player {
         s.scene.time.delayedCall(120, () => s.clearTint())
         const scene = s.scene as GameScene
         scene.healthBar.updateText(this.health)
-        console.log('did it')
         return true
     }
 
