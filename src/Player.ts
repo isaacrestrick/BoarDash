@@ -10,7 +10,7 @@ interface AssetDefinition {
 }
 
 export class Player {
-    private sprite: Phaser.GameObjects.Sprite;
+    private sprite: Phaser.Physics.Arcade.Sprite;
     private scene: Phaser.Scene;
     private cursors: {
         W: Phaser.Input.Keyboard.Key;
@@ -30,10 +30,14 @@ export class Player {
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         this.scene = scene;
-        this.sprite = scene.add.sprite(x, y, 'knight-sprite');
+        this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
         this.sprite.setScale(0.18);
-        this.health = 3
+        this.health = 3;
+        this.lastDirection = 'front';
 
+        // Enable physics collisions
+        this.sprite.setCollideWorldBounds(true);
+        this.sprite.body!.setSize(this.sprite.width * 0.5, this.sprite.height * 0.5);
 
         Player.registerAnimations(scene);
 
@@ -48,6 +52,10 @@ export class Player {
         this.spaceKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.sprite.play('knight-idle');
+    }
+
+    getSprite(): Phaser.Physics.Arcade.Sprite {
+        return this.sprite;
     }
 
     static getRequiredAssets(): AssetDefinition[] {
@@ -196,10 +204,8 @@ export class Player {
             this.sprite.play(this.attackKey.isDown ? `knight-attack-${this.lastDirection}` : 'knight-idle', true);
         }
 
-        this.sprite.x += velocityX * (this.scene.game.loop.delta / 1000);
-        this.sprite.y += velocityY * (this.scene.game.loop.delta / 1000);
-
-        this.constrainToBounds();
+        // Use physics body velocity instead of manual position updates
+        this.sprite.setVelocity(velocityX, velocityY);
     }
 
     private constrainToBounds(): void {
@@ -230,7 +236,7 @@ export class Player {
         console.log(this.health)
         s.setTintFill(0xffaaaa)
         s.scene.time.delayedCall(120, () => s.clearTint())
-        const scene = s.scene as GameScene
+        const scene = s.scene as unknown as GameScene
         scene.healthBar.updateText(this.health)
         console.log('did it')
         return true
