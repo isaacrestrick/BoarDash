@@ -59,7 +59,30 @@ export class Skeleton extends NPC {
             });
     }
 
-    // triggerArrack() or smth
+    private lastAttackTime = 0
+    private cooldownTime = 1000 // 1 second between attacks
+    private attackRangeX = this.TILE_SIZE * 3.2
+    private attackRangeY = this.TILE_SIZE * 1.3
+
+    triggerAttack(targetX: number, targetY: number): boolean {
+        const s = this.sprite
+        if (this.killed) return false
+
+        const now = s.scene.time.now
+        if (now < this.lastAttackTime + this.cooldownTime) return false
+
+        const dx = targetX - s.x
+	    const dy = targetY - s.y + 25
+
+        const inRange = Math.abs(dx) <= this.attackRangeX && Math.abs(dy) <= this.attackRangeY
+	    if (!inRange) return false
+
+        s.setTintFill(0xffffff)
+    	s.scene.time.delayedCall(120, () => s.clearTint())
+
+        this.lastAttackTime = now
+	    return true
+    }
 
     updateFollow(targetX: number, targetY: number, speed: number = 90): void {
 		const s = this.sprite
@@ -71,7 +94,11 @@ export class Skeleton extends NPC {
 		const dy = targetY - s.y + 25 // + shifts the target relative to player sprite
 
 		const eliptDist = Math.hypot(dx/stopX, dy/stopY)
-		if (eliptDist <= 1) return
+		if (eliptDist <= 1) {
+            // attack handled in GameScene
+            // this.triggerAttack(targetX, targetY)
+            return
+        }
 
         const dist = Math.hypot(dx, dy)
 		const nx = dx / dist
