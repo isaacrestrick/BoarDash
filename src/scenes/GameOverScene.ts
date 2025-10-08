@@ -11,7 +11,7 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   init(data: { score: number }) {
-    this.score = data.score || 42;
+    this.score = data.score === undefined ? 42 : data.score;
   }
 
   preload() {
