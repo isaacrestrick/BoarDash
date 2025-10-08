@@ -3,7 +3,7 @@ import { Player } from './Player';
 // import { NPC } from './npcs/Npc';
 import { TitleList } from './TitleList';
 import { UIGameState } from './gamestate/UIGameState';
-import { Vampire } from './npcs/Vampire';
+import { Skeleton } from './npcs/Skeleton';
 import { King } from './npcs/King';
 import { Villager } from './npcs/Villager'
 import { House } from './static/House'
@@ -23,8 +23,7 @@ export default class GameScene extends Phaser.Scene {
   public dialogueManager!: DialogueManager;
   public titleList!: TitleList;
   public foodsList!: TitleList;
-  private vampireOne!: Vampire;
-  private vampireTwo!: Vampire;
+  private skeletons!: Skeleton[];
   private king!: King;
   private villager!: Villager;
   private houses!: House[];
@@ -52,7 +51,7 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    Vampire.getRequiredAssets().forEach(asset => {
+    Skeleton.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
 
@@ -97,8 +96,10 @@ export default class GameScene extends Phaser.Scene {
     this.player = new Player(this, 720, 528);
 
     // where all the shit is
-    this.vampireOne = new Vampire(this, 700, 300, 2.5);
-    this.vampireTwo = new Vampire(this, 300, 300, 2.5);
+    this.skeletons = [
+      new Skeleton(this, 700, 300, 3.5),
+      new Skeleton(this, 300, 300, 3.5)
+    ]
     this.king = new King(this, 250, 850, 2.5)
     this.villager = new Villager(this, 500, 700, 2.5)
     this.houses = [
@@ -171,17 +172,20 @@ export default class GameScene extends Phaser.Scene {
     const playerX = this.player.getX();
     const playerY = this.player.getY();
 
-    // Proximity checks handled by base NPC class; death trigger is vampire-specific
-    this.vampireOne.checkPlayerInteraction(playerX, playerY);
-    this.vampireTwo.checkPlayerInteraction(playerX, playerY);
+    // follow player
+    this.skeletons.forEach(v => v.updateFollow(playerX, playerY, 50));
+
+    // Proximity checks handled by base NPC class; death trigger is skeleton-specific
+    this.skeletons[0].checkPlayerInteraction(playerX, playerY);
+    this.skeletons[1].checkPlayerInteraction(playerX, playerY);
     this.farmer.checkPlayerInteraction(playerX, playerY);
     this.king.checkPlayerInteraction(playerX, playerY);
     this.villager.checkPlayerInteraction(playerX, playerY);
 
 
     if (this.player.isAttacking()) {
-      if (this.vampireOne.isPlayerNear()) this.vampireOne.triggerDeath();
-      if (this.vampireTwo.isPlayerNear()) this.vampireTwo.triggerDeath();
+      if (this.skeletons[0].isPlayerNear()) this.skeletons[0].triggerDeath();
+      if (this.skeletons[1].isPlayerNear()) this.skeletons[1].triggerDeath();
     }
 
     if (this.player.justPressedFoodKey()) {
