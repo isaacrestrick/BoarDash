@@ -38,7 +38,7 @@ export class Skeleton extends NPC {
             const s = this.getSprite();
             const scene = s.scene as GameScene;
             const msg = 'Braaaaaaaaaaaaaaaaaains'
-            scene.dialogueManager.show(msg)
+            scene.events.emit("dialogue:show", msg)
         }
         this.wasNearPlayer = isNear;
     }
@@ -52,8 +52,9 @@ export class Skeleton extends NPC {
         s.once('animationcomplete', () => {
             scene.uiGameState.incrementTitleCount("Slayer of Skeletons ☠️")
             scene.uiGameState.setScoreBasedOnTitles()
-            scene.dialogueManager.show("I died? Not again!")
-            scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()])
+            scene.events.emit("dialogue:show", "I died? Not again!")
+            //scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()])
+            s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
             const index = scene.skeletons.indexOf(this);
             if (index > -1) {
                 scene.skeletons.splice(index, 1);

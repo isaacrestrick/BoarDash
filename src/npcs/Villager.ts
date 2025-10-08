@@ -38,7 +38,7 @@ export class Villager extends NPC {
             const s = this.getSprite();
             const scene = s.scene as GameScene;
             const msg = 'Good morning!'
-            scene.dialogueManager.show(msg)
+            scene.events.emit("dialogue:show", msg)
         }
         this.wasNearPlayer = isNear;
     }
@@ -60,12 +60,14 @@ export class Villager extends NPC {
         if (hasSandwich) {
             scene.uiGameState.decrementFoodStuff(sandwichFood);
             scene.uiGameState.incrementTitleCount("Deliverer of Turkey Sandwiches 🥪");
-            scene.dialogueManager.show("You are a true Deliverer of Turkey Sandwiches 🥪!")
+            scene.events.emit("dialogue:show", "You are a true Deliverer of Turkey Sandwiches 🥪!")
             scene.uiGameState.setScoreBasedOnTitles();
-            scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
-            scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
+            //scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
+            s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
+            //scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
+            s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
         } else {
-            scene.dialogueManager.show("I believe I ordered a Turkey Sandwich 🥪?")
+            scene.events.emit("dialogue:show", "I believe I ordered a Turkey Sandwich 🥪?")
         }
     }
 }
