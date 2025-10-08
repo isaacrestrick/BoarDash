@@ -105,8 +105,13 @@ export default class GameScene extends Phaser.Scene {
 
     const blacksmithHouseLayer = map.createLayer('Buildings', blacksmithHouseTileset, 0, 0);
 
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    
 
+
+    // this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    const mapWidth = 96 * 16;  // 64 tiles × 16 pixels
+    const mapHeight = 48 * 16; // 64 tiles × 16 pixels
+    this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
 
     const cursors = this.input.keyboard.createCursorKeys();
 
@@ -121,7 +126,18 @@ export default class GameScene extends Phaser.Scene {
 
     this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
 
-  // const cursors = this.input.keyboard.createCursorKeys();
+
+    this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
+
+
+    // this.cameras.main.setZoom(2);
+
+
+
+    // const viewportWidth = this.cameras.main.width / this.cameras.main.zoom;
+    // const viewportHeight = this.cameras.main.height / this.cameras.main.zoom;
+    // this.cameras.main.scrollX = mapWidth - viewportWidth;
+    // this.cameras.main.scrollY = 0;
     
     
 
