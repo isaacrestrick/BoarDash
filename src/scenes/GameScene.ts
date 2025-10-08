@@ -165,10 +165,6 @@ export default class GameScene extends Phaser.Scene {
 
   update() {
 
-    if (this.uiGameState.getTitleCount() > 10) {
-      this.scene.start('GameOverScene', { score: this.uiGameState.getScore() });
-    }
-
     this.player.update();
 
     const playerX = this.player.getX();
@@ -187,7 +183,8 @@ export default class GameScene extends Phaser.Scene {
     // handle player's death
     if (this.player.isDead()) {
       console.log('dead')
-      this.scene.restart() // REPLACE WITH GAME OVER
+      //this.scene.restart() // REPLACE WITH GAME OVER
+      this.scene.start('GameOverScene', { score: this.uiGameState.getScore() });
     }
 
     // Proximity checks handled by base NPC class; death trigger is skeleton-specific
