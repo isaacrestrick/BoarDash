@@ -190,7 +190,7 @@ export default class GameScene extends Phaser.Scene {
 
 
     // this.cameras.main.setZoom(2);
-
+    this.cameras.main.setZoom(4)
 
 
     // const viewportWidth = this.cameras.main.width / this.cameras.main.zoom;
@@ -200,8 +200,8 @@ export default class GameScene extends Phaser.Scene {
     
     
 
-    // this.player = new Player(this, 720, 528);
-
+    this.player = new Player(this, 720, 528);
+    this.cameras.main.startFollow(this.player.sprite, true, 0.1, 0.1);
     // // where all the shit is
     // this.vampireOne = new Vampire(this, 700, 300, 2.5);
     // this.vampireTwo = new Vampire(this, 300, 300, 2.5);
@@ -274,9 +274,9 @@ export default class GameScene extends Phaser.Scene {
 
   update(time: number, delta: number) {
 
-    this.controls.update(delta);
+    //this.controls.update(delta);
 
-    // this.player.update();
+    this.player.update();
 
     // const playerX = this.player.getX();
     // const playerY = this.player.getY();

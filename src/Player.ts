@@ -29,7 +29,7 @@ export class Player {
     constructor(scene: Phaser.Scene, x: number, y: number) {
         this.scene = scene;
         this.sprite = scene.add.sprite(x, y, 'knight-sprite');
-        this.sprite.setScale(0.6);
+        this.sprite.setScale(0.18);
 
         Player.registerAnimations(scene);
 
