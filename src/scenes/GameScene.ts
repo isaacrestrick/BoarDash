@@ -201,27 +201,26 @@ export default class GameScene extends Phaser.Scene {
     // this.cameras.main.scrollX = mapWidth - viewportWidth;
     // this.cameras.main.scrollY = 0;
     
-    
 
     this.player = new Player(this, 720, 528);
     this.cameras.main.startFollow(this.player.sprite, true, 0.1, 0.1);
 
     
     
-    // where all the shit is
     this.skeletons = [
       new Skeleton(this, 700, 300, 3.5 / 3.333),
       new Skeleton(this, 300, 300, 3.5  / 3.333)
     ]
     
-    //WHERE??
-    // Place Farmer, King, and Villager near each other in the middle of the map
     const centerX = this.GRID_WIDTH * this.TILE_SIZE / 2 - 200;
     const centerY = this.GRID_HEIGHT * this.TILE_SIZE / 2 - 200;
     this.farmer = new Farmer(this, centerX - 80, centerY, 0.7 / 3.333);
     this.king = new King(this, centerX, centerY - 30, 2.5 / 3.333);
     this.villager = new Villager(this, centerX + 80, centerY, 2.5 / 3.333);
+
+
     this.uiGameState = new UIGameState()
+    
     this.titleList = new TitleList(
       this,
       ["Titles", ...this.uiGameState.getTitlesList()],
