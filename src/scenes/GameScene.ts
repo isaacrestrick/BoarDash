@@ -155,11 +155,11 @@ export default class GameScene extends Phaser.Scene {
 
     // map.createLayer("SmallTrees", [fruitTreeStagesTileset], 256, 0);
 
-    const tree1Layer = map.createLayer("Tree 1", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 16 * 16, 0);
+    const tree1Layer = map.createLayer("Tree 1", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
 
     const tree2Layer = map.createLayer("Tree 2", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
 
-    const tree3Layer = map.createLayer("Tree 3", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 16 * 16, 0);
+    const tree3Layer = map.createLayer("Tree 3", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
 
 
     // Enable collision on all tiles in these layers (excluding empty tiles with index -1)
