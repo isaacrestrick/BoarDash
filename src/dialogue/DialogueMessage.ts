@@ -16,6 +16,12 @@ export default class DialogueMessage {
       fontSize: '24px',
       color: '#ffffff',
       backgroundColor: 'rgba(0,0,0,0.5)',
+      padding: {
+        left: 4,
+        right: 4,
+        top: 2,
+        bottom: 2
+      }
     },
     onDone?: DialogueDone
   ) {
