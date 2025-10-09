@@ -19,7 +19,7 @@ export class TitleList {
     }
   
     createText(x: number, y: number, lineSpacing: number, align: 'left' | 'right' = 'left'): void {
-      this.titles.forEach((title, index) => {
+      this.titles.filter(title => !title.includes('x0')).forEach((title, index) => {
         if (index === 0) {
           const mainTitle = this.scene.add.text(x, y, title, {
             fontFamily: 'Arial',
@@ -31,7 +31,6 @@ export class TitleList {
           mainTitle.setOrigin(align === 'right' ? 1 : 0, 0);
           this.textObjects.push(mainTitle);
         } else {
-
           const extraSpacing = 48;
           const txt = this.scene.add.text(
             x, 

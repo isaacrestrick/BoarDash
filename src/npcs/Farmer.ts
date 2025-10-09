@@ -1,8 +1,23 @@
 import Phaser from 'phaser';
-import { NPC } from './Npc';
+import { NPC, type NpcConfig } from './Npc';
 import type GameScene from '../scenes/GameScene'
 
+export interface FarmerConfig extends NpcConfig{
+    greetingDialogue: string;
+    idlePath: string;
+    foods: string[];
+    foodSingulars: Record<string, string>;
+}
+
+
 export class Farmer extends NPC {
+    greetingDialogue: string = "Good day on the farm today.";
+    foods: string[] = ["Turkey Sandwiches 🥪", "Kingly Burgers 🍔"];
+    foodSingulars: Record<string, string> = {
+        "Turkey Sandwiches 🥪": "Turkey Sandwich 🥪",
+        "Kingly Burgers 🍔": "Kingly Burger 🍔"
+    };
+
     static getRequiredAssets() {
         return [
             { key: 'farmer-idle', path: 'Cute_Fantasy/NPCs/Bartender_Bruno.png', type: 'spritesheet', frameWidth: 384 / 6, frameHeight: 448 / 7 },
@@ -17,10 +32,15 @@ export class Farmer extends NPC {
         }
     }
 
-    constructor(scene: Phaser.Scene, x: number, y: number, scale = 0.3) {
+    constructor(scene: Phaser.Scene, x: number, y: number, scale = 0.3, config: FarmerConfig) {
         super(scene, x, y, { key: 'farmer-idle', scale });
         Farmer.registerAnimations(scene);
         this.getSprite().play('farmer-idle', true);
+        if (config) {
+            this.greetingDialogue = config.greetingDialogue
+            this.foods = config.foods
+            this.foodSingulars = config.foodSingulars
+        }
     }
 
     checkPlayerInteraction(playerX: number, playerY: number): void {
@@ -32,9 +52,7 @@ export class Farmer extends NPC {
         if (isNear && !this.wasNearPlayer) {
             const s = this.getSprite();
             const scene = s.scene as GameScene;
-            const msg = 'Good day on the farm today.'
-            scene.events.emit("dialogue:show", msg)
-            console.log(msg);
+            scene.events.emit("dialogue:show", this.greetingDialogue)
         }
         this.wasNearPlayer = isNear;
     }
@@ -42,14 +60,9 @@ export class Farmer extends NPC {
     triggerPickUp(): void {
         const s = this.getSprite();
         const scene = s.scene as GameScene;
-        const foods = ["Turkey Sandwiches 🥪", "Kingly Burgers 🍔"];
-        const foodSingulars = {
-            "Turkey Sandwiches 🥪": "Turkey Sandwich 🥪",
-            "Kingly Burgers 🍔": "Kingly Burger 🍔"
-        };
-        const randomFood = foods[Math.floor(Math.random() * foods.length)];
+        const randomFood = this.foods[Math.floor(Math.random() * this.foods.length)];
         scene.uiGameState.addFoodStuff(randomFood);
-        scene.events.emit("dialogue:show", "Here is your food: 1x " + foodSingulars[randomFood]);
+        scene.events.emit("dialogue:show", "Here is your food: 1x " + this.foodSingulars[randomFood]);
         //scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
         s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
     }

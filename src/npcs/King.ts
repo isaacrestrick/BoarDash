@@ -52,23 +52,29 @@ export class King extends NPC {
 
     triggerDelivery(): void {
         const s = this.getSprite();
-        const scene = s.scene as GameScene;        
+        const scene = s.scene as any;        
         const burgerFood = "Kingly Burgers 🍔";
         
         const foodCountsList = scene.uiGameState.getFoodCountsList();
         const hasBurger = foodCountsList.some((item: string) => item.includes(burgerFood) && !item.includes("x0"));
         
-        if (hasBurger) {
+        if (hasBurger && scene.uiGameState.allowedToDeliverBurger()) {
             scene.uiGameState.decrementFoodStuff(burgerFood);
             scene.uiGameState.incrementTitleCount("Favors owed by the king 👑");
             scene.uiGameState.setScoreBasedOnTitles();
             scene.events.emit("dialogue:show", "Thanks. I owe you one!")
+            scene.time.delayedCall(2000, () => {
+                scene.scene.stop('ui');
+                scene.scene.start('GameOverScene', { score: scene.uiGameState.getScore(), win: true });
+            });
             //scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
             s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
             //scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()]);
             s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
-        } else {
+        } else if (!hasBurger && scene.uiGameState.allowedToDeliverBurger()) {
             scene.events.emit("dialogue:show", "I believe I ordered a burger?")
+        } else {
+            scene.events.emit("dialogue:show", "I will not eat before my subjects are fed and those skeletons are dead.")
         }
     }
 }
