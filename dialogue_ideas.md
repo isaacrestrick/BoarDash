@@ -1,3 +1,40 @@
+Fun
+Sound
+Tutorial / Emojis on houses (position , z axis) / moving around NPCs and mobs
+a liiiil mo UI flavor
+
+
+
+Spawn, attack, 
+
+dsadsadsa
+
+
+
+
+
+Sound
+Tutorial Screen
+UI flavoring
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - Sprite variety on villagers
 - Probably Hiding 0 titles and food in UI already dones...
 - git it on github

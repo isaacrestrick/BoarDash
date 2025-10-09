@@ -32,12 +32,13 @@ export class Player {
         this.scene = scene;
         this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
         this.sprite.setScale(0.18);
-        this.health = 3;//000;
+        this.health = 300;//000;
         this.lastDirection = 'front';
 
         // Enable physics collisions
         this.sprite.setCollideWorldBounds(true);
-        this.sprite.body!.setSize(this.sprite.width * 0.02, this.sprite.height * 0.02);
+        this.sprite.body!.setOffset(240, 132)
+        this.sprite.body!.setSize(this.sprite.width * 0.07, this.sprite.height * 0.07);
 
         Player.registerAnimations(scene);
 

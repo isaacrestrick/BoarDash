@@ -4,6 +4,7 @@ import { Player } from '../Player';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
 import { King } from '../npcs/King';
+import { SecondKing } from '../npcs/SecondKing';
 import { Villager, type VillagerConfig } from '../npcs/Villager'
 import { House } from '../static/House'
 import { Stone } from '../static/Stone'
@@ -19,6 +20,7 @@ export default class GameScene extends Phaser.Scene {
   public uiGameState!: UIGameState;
   public skeletons!: Skeleton[];
   private king!: King;
+  private secondKing!: SecondKing
   private villagers!: Villager[];
   private houses!: House[];
   private stones!: Stone[];
@@ -82,6 +84,10 @@ export default class GameScene extends Phaser.Scene {
     });
 
     King.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
+
+    SecondKing.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
 
@@ -218,27 +224,27 @@ export default class GameScene extends Phaser.Scene {
     if (tree3Layer) this.physics.add.collider(this.player.getSprite(), tree3Layer);
 
     // Debug: Show collision boxes (remove once working)
-    const graphics = this.add.graphics();
-    graphics.lineStyle(2, 0x00ff00, 1);
-    buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
+    // const graphics = this.add.graphics();
+    // graphics.lineStyle(2, 0x00ff00, 1);
+    // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
 
-    this.physics.world.drawDebug = true;
+    // this.physics.world.drawDebug = true;
 
-    graphics.lineStyle(2, 0x00ff00, 1);
-    buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
-    // Add debug render for other collision layers
-    if (tree1Layer) {
-      graphics.lineStyle(2, 0xff0000, 1);
-      tree1Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 0, 0, 100), faceColor: null });
-    }
-    if (tree2Layer) {
-      graphics.lineStyle(2, 0x0000ff, 1);
-      tree2Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 0, 255, 100), faceColor: null });
-    }
-    if (tree3Layer) {
-      graphics.lineStyle(2, 0xffff00, 1);
-      tree3Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 255, 0, 100), faceColor: null });
-    }
+    // graphics.lineStyle(2, 0x00ff00, 1);
+    // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
+    // // Add debug render for other collision layers
+    // if (tree1Layer) {
+    //   graphics.lineStyle(2, 0xff0000, 1);
+    //   tree1Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 0, 0, 100), faceColor: null });
+    // }
+    // if (tree2Layer) {
+    //   graphics.lineStyle(2, 0x0000ff, 1);
+    //   tree2Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 0, 255, 100), faceColor: null });
+    // }
+    // if (tree3Layer) {
+    //   graphics.lineStyle(2, 0xffff00, 1);
+    //   tree3Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 255, 0, 100), faceColor: null });
+    // }
     
     // Camera follows player
     this.cameras.main.startFollow(this.player.getSprite(), true, 1, 1);
@@ -356,6 +362,7 @@ export default class GameScene extends Phaser.Scene {
     ]  
 
     this.king = new King(this, 5 * 16, 29 * 16, 2.5 / 3.333);
+    this.secondKing = new SecondKing(this, 79 * 16, 24 * 16,  2.5 / 3.3333)
 
     //    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
@@ -431,6 +438,7 @@ export default class GameScene extends Phaser.Scene {
     })
     this.farmer.checkPlayerInteraction(playerX, playerY);
     this.king.checkPlayerInteraction(playerX, playerY);
+    this.secondKing.checkPlayerInteraction(playerX, playerY);
     this.villagers.forEach(villager => {
       villager.checkPlayerInteraction(playerX, playerY);
     });
