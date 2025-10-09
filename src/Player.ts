@@ -37,7 +37,7 @@ export class Player {
 
         // Enable physics collisions
         this.sprite.setCollideWorldBounds(true);
-        this.sprite.body!.setOffset(240, 132)
+        //this.sprite.body!.setOffset(240, 132)
         this.sprite.body!.setSize(this.sprite.width * 0.07, this.sprite.height * 0.07);
 
         Player.registerAnimations(scene);
