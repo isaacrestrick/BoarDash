@@ -288,7 +288,7 @@ export default class GameScene extends Phaser.Scene {
         greetingDialogue: "Good morning Boar Dasher",
         failureDialogue: "I said extra ice 🧊",
         successDialogue: "This is a lot of ice 🧊 but thanks",
-        key: 'villager-katy-idle'
+        key: 'villager-bob-idle'
       },
       {
         food: "Ol McDonald's Fries 🍟",
@@ -296,7 +296,7 @@ export default class GameScene extends Phaser.Scene {
         greetingDialogue: "Have you seen that clown…",
         failureDialogue: "I didn't order a Kingly Burger 🍔",
         successDialogue: "Happy Frieday 🍟!",
-        key: 'villager-mary-idle'
+        key: 'villager-buba-idle'
       },
       {
         food: "Pizza 🍕 Pizza 🍕",
@@ -304,7 +304,7 @@ export default class GameScene extends Phaser.Scene {
         greetingDialogue: "Rome wasn't built in a day, but this game took 6️⃣",
         failureDialogue: "Et Tu, Boar Dasher?",
         successDialogue: "I love pizza 🍕. Thanks!",
-        key: 'villager-mary-idle'
+        key: 'villager-fin-idle'
       },
     ]
     const foods = [
