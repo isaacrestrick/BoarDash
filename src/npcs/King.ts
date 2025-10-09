@@ -6,7 +6,7 @@ export class King extends NPC {
     static getRequiredAssets() {
         return [
             // TODO: change the sprites to King sprites.
-            { key: 'king-idle', path: 'MedievalKing/Sprites/Idle.png', type: 'spritesheet', frameWidth: 160, frameHeight: 111 },
+            { key: 'king-idle', path: 'Cute_Fantasy/NPCs/king-sprite.png', type: 'spritesheet', frameWidth: 64, frameHeight: 64 },
             // TODO: King joy animation ?? (when you successfully deliver food, maybe they do a little dance, or get a little heart or something)
             // { key: 'vampire-death', path: 'Vampires1/Death/Vampires1_Death_full.png', type: 'spritesheet', frameWidth: 111, frameHeight: 111 },
         ] as const;
@@ -15,7 +15,7 @@ export class King extends NPC {
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
         if (!has('king-idle')) {
-            scene.anims.create({ key: 'king-idle', frames: scene.anims.generateFrameNames('king-idle', { start: 0, end: 7 }), frameRate: 8, repeat: -1 });
+            scene.anims.create({ key: 'king-idle', frames: scene.anims.generateFrameNames('king-idle', { start: 0, end: 6 }), frameRate: 4, repeat: -1 });
         }
         // if (!has('vampire-death')) {
         //     scene.anims.create({ key: 'vampire-death', frames: scene.anims.generateFrameNames('vampire-death', { start: 0, end: 9 }), frameRate: 8, repeat: 0 });
