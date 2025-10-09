@@ -25,7 +25,7 @@ export class Player {
     private readonly TILE_SIZE = 32;
     private readonly GRID_WIDTH = 45;
     private readonly GRID_HEIGHT = 33;
-    private Direction: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
+    private lastDirection: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
     private health = 3
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
