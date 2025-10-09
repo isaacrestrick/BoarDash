@@ -22,7 +22,11 @@ export class Villager extends NPC {
         return [
             // TODO: change the sprites to villager sprites.
             { key: 'villager-mary-idle', path: 'Cute_Fantasy/NPCs/Medieval_Mary.png', type: 'spritesheet', frameWidth: 512/8, frameHeight:896/(8 * 2) },
-            { key: 'villager-katy-idle', path: 'Cute_Fantasy/NPCs/Bartender_Katy.png', type: 'spritesheet', frameWidth: 384/6, frameHeight:448/7 }
+            { key: 'villager-katy-idle', path: 'Cute_Fantasy/NPCs/Bartender_Katy.png', type: 'spritesheet', frameWidth: 384/6, frameHeight:448/7 },
+            { key: 'villager-bob-idle', path: 'Cute_Fantasy/NPCs/Farmer_Bob.png', type: 'spritesheet', frameWidth: 384/6, frameHeight:832/13 },
+            { key: 'villager-buba-idle', path: 'Cute_Fantasy/NPCs/Farmer_Buba.png', type: 'spritesheet', frameWidth: 384/6, frameHeight:832/13 },
+            { key: 'villager-fin-idle', path: 'Cute_Fantasy/NPCs/Fisherman_Fin.png', type: 'spritesheet', frameWidth: 576/9, frameHeight:832/13 },
+            { key: 'villager-jack-idle', path: 'Cute_Fantasy/NPCs/Lumberjack_Jack.png', type: 'spritesheet', frameWidth: 384/6, frameHeight:640/10 }
             // TODO: villager joy animation ?? (when you successfully deliver food, maybe they do a little dance, or get a little heart or something)
             // { key: 'vampire-death', path: 'Vampires1/Death/Vampires1_Death_full.png', type: 'spritesheet', frameWidth: 64, frameHeight: 64 },
         ] as const;
@@ -35,6 +39,18 @@ export class Villager extends NPC {
         }
         if (!has('villager-katy-idle')) {
             scene.anims.create({ key: 'villager-katy-idle', frames: scene.anims.generateFrameNames('villager-katy-idle', { start: 0, end: 5 }), frameRate: 4, repeat: -1 });
+        }
+        if (!has('villager-bob-idle')) {
+            scene.anims.create({ key: 'villager-bob-idle', frames: scene.anims.generateFrameNames('villager-bob-idle', { start: 0, end: 5 }), frameRate: 4, repeat: -1 });
+        }
+        if (!has('villager-buba-idle')) {
+            scene.anims.create({ key: 'villager-buba-idle', frames: scene.anims.generateFrameNames('villager-buba-idle', { start: 0, end: 5 }), frameRate: 4, repeat: -1 });
+        }
+        if (!has('villager-fin-idle')) {
+            scene.anims.create({ key: 'villager-fin-idle', frames: scene.anims.generateFrameNames('villager-fin-idle', { start: 0, end: 5 }), frameRate: 4, repeat: -1 });
+        }
+        if (!has('villager-jack-idle')) {
+            scene.anims.create({ key: 'villager-jack-idle', frames: scene.anims.generateFrameNames('villager-jack-idle', { start: 0, end: 5 }), frameRate: 4, repeat: -1 });
         }
     }
 
