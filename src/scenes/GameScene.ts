@@ -4,6 +4,7 @@ import { Player } from '../Player';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
 import { King } from '../npcs/King';
+import { SecondKing } from '../npcs/SecondKing';
 import { Villager, type VillagerConfig } from '../npcs/Villager'
 import { House } from '../static/House'
 import { Stone } from '../static/Stone'
@@ -19,6 +20,7 @@ export default class GameScene extends Phaser.Scene {
   public uiGameState!: UIGameState;
   public skeletons!: Skeleton[];
   private king!: King;
+  private secondKing!: SecondKing
   private villagers!: Villager[];
   private houses!: House[];
   private stones!: Stone[];
@@ -82,6 +84,10 @@ export default class GameScene extends Phaser.Scene {
     });
 
     King.getRequiredAssets().forEach(asset => {
+      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    });
+
+    SecondKing.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
 
@@ -222,9 +228,8 @@ export default class GameScene extends Phaser.Scene {
     // graphics.lineStyle(2, 0x00ff00, 1);
     // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
 
-    // this.physics.world.drawDebug = false;
     // this.physics.world.drawDebug = true;
-    // const graphics = this.add.graphics();
+
     // graphics.lineStyle(2, 0x00ff00, 1);
     // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
     // // Add debug render for other collision layers
@@ -355,6 +360,7 @@ export default class GameScene extends Phaser.Scene {
     ]  
 
     this.king = new King(this, 5 * 16, 29 * 16, 2.5 / 3.333);
+    this.secondKing = new SecondKing(this, 79 * 16, 24 * 16,  2.5 / 3.3333)
 
     //    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
@@ -381,6 +387,21 @@ export default class GameScene extends Phaser.Scene {
     // console.log(Math.floor(playerX), Math.floor(playerY))
 
     const now = this.time.now
+    
+    
+    if (playerX > 80 * 16) {
+      const playerSprite = this.player.getSprite();
+      (playerSprite.body as Phaser.Physics.Arcade.Body).setGravityY(50000);
+      this.time.delayedCall(500, () => {
+        this.scene.stop('ui');
+        this.scene.start('GameOverScene', { 
+          score: this.uiGameState.getScore(), 
+          win: false 
+        });
+      });
+    }
+    
+    
     // console.log(now)
     if (this.skeletons.length < 12) {
       
@@ -438,6 +459,7 @@ export default class GameScene extends Phaser.Scene {
     })
     this.farmer.checkPlayerInteraction(playerX, playerY);
     this.king.checkPlayerInteraction(playerX, playerY);
+    this.secondKing.checkPlayerInteraction(playerX, playerY);
     this.villagers.forEach(villager => {
       villager.checkPlayerInteraction(playerX, playerY);
     });
