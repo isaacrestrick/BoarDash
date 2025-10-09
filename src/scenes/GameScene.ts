@@ -19,7 +19,7 @@ export default class GameScene extends Phaser.Scene {
   public uiGameState!: UIGameState;
   public skeletons!: Skeleton[];
   private king!: King;
-  private villager!: Villager;
+  private villagers!: Villager[];
   private houses!: House[];
   private stones!: Stone[];
   private bushes!: Bush[];
@@ -263,11 +263,13 @@ export default class GameScene extends Phaser.Scene {
     const centerX = this.GRID_WIDTH * this.TILE_SIZE / 2 - 200;
     const centerY = this.GRID_HEIGHT * this.TILE_SIZE / 2 - 200;
     this.farmer = new Farmer(this, 34 * 16 + 6, 17 * 16 + 10 , 2.5 / 3.333);
-    this.king = new King(this, centerX, centerY - 30, 2.5 / 3.333);
+    this.king = new King(this, centerX + 300, centerY - 30, 2.5 / 3.333);
 
-    this.villager = new Villager(this, 20 * 16, 19 * 16, 2.5 / 3.333);
-    this.villager = new Villager(this, 38 * 16, 29 * 16, 2.5 / 3.333);
-    this.villager = new Villager(this, 16 * 16, 29 * 16, 2.5 / 3.333);
+    this.villagers = [
+      new Villager(this, 20 * 16, 19 * 16, 2.5 / 3.333),
+      new Villager(this, 38 * 16, 29 * 16, 2.5 / 3.333),
+      new Villager(this, 16 * 16, 29 * 16, 2.5 / 3.333)
+    ]  
 
     
     this.uiGameState = new UIGameState()
@@ -318,7 +320,9 @@ export default class GameScene extends Phaser.Scene {
     })
     this.farmer.checkPlayerInteraction(playerX, playerY);
     this.king.checkPlayerInteraction(playerX, playerY);
-    this.villager.checkPlayerInteraction(playerX, playerY);
+    this.villagers.forEach(villager => {
+      villager.checkPlayerInteraction(playerX, playerY);
+    });
 
     if (this.player.isAttacking()) {
       this.skeletons.forEach(skeleton => {
@@ -334,7 +338,9 @@ export default class GameScene extends Phaser.Scene {
       // console.log("villager near: ", this.villager.isPlayerNear());
       if (this.farmer.isPlayerNear()) this.farmer.triggerPickUp()
       if (this.king.isPlayerNear()) this.king.triggerDelivery()
-      if (this.villager.isPlayerNear()) this.villager.triggerDelivery()
+        this.villagers.forEach(villager => {
+          if (villager.isPlayerNear()) villager.triggerDelivery();
+        });
     }
   }
 }
