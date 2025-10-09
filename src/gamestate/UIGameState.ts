@@ -1,21 +1,21 @@
 export class UIGameState {
-  private foodCounts: Map<string, number>;
+  private foodCounts: Map<string, number> = new Map<string, number>([
+    ["Turkey Sandwiches 🥪", 0],
+    ["Kingly Burgers 🍔", 0]
+  ]);
   private currentScore: number;
-  private titleScoreAndCountMap: Map<string, [number, number]>;
+  private titleScoreAndCountMap: Map<string, [number, number]> = new Map<string, [number, number]>([
+    ["Lord of Boars 🐗", [0, 1]],
+    ["Slayer of Skeletons ☠️", [1, 0]],
+    ["Deliverer of Turkey Sandwiches 🥪", [2, 0]],
+    ["Favors owed by the king 👑", [3, 0]],
+  ]);
 
-  constructor() {
-    this.foodCounts = new Map<string, number>([
-      ["Turkey Sandwiches 🥪", 0],
-      ["Kingly Burgers 🍔", 0]
-    ]);
+  constructor(foods: Array<string>, titles: Array<string>) {
+    this.foodCounts = new Map<string, number>(foods.map(food => [food, 0]))
     this.currentScore = 0;
-
-    this.titleScoreAndCountMap = new Map<string, [number, number]>([
-      ["Lord of Boars 🐗", [0, 1]],
-      ["Slayer of Skeletons ☠️", [1, 0]],
-      ["Deliverer of Turkey Sandwiches 🥪", [2, 0]],
-      ["Favors owed by the king 👑", [3, 0]],
-    ]);
+    this.titleScoreAndCountMap = new Map<string, [number, number]>(titles.map((title, idx) => [title, [idx, 0]]));
+    this.titleScoreAndCountMap.set("Lord of Boars 🐗", [0, 1])
   }
 
   getTitleCount(): number {
@@ -71,6 +71,16 @@ export class UIGameState {
     }
   }
 
+  allowedToDeliverBurger(): boolean {
+    for (const [title, [score, count]] of this.titleScoreAndCountMap.entries()) {
+      if (count === 0 && title != "Favors owed by the king 👑") {
+        console.log(title, count)
+        return false
+      }
+    }
+    return this.titleScoreAndCountMap.get("Slayer of Skeletons ☠️")![1] >= 2;
+  }
+
   incrementTitleCount(title: string): void {
     if (this.titleScoreAndCountMap.has(title)) {
       const [score, count] = this.titleScoreAndCountMap.get(title)!;
@@ -80,26 +90,3 @@ export class UIGameState {
   }
 
 }
-/*
-const uiState = new UIGameState();
-
-
-uiState.addFoodStuff('Turkey Sandwiches 🥪');
-uiState.addFoodStuff('Turkey Sandwiches 🥪');
-uiState.addFoodStuff('Apples 🍎');
-
-console.log('Food Counts List:', uiState.getFoodCountsList());
-
-
-uiState.removeFoodStuff('Turkey Sandwiches 🥪');
-console.log('Food Counts List after removing one Turkey Sandwich:', uiState.getFoodCountsList());
-
-uiState.removeFoodStuff('Turkey Sandwiches 🥪');
-console.log('Food Counts List after removing another Turkey Sandwich:', uiState.getFoodCountsList());
-
-if (uiState['titleScoreAndCountMap']) {
-  uiState['titleScoreAndCountMap'].set('Slayer of Bandits 💀', [100, 2]);
-  uiState['titleScoreAndCountMap'].set('Lord of Boars 🐗', [50, 1]);
-  console.log('Titles List:', uiState.getTitlesList());
-}
-*/

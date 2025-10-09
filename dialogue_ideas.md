@@ -1,3 +1,29 @@
+- Sprite variety on villagers
+- Probably Hiding 0 titles and food in UI already dones...
+- git it on github
+
+Sprite variety on villagers
+Titles - 1x maybe
+
+
+
+Key is repeated in Villager. Idle path
+Plurals
+
+Tutorial Screen
+
+Win Condition:
+- Perhaps game ends once deliver a kingly burger, which YUP
+- can only be delivered once all his subjects have been fedYUP 
+
+
+maybe a better victory message
+
+Maybe hide empty foods and titles, some 
+
+
+
+
 Dialogue: 
 
 Attacking a friendly:

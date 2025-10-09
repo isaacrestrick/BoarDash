@@ -4,7 +4,7 @@ import { Player } from '../Player';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
 import { King } from '../npcs/King';
-import { Villager } from '../npcs/Villager'
+import { Villager, type VillagerConfig } from '../npcs/Villager'
 import { House } from '../static/House'
 import { Stone } from '../static/Stone'
 import { Bush } from '../static/Bush'
@@ -221,23 +221,24 @@ export default class GameScene extends Phaser.Scene {
     // graphics.lineStyle(2, 0x00ff00, 1);
     // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
 
-    this.physics.world.drawDebug = true;
-    const graphics = this.add.graphics();
-    graphics.lineStyle(2, 0x00ff00, 1);
-    buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
-    // Add debug render for other collision layers
-    if (tree1Layer) {
-      graphics.lineStyle(2, 0xff0000, 1);
-      tree1Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 0, 0, 100), faceColor: null });
-    }
-    if (tree2Layer) {
-      graphics.lineStyle(2, 0x0000ff, 1);
-      tree2Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 0, 255, 100), faceColor: null });
-    }
-    if (tree3Layer) {
-      graphics.lineStyle(2, 0xffff00, 1);
-      tree3Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 255, 0, 100), faceColor: null });
-    }
+    // this.physics.world.drawDebug = false;
+    // this.physics.world.drawDebug = true;
+    // const graphics = this.add.graphics();
+    // graphics.lineStyle(2, 0x00ff00, 1);
+    // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
+    // // Add debug render for other collision layers
+    // if (tree1Layer) {
+    //   graphics.lineStyle(2, 0xff0000, 1);
+    //   tree1Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 0, 0, 100), faceColor: null });
+    // }
+    // if (tree2Layer) {
+    //   graphics.lineStyle(2, 0x0000ff, 1);
+    //   tree2Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 0, 255, 100), faceColor: null });
+    // }
+    // if (tree3Layer) {
+    //   graphics.lineStyle(2, 0xffff00, 1);
+    //   tree3Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 255, 0, 100), faceColor: null });
+    // }
     
     // Camera follows player
     this.cameras.main.startFollow(this.player.getSprite(), true, 1, 1);
@@ -262,17 +263,105 @@ export default class GameScene extends Phaser.Scene {
     // Place Farmer, King, and Villager near each other in the middle of the map
     const centerX = this.GRID_WIDTH * this.TILE_SIZE / 2 - 200;
     const centerY = this.GRID_HEIGHT * this.TILE_SIZE / 2 - 200;
-    this.farmer = new Farmer(this, 34 * 16 + 6, 17 * 16 + 10 , 2.5 / 3.333);
-    this.king = new King(this, centerX + 300, centerY - 30, 2.5 / 3.333);
+
+    const villagerConfigs: Array<VillagerConfig> = [
+      {
+        food: "Boris's Borscht 🍲",
+        title: "Borscht Dasher 🍲",
+        greetingDialogue: "Howdy",
+        failureDialogue: "I ordered borscht not boar!",
+        successDialogue: "I guess that makes you a Borscht Dasher 🍲!",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+      {
+        food: "Hubert's Jakartan fusion tacos 🌮🇮🇩",
+        title: "Jakartan Spartan 🌮🇮🇩",
+        greetingDialogue: "You seem a little less pixelated than the rest of us",
+        failureDialogue: "I need to bulk where are my tacos bro",
+        successDialogue: "Thanks for the tacos. Needed these",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+      {
+        food: "Isaac's Icy Cold Brew 🧊☕",
+        title: "Ice Ice Maybe 🧊☕",
+        greetingDialogue: "Good morning Boar Dasher",
+        failureDialogue: "I said extra ice 🧊",
+        successDialogue: "This is a lot of ice 🧊 but thanks",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+      {
+        food: "Ol McDonald's Fries 🍟",
+        title: "Good Frieday 🍟",
+        greetingDialogue: "Have you seen that clown…",
+        failureDialogue: "I didn't order a Kingly Burger 🍔",
+        successDialogue: "Happy Frieday 🍟!",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+      {
+        food: "Pizza 🍕 Pizza 🍕",
+        title: "Caesar 🍕",
+        greetingDialogue: "Rome wasn't built in a day, but this game took 6️⃣",
+        failureDialogue: "Et Tu, Boar Dasher?",
+        successDialogue: "I love pizza 🍕. Thanks!",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+    ]
+    const foods = [
+      "Turkey Sandwiches 🥪",
+      ...villagerConfigs.map(config => config.food),
+      "Kingly Burgers 🍔", 
+    ];
+    const titles = [
+      "Lord of Boars 🐗",
+      "Slayer of Skeletons ☠️",
+      "Deliverer of Turkey Sandwiches 🥪",
+      ...villagerConfigs.map(config => config.title),
+      "Favors owed by the king 👑",
+    ];
+
+    this.uiGameState = new UIGameState(foods, titles)
+
+    const farmerConfig = {
+      key: 'farmer-idle',
+      greetingDialogue: "Good day on the farm today.",
+      idlePath: "ignored for now",
+      foods: foods,
+      foodSingulars: {
+        "Turkey Sandwiches 🥪": "Turkey Sandwich 🥪",
+        ...Object.fromEntries(villagerConfigs.map(config => [config.food, config.food])),
+        "Kingly Burgers 🍔": "Kingly Burger 🍔"
+      }
+    }
+
+    this.farmer = new Farmer(this, 34 * 16 + 6, 17 * 16 + 10 , 2.5 / 3.333, farmerConfig);
+    //this.king = new King(this, centerX + 300, centerY - 30, 2.5 / 3.333);
 
     this.villagers = [
-      new Villager(this, 20 * 16, 19 * 16, 2.5 / 3.333),
-      new Villager(this, 38 * 16, 29 * 16, 2.5 / 3.333),
-      new Villager(this, 16 * 16, 29 * 16, 2.5 / 3.333)
+      //new Villager(this, 20 * 16, 19 * 16, 2.5 / 3.333),
+      new Villager(this, 38 * 16, 29 * 16, 2.5 / 3.333, villagerConfigs[0]),
+
+      new Villager(this, 6 * 16, 6 * 16, 2.5 / 3.333, villagerConfigs[1]),
+      new Villager(this, 15 * 16, 6 * 16, 2.5 / 3.333, villagerConfigs[2]),
+      new Villager(this, 5 * 16, 16 * 16, 2.5 / 3.333, villagerConfigs[3]),
+      new Villager(this, 6 * 16, 13 * 16, 2.5 / 3.333, villagerConfigs[4]),
+      
+      new Villager(this, 16 * 16, 13 * 16, 2.5 / 3.333),
+      new Villager(this, 21 * 16, 19 * 16, 2.5 / 3.333),
+      // [6,6], [15, 6], [5, 16], [6, 13], [16, 13], [21, 19], [52, 30], [55, 19]
+      // [71, 20], [74, 6], [63, 4], [58, 6], [53, 6], [48, 6]
+      // 
+      // KING: [5, 29], 
+      //new Villager(this, 16 * 16, 29 * 16, 2.5 / 3.333, villagerConfigs[2]),
+      //new Villager(this, 25 * 16, 15 * 16, 2.5 / 3.333, villagerConfigs[3]),
+      //new Villager(this, 35 * 16, 20 * 16, 2.5 / 3.333, villagerConfigs[4])
     ]  
 
-    
-    this.uiGameState = new UIGameState()
+    this.king = new King(this, 5 * 16, 29 * 16, 2.5 / 3.333);
 
     //    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
@@ -311,7 +400,7 @@ export default class GameScene extends Phaser.Scene {
       console.log('dead')
       //this.scene.restart() // REPLACE WITH GAME OVER
       this.scene.stop('ui');
-      this.scene.start('GameOverScene', { score: this.uiGameState.getScore() });
+      this.scene.start('GameOverScene', { score: this.uiGameState.getScore(), win: false });
     }
 
     // Proximity checks handled by base NPC class; death trigger is skeleton-specific
