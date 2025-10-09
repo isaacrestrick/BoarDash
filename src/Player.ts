@@ -236,7 +236,7 @@ export class Player {
         console.log(this.health)
         s.setTintFill(0xffaaaa)
         s.scene.time.delayedCall(120, () => s.clearTint())
-        s.scene.events.emit("health:update", this.health)
+        s.scene.events.emit("health:update", this.health < 0 ? 0 : this.health)
         return true
     }
 
