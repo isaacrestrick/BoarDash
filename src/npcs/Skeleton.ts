@@ -89,20 +89,25 @@ export class Skeleton extends NPC {
         this.killed = true
         const s = this.sprite
         const scene = s.scene as GameScene
+
         s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
+        // scene.uiGameState.setScoreBasedOnTitles()
+
         s.play('skeleton-death', true)
+        scene.events.emit("dialogue:show", "I died? Not again!")
+        //scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()])
+        const index = scene.skeletons.indexOf(this);
+        if (index > -1) {
+            scene.skeletons.splice(index, 1);
+        }
+        console.log(scene.skeletons)
         s.once('animationcomplete', () => {
+            console.log('death anim complete')
             scene.uiGameState.incrementTitleCount("Slayer of Skeletons ☠️")
-            scene.uiGameState.setScoreBasedOnTitles()
-            scene.events.emit("dialogue:show", "I died? Not again!")
-            //scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()])
-            const index = scene.skeletons.indexOf(this);
-            if (index > -1) {
-                scene.skeletons.splice(index, 1);
-            }
+            s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
             s.destroy()
-            console.log(scene.skeletons)
         });
+        // scene.uiGameState.setScoreBasedOnTitles()
     }
 
     private lastAttackTime = 0

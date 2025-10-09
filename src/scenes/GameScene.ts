@@ -309,7 +309,6 @@ export default class GameScene extends Phaser.Scene {
     // handle player's death
     if (this.player.isDead()) {
       console.log('dead')
-      //this.scene.restart() // REPLACE WITH GAME OVER
       this.scene.stop('ui');
       this.scene.start('GameOverScene', { score: this.uiGameState.getScore() });
     }
