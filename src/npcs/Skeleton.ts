@@ -178,7 +178,7 @@ export class Skeleton extends NPC {
             s.setFlipX(false)
         }
 
-        if (eliptDist < 6) {
+        if (eliptDist < 10) {
             s.setVelocity(nx * speed, ny * speed);
         } else {
             this.sprite.play('skeleton-idle-down', true)

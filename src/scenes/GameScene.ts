@@ -251,11 +251,9 @@ export default class GameScene extends Phaser.Scene {
 
 
 
-    // skeleton spawner
-    this.skeletons = [
-      // new Skeleton(this, 700, 300, 3.5 / 3.333),
-      // new Skeleton(this, 300, 300, 3.5 / 3.333)
-    ]
+    // 0 skeletons initially
+    this.skeletons = []
+    this.lastSpawnTime = 0
 
     // Add collisions between skeletons and layers
     this.skeletons.forEach(skeleton => {
@@ -380,13 +378,13 @@ export default class GameScene extends Phaser.Scene {
 
   update() {
 
-
     this.player.update();
 
     const playerX = this.player.getX()
     const playerY = this.player.getY()
 
-
+    // logs current coordinates; don't remove, comment out if not needed
+    // console.log(Math.floor(playerX), Math.floor(playerY))
 
     const now = this.time.now
     
@@ -405,14 +403,37 @@ export default class GameScene extends Phaser.Scene {
     
     
     // console.log(now)
-    if (this.skeletons.length < 30) {
-      const minX = 0
-      const maxX = 79 * 16
-      const minY = 0
-      const maxY = 32 * 16
+    if (this.skeletons.length < 12) {
+      
+      // spawn everywhere
+      // const minX = 0
+      // const maxX = 79 * 16
+      // const minY = 0
+      // const maxY = 32 * 16
+      // const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
+      // const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
+
+      // spawn areas
+      const spawnAreas = [
+        [425, 430, 75, 35], // position of the center on x, on y, half-width on x, on y 
+        [520, 130, 170, 130],
+        [1060, 455, 140, 30],
+      ]
+      const randomArea = spawnAreas[
+        Math.floor(Math.random() * spawnAreas.length)
+      ]
+      const minX = randomArea[0] - randomArea[2]
+      const maxX = randomArea[0] + randomArea[2]
+      const minY = randomArea[1] - randomArea[3]
+      const maxY = randomArea[1] + randomArea[3]
       const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
       const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
-      this.skeletons.push(new Skeleton(this, x, y, 3.5 / 3.333))
+      if (now - this.lastSpawnTime > 4000) {
+        this.skeletons.push(new Skeleton(this, x, y, 3.5 / 3.333))
+        this.lastSpawnTime = now
+      }
+      // console.log(minX, minY, maxX, maxY, x, y)
+      console.log(this.lastSpawnTime, this.skeletons.length)
     }
 
     // follow player
