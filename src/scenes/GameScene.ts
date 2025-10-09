@@ -251,12 +251,11 @@ export default class GameScene extends Phaser.Scene {
     // Place Farmer, King, and Villager near each other in the middle of the map
     const centerX = this.GRID_WIDTH * this.TILE_SIZE / 2 - 200;
     const centerY = this.GRID_HEIGHT * this.TILE_SIZE / 2 - 200;
-    this.farmer = new Farmer(this, centerX - 80, centerY, 0.7 / 3.333);
+    this.farmer = new Farmer(this, 34 * 16 + 6, 17 * 16 + 10 , 2.5 / 3.333);
     this.king = new King(this, centerX, centerY - 30, 2.5 / 3.333);
+
     this.villager = new Villager(this, 20 * 16, 19 * 16, 2.5 / 3.333);
-
     this.villager = new Villager(this, 38 * 16, 29 * 16, 2.5 / 3.333);
-
     this.villager = new Villager(this, 16 * 16, 29 * 16, 2.5 / 3.333);
 
     

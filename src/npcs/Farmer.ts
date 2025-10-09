@@ -5,14 +5,15 @@ import type GameScene from '../scenes/GameScene'
 export class Farmer extends NPC {
     static getRequiredAssets() {
         return [
-            { key: 'farmer-idle', path: 'farmer-sprite.png', type: 'spritesheet', frameWidth: 250, frameHeight: 250 },
+            { key: 'farmer-idle', path: 'Cute_Fantasy/NPCs/Bartender_Bruno.png', type: 'spritesheet', frameWidth: 384 / 6, frameHeight: 448 / 7 },
         ] as const;
     }
+
 
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
         if (!has('farmer-idle')) {
-            scene.anims.create({ key: 'farmer-idle', frames: scene.anims.generateFrameNames('farmer-idle', { start: 0, end: 3 }), frameRate: 1, repeat: -1 });
+            scene.anims.create({ key: 'farmer-idle', frames: scene.anims.generateFrameNames('farmer-idle', { start: 0, end: 5 }), frameRate: 4, repeat: -1 });
         }
     }
 

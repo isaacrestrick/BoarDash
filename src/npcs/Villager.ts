@@ -15,7 +15,7 @@ export class Villager extends NPC {
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
         if (!has('villager-idle')) {
-            scene.anims.create({ key: 'villager-idle', frames: scene.anims.generateFrameNames('villager-idle', { start: 0, end: 1 }), frameRate: 8, repeat: -1 });
+            scene.anims.create({ key: 'villager-idle', frames: scene.anims.generateFrameNames('villager-idle', { start: 0, end: 1 }), frameRate: 4, repeat: -1 });
         }
     }
 
