@@ -62,6 +62,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("tent-big", "map/tiles/Tent_Big.png");
     this.load.image("blacksmith-house", "map/tiles/Blacksmith_House.png");
     this.load.image("farm-land-tile", "map/tiles/FarmLand_Tile.png");
+    this.load.image("castle-tile", "map/tiles/Castle.png");
 
 
     this.load.tilemapTiledJSON('map', 'map/Boar-Knight-Map.json');
@@ -141,6 +142,7 @@ export default class GameScene extends Phaser.Scene {
     const tentBigTileset = map.addTilesetImage("Tent_Big", "tent-big");
     const blacksmithHouseTileset = map.addTilesetImage("Blacksmith_House", "blacksmith-house");
     const farmLandTileTileset = map.addTilesetImage("FarmLand_Tile", "farm-land-tile");
+    const castleTileset = map.addTilesetImage("Castle", "castle-tile")
 
 
 
@@ -150,10 +152,8 @@ export default class GameScene extends Phaser.Scene {
     map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
 
 
-    const buildingsLayer = map.createLayer("Buildings", [house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
+    const buildingsLayer = map.createLayer("Buildings", [castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
 
-
-    // map.createLayer("SmallTrees", [fruitTreeStagesTileset], 256, 0);
 
     const tree1Layer = map.createLayer("Tree 1", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
 
