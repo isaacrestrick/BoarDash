@@ -32,7 +32,6 @@ export default class GameScene extends Phaser.Scene {
 
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
   private map!: Phaser.Tilemaps.Tilemap;
-  private input!: Phaser.Input.InputPlugin;
 
   constructor() {
     super('GameScene');
@@ -107,7 +106,7 @@ export default class GameScene extends Phaser.Scene {
     Castle.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
-    
+
     Farmer.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
@@ -146,7 +145,7 @@ export default class GameScene extends Phaser.Scene {
 
     map.createLayer("GrassPath", [grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
 
-    
+
     map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
 
 
@@ -166,17 +165,17 @@ export default class GameScene extends Phaser.Scene {
     console.log('Setting up collisions...');
     console.log('buildingsLayer:', buildingsLayer);
     console.log('tree1Layer:', tree1Layer);
-    
+
     buildingsLayer?.setCollisionByExclusion([-1]);
     tree1Layer?.setCollisionByExclusion([-1]);
     tree2Layer?.setCollisionByExclusion([-1]);
     tree3Layer?.setCollisionByExclusion([-1]);
-    
+
     console.log('buildingsLayer collision enabled:', buildingsLayer?.layer.collideIndexes);
 
     //tree and buildings are collision layers
 
-    
+
     const mapWidth = map.widthInPixels;
     const mapHeight = map.heightInPixels;
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
@@ -184,12 +183,12 @@ export default class GameScene extends Phaser.Scene {
     const cursors = this.input.keyboard.createCursorKeys();
 
     const controlConfig = {
-        camera: this.cameras.main,
-        left: cursors.left,
-        right: cursors.right,
-        up: cursors.up,
-        down: cursors.down,
-        speed: 0.5
+      camera: this.cameras.main,
+      left: cursors.left,
+      right: cursors.right,
+      up: cursors.up,
+      down: cursors.down,
+      speed: 0.5
     };
 
     this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
@@ -206,11 +205,11 @@ export default class GameScene extends Phaser.Scene {
     // const viewportHeight = this.cameras.main.height / this.cameras.main.zoom;
     // this.cameras.main.scrollX = mapWidth - viewportWidth;
     // this.cameras.main.scrollY = 0;
-    
-    
+
+
 
     this.player = new Player(this, 720, 528);
-    
+
     // Add collisions between player and layers
     if (buildingsLayer) this.physics.add.collider(this.player.getSprite(), buildingsLayer);
     if (tree1Layer) this.physics.add.collider(this.player.getSprite(), tree1Layer);
@@ -218,6 +217,10 @@ export default class GameScene extends Phaser.Scene {
     if (tree3Layer) this.physics.add.collider(this.player.getSprite(), tree3Layer);
 
     // Debug: Show collision boxes (remove once working)
+    // const graphics = this.add.graphics();
+    // graphics.lineStyle(2, 0x00ff00, 1);
+    // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
+
     this.physics.world.drawDebug = true;
     const graphics = this.add.graphics();
     graphics.lineStyle(2, 0x00ff00, 1);
@@ -239,14 +242,22 @@ export default class GameScene extends Phaser.Scene {
     // Camera follows player
     this.cameras.main.startFollow(this.player.getSprite(), true, 1, 1);
 
-    
-    
+
+
     // where all the shit is
     this.skeletons = [
       new Skeleton(this, 700, 300, 3.5 / 3.333),
-      new Skeleton(this, 300, 300, 3.5  / 3.333)
+      new Skeleton(this, 300, 300, 3.5 / 3.333)
     ]
-    
+
+    // Add collisions between skeletons and layers
+    this.skeletons.forEach(skeleton => {
+      if (buildingsLayer) this.physics.add.collider(skeleton.getSprite(), buildingsLayer);
+      if (tree1Layer) this.physics.add.collider(skeleton.getSprite(), tree1Layer);
+      if (tree2Layer) this.physics.add.collider(skeleton.getSprite(), tree2Layer);
+      if (tree3Layer) this.physics.add.collider(skeleton.getSprite(), tree3Layer);
+    });
+
     //WHERE??
     // Place Farmer, King, and Villager near each other in the middle of the map
     const centerX = this.GRID_WIDTH * this.TILE_SIZE / 2 - 200;
@@ -256,9 +267,9 @@ export default class GameScene extends Phaser.Scene {
     this.villager = new Villager(this, centerX + 80, centerY, 2.5 / 3.333);
     this.uiGameState = new UIGameState()
 
-//    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
+    //    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
-    this.scene.launch('ui', { 
+    this.scene.launch('ui', {
       playerHealth: this.player.getHealth(),
       titles: this.uiGameState.getTitlesList(),
       foods: this.uiGameState.getFoodCountsList(),
