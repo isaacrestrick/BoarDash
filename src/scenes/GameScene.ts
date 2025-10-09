@@ -29,6 +29,7 @@ export default class GameScene extends Phaser.Scene {
   private readonly TILE_SIZE = 32;
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
+  private lastSpawnTime = 0
 
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
   private map!: Phaser.Tilemaps.Tilemap;
@@ -244,10 +245,10 @@ export default class GameScene extends Phaser.Scene {
 
 
 
-    // where all the shit is
+    // skeleton spawner
     this.skeletons = [
-      new Skeleton(this, 700, 300, 3.5 / 3.333),
-      new Skeleton(this, 300, 300, 3.5 / 3.333)
+      // new Skeleton(this, 700, 300, 3.5 / 3.333),
+      // new Skeleton(this, 300, 300, 3.5 / 3.333)
     ]
 
     // Add collisions between skeletons and layers
@@ -295,6 +296,18 @@ export default class GameScene extends Phaser.Scene {
 
     const playerX = this.player.getX()
     const playerY = this.player.getY()
+
+    const now = this.time.now
+    // console.log(now)
+    if (this.skeletons.length < 30) {
+      const minX = 0
+      const maxX = 79 * 16
+      const minY = 0
+      const maxY = 32 * 16
+      const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
+      const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
+      this.skeletons.push(new Skeleton(this, x, y, 3.5 / 3.333))
+    }
 
     // follow player
     this.skeletons.forEach(v => v.updateFollow(playerX, playerY, 50))
