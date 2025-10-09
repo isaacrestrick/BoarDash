@@ -1,8 +1,6 @@
 import Phaser from 'phaser';
 import { Player } from '../Player';
 // import { NPC } from './npcs/Npc';
-import { TitleList } from '../TitleList';
-import { HealthBar } from '../HealthBar';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
 import { King } from '../npcs/King';
@@ -13,17 +11,12 @@ import { Bush } from '../static/Bush'
 import { Tree } from '../static/Tree'
 import { Castle } from '../static/Castle'
 import { Farmer } from '../npcs/Farmer';
-import DialogueManager from '../dialogue/DialogueManager';
 
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
   public uiGameState!: UIGameState;
-  public dialogueManager!: DialogueManager;
-  public titleList!: TitleList;
-  public foodsList!: TitleList;
-  public healthBar: HealthBar;
   public skeletons!: Skeleton[];
   private king!: King;
   private villager!: Villager;
@@ -151,24 +144,37 @@ export default class GameScene extends Phaser.Scene {
 
 
 
-    map.createLayer("GrassPath", [grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset], 0, 0);
+    map.createLayer("GrassPath", [grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
 
     
-    map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset], 0, 0);
+    map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
 
 
-    map.createLayer("Buildings", [house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset], 0, 0);
+    const buildingsLayer = map.createLayer("Buildings", [house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
 
 
     // map.createLayer("SmallTrees", [fruitTreeStagesTileset], 256, 0);
 
-    map.createLayer("Tree 1", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset], 16 * 16, 0);
+    const tree1Layer = map.createLayer("Tree 1", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 16 * 16, 0);
 
-    map.createLayer("Tree 2", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset], 0, 0);
+    const tree2Layer = map.createLayer("Tree 2", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
 
-    map.createLayer("Tree 3", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset], 16 * 16, 0);
+    const tree3Layer = map.createLayer("Tree 3", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 16 * 16, 0);
 
 
+    // Enable collision on all tiles in these layers (excluding empty tiles with index -1)
+    console.log('Setting up collisions...');
+    console.log('buildingsLayer:', buildingsLayer);
+    console.log('tree1Layer:', tree1Layer);
+    
+    buildingsLayer?.setCollisionByExclusion([-1]);
+    tree1Layer?.setCollisionByExclusion([-1]);
+    tree2Layer?.setCollisionByExclusion([-1]);
+    tree3Layer?.setCollisionByExclusion([-1]);
+    
+    console.log('buildingsLayer collision enabled:', buildingsLayer?.layer.collideIndexes);
+
+    //tree and buildings are collision layers
 
     
     const mapWidth = map.widthInPixels;
@@ -204,7 +210,21 @@ export default class GameScene extends Phaser.Scene {
     
 
     this.player = new Player(this, 720, 528);
-    this.cameras.main.startFollow(this.player.sprite, true, 0.1, 0.1);
+    
+    // Add collisions between player and layers
+    if (buildingsLayer) this.physics.add.collider(this.player.getSprite(), buildingsLayer);
+    if (tree1Layer) this.physics.add.collider(this.player.getSprite(), tree1Layer);
+    if (tree2Layer) this.physics.add.collider(this.player.getSprite(), tree2Layer);
+    if (tree3Layer) this.physics.add.collider(this.player.getSprite(), tree3Layer);
+
+    // Debug: Show collision boxes (remove once working)
+    this.physics.world.drawDebug = false;
+    // const graphics = this.add.graphics();
+    // graphics.lineStyle(2, 0x00ff00, 1);
+    // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
+    
+    // Camera follows player
+    this.cameras.main.startFollow(this.player.getSprite(), true, 0.1, 0.1);
 
     
     
@@ -222,32 +242,17 @@ export default class GameScene extends Phaser.Scene {
     this.king = new King(this, centerX, centerY - 30, 2.5 / 3.333);
     this.villager = new Villager(this, centerX + 80, centerY, 2.5 / 3.333);
     this.uiGameState = new UIGameState()
-    this.titleList = new TitleList(
-      this,
-      ["Titles", ...this.uiGameState.getTitlesList()],
-      40,
-      60,
-      28
-    );
-    this.foodsList = new TitleList(
-      this,
-      ["Foods", ...this.uiGameState.getFoodCountsList()],
-      this.GRID_WIDTH * this.TILE_SIZE - 40,
-      60,
-      28,
-      'right'
-    );
-    this.healthBar = new HealthBar(
-      this,
-      40,
-      15,
-      this.player.getHealth(),
-      'left'
-    )
 
-    this.dialogueManager = new DialogueManager(this, 0)
+//    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
-    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
+    this.scene.launch('ui', { 
+      playerHealth: this.player.getHealth(),
+      titles: this.uiGameState.getTitlesList(),
+      foods: this.uiGameState.getFoodCountsList(),
+    });
+
+    this.scene.bringToTop('ui');
+    this.events.emit("dialogue:show", "The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
   }
 
@@ -274,6 +279,7 @@ export default class GameScene extends Phaser.Scene {
     if (this.player.isDead()) {
       console.log('dead')
       //this.scene.restart() // REPLACE WITH GAME OVER
+      this.scene.stop('ui');
       this.scene.start('GameOverScene', { score: this.uiGameState.getScore() });
     }
 

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import Phaser from 'phaser'
 import TitleScene from './scenes/TitleScene'
 import GameScene from './scenes/GameScene'
+import UIScene from './scenes/UIScene'
 import GameOverScene from './scenes/GameOverScene'
 
 import './App.css'
@@ -21,7 +22,7 @@ function App() {
         antialias: false,
         roundPixels: true
       },
-      scene: [TitleScene, GameScene, GameOverScene],
+      scene: [TitleScene, GameScene, UIScene, GameOverScene],
       scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -34,6 +35,12 @@ function App() {
           height: 1056
         }
       },
+      physics: {
+        default: 'arcade',
+        arcade: {
+          debug: false
+        }
+      }
     }
 
     gameRef.current = new Phaser.Game(config)

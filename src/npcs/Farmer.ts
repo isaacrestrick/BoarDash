@@ -32,7 +32,7 @@ export class Farmer extends NPC {
             const s = this.getSprite();
             const scene = s.scene as GameScene;
             const msg = 'Good day on the farm today.'
-            scene.dialogueManager.show(msg)
+            scene.events.emit("dialogue:show", msg)
             console.log(msg);
         }
         this.wasNearPlayer = isNear;
@@ -48,7 +48,8 @@ export class Farmer extends NPC {
         };
         const randomFood = foods[Math.floor(Math.random() * foods.length)];
         scene.uiGameState.addFoodStuff(randomFood);
-        scene.dialogueManager.show("Here is your food: 1x " + foodSingulars[randomFood]);
-        scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
+        scene.events.emit("dialogue:show", "Here is your food: 1x " + foodSingulars[randomFood]);
+        //scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
+        s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
     }
 }
