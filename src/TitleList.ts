@@ -25,7 +25,14 @@ export class TitleList {
             //fontFamily: 'Arial',
             fontSize: '36px',
             color: '#ffffff',
-            fontStyle: 'bold'
+            fontStyle: 'bold',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            padding: {
+              left: 6,
+              right: 6,
+              top: 2,
+              bottom: 2
+            }
           });
 
           mainTitle.setOrigin(align === 'right' ? 1 : 0, 0);
@@ -39,7 +46,14 @@ export class TitleList {
             {
               //fontFamily: 'Arial',
               fontSize: '24px',
-              color: '#ffffff'
+              color: '#ffffff',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              padding: {
+                left: 4,
+                right: 4,
+                top: 1,
+                bottom: 1
+              }
             }
           );
 
