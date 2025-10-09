@@ -218,10 +218,23 @@ export default class GameScene extends Phaser.Scene {
     if (tree3Layer) this.physics.add.collider(this.player.getSprite(), tree3Layer);
 
     // Debug: Show collision boxes (remove once working)
-    this.physics.world.drawDebug = false;
-    // const graphics = this.add.graphics();
-    // graphics.lineStyle(2, 0x00ff00, 1);
-    // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
+    this.physics.world.drawDebug = true;
+    const graphics = this.add.graphics();
+    graphics.lineStyle(2, 0x00ff00, 1);
+    buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
+    // Add debug render for other collision layers
+    if (tree1Layer) {
+      graphics.lineStyle(2, 0xff0000, 1);
+      tree1Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 0, 0, 100), faceColor: null });
+    }
+    if (tree2Layer) {
+      graphics.lineStyle(2, 0x0000ff, 1);
+      tree2Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 0, 255, 100), faceColor: null });
+    }
+    if (tree3Layer) {
+      graphics.lineStyle(2, 0xffff00, 1);
+      tree3Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 255, 0, 100), faceColor: null });
+    }
     
     // Camera follows player
     this.cameras.main.startFollow(this.player.getSprite(), true, 0.1, 0.1);

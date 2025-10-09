@@ -32,7 +32,7 @@ export class Player {
         this.scene = scene;
         this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
         this.sprite.setScale(0.18);
-        this.health = 3;
+        this.health = 30;
         this.lastDirection = 'front';
 
         // Enable physics collisions
