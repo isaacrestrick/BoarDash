@@ -28,7 +28,7 @@ export default class GameScene extends Phaser.Scene {
   private trees!: Tree[];
   private castle!: Castle;
   private farmer!: Farmer;
-  private readonly TILE_SIZE = 32;
+  private readonly TILE_SIZE = 16;
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
   private lastSpawnTime = 0
@@ -215,7 +215,7 @@ export default class GameScene extends Phaser.Scene {
 
 
 
-    this.player = new Player(this, 720, 528);
+    this.player = new Player(this, 36 * this.TILE_SIZE, 19 * this.TILE_SIZE)//720, 528); // 35 18
 
     // Add collisions between player and layers
     if (buildingsLayer) this.physics.add.collider(this.player.getSprite(), buildingsLayer);
@@ -262,11 +262,6 @@ export default class GameScene extends Phaser.Scene {
       if (tree2Layer) this.physics.add.collider(skeleton.getSprite(), tree2Layer);
       if (tree3Layer) this.physics.add.collider(skeleton.getSprite(), tree3Layer);
     });
-
-    //WHERE??
-    // Place Farmer, King, and Villager near each other in the middle of the map
-    const centerX = this.GRID_WIDTH * this.TILE_SIZE / 2 - 200;
-    const centerY = this.GRID_HEIGHT * this.TILE_SIZE / 2 - 200;
 
     const villagerConfigs: Array<VillagerConfig> = [
       {
@@ -336,31 +331,31 @@ export default class GameScene extends Phaser.Scene {
       }
     }
 
-    this.farmer = new Farmer(this, 34 * 16 + 6, 17 * 16 + 10 , 2.5 / 3.333, farmerConfig);
+    this.farmer = new Farmer(this, 34 * this.TILE_SIZE + 6, 17 * this.TILE_SIZE + 10 , 2.5 / 3.333, farmerConfig);
     //this.king = new King(this, centerX + 300, centerY - 30, 2.5 / 3.333);
 
     this.villagers = [
-      //new Villager(this, 20 * 16, 19 * 16, 2.5 / 3.333),
-      new Villager(this, 38 * 16, 29 * 16, 2.5 / 3.333, villagerConfigs[0]),
+      //new Villager(this, 20 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333),
+      new Villager(this, 38 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[0]),
 
-      new Villager(this, 6 * 16, 6 * 16, 2.5 / 3.333, villagerConfigs[1]),
-      new Villager(this, 15 * 16, 6 * 16, 2.5 / 3.333, villagerConfigs[2]),
-      new Villager(this, 5 * 16, 16 * 16, 2.5 / 3.333, villagerConfigs[3]),
-      new Villager(this, 6 * 16, 13 * 16, 2.5 / 3.333, villagerConfigs[4]),
+      new Villager(this, 6 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[1]),
+      new Villager(this, 15 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]),
+      new Villager(this, 5 * this.TILE_SIZE, 16 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]),
+      new Villager(this, 6 * this.TILE_SIZE, 13 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[4]),
       
-      new Villager(this, 16 * 16, 13 * 16, 2.5 / 3.333),
-      new Villager(this, 21 * 16, 19 * 16, 2.5 / 3.333),
+      new Villager(this, 16 * this.TILE_SIZE, 13 * this.TILE_SIZE, 2.5 / 3.333),
+      new Villager(this, 21 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333),
       // [6,6], [15, 6], [5, 16], [6, 13], [16, 13], [21, 19], [52, 30], [55, 19]
       // [71, 20], [74, 6], [63, 4], [58, 6], [53, 6], [48, 6]
       // 
       // KING: [5, 29], 
-      //new Villager(this, 16 * 16, 29 * 16, 2.5 / 3.333, villagerConfigs[2]),
-      //new Villager(this, 25 * 16, 15 * 16, 2.5 / 3.333, villagerConfigs[3]),
-      //new Villager(this, 35 * 16, 20 * 16, 2.5 / 3.333, villagerConfigs[4])
+      //new Villager(this, 16 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]),
+      //new Villager(this, 25 * this.TILE_SIZE, 15 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]),
+      //new Villager(this, 35 * this.TILE_SIZE, 20 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[4])
     ]  
 
-    this.king = new King(this, 5 * 16, 29 * 16, 2.5 / 3.333);
-    this.secondKing = new SecondKing(this, 79 * 16, 24 * 16,  2.5 / 3.3333)
+    this.king = new King(this, 5 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333);
+    this.secondKing = new SecondKing(this, 79 * this.TILE_SIZE, 24 * this.TILE_SIZE,  2.5 / 3.3333)
 
     //    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
@@ -389,7 +384,7 @@ export default class GameScene extends Phaser.Scene {
     const now = this.time.now
     
     
-    if (playerX > 80 * 16) {
+    if (playerX > 80 * this.TILE_SIZE) {
       const playerSprite = this.player.getSprite();
       (playerSprite.body as Phaser.Physics.Arcade.Body).setGravityY(50000);
       this.time.delayedCall(500, () => {
