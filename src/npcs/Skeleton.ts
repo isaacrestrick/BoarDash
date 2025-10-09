@@ -61,6 +61,11 @@ export class Skeleton extends NPC {
     constructor(scene: Phaser.Scene, x: number, y: number, scale = 3.5) {
         super(scene, x, y, { key: 'skeleton-idle-down', scale });
         Skeleton.registerAnimations(scene);
+
+        // collisions
+        this.getSprite().setCollideWorldBounds(true);
+        this.getSprite().body!.setSize(this.getSprite().width * 0.5, this.getSprite().height * 0.5);
+
         this.getSprite().play('skeleton-idle-down', true);
     }
 
@@ -113,44 +118,44 @@ export class Skeleton extends NPC {
         if (now < this.lastAttackTime + this.cooldownTime) return false
 
         const dx = targetX - s.x
-	    const dy = targetY - s.y + 10
+        const dy = targetY - s.y + 10
 
         const inRange = Math.abs(dx) <= this.attackRangeX && Math.abs(dy) <= this.attackRangeY
-	    if (!inRange) return false
+        if (!inRange) return false
 
         s.setTintFill(0xffffff)
-    	s.scene.time.delayedCall(120, () => s.clearTint())
+        s.scene.time.delayedCall(120, () => s.clearTint())
 
         this.lastAttackTime = now
-	    return true
+        return true
     }
 
     updateFollow(targetX: number, targetY: number, speed: number = 90): void {
-		const s = this.sprite
-        
+        const s = this.sprite
+
         const stopX = this.TILE_SIZE * 0.9 // stops them farter away on x axis
         const stopY = this.TILE_SIZE * 0.5
 
-		const dx = targetX - s.x
-		const dy = targetY - s.y + 10 // + shifts the target relative to player sprite
+        const dx = targetX - s.x
+        const dy = targetY - s.y + 10 // + shifts the target relative to player sprite
 
-		const eliptDist = Math.hypot(dx/stopX, dy/stopY)
-		if (eliptDist <= 1) {
+        const eliptDist = Math.hypot(dx / stopX, dy / stopY)
+        if (eliptDist <= 1) {
             // attack handled in GameScene
             // this.triggerAttack(targetX, targetY)
 
             // WHEN UNCOMMENTED PREVENTING DEATH ANIM AND REMOVING FROM THE SKELETON ARRAY, fix if we need up, left, or right idling; if not - fuck it
             // s.play(`skeleton-idle-${this.lastDirection}`, true) 
+            s.setVelocity(0, 0);
             return
         }
 
         const dist = Math.hypot(dx, dy)
-		const nx = dx / dist
-		const ny = dy / dist
-		const dt = s.scene.game.loop.delta / 1000
+        const nx = dx / dist
+        const ny = dy / dist
 
         let newDirection: 'up' | 'down' | 'left' | 'right';
-        
+
         if (Math.abs(dx) > Math.abs(dy)) {
             newDirection = dx > 0 ? 'right' : 'left';
         } else {
@@ -160,7 +165,7 @@ export class Skeleton extends NPC {
         if (newDirection !== this.lastDirection) {
             this.lastDirection = newDirection;
         }
-        
+
         s.play(`skeleton-walk-${this.lastDirection}`, true);
         if (newDirection === 'left') {
             s.setFlipX(true)
@@ -169,10 +174,10 @@ export class Skeleton extends NPC {
         }
 
         if (eliptDist < 6) {
-            s.x += nx * speed * dt;
-            s.y += ny * speed * dt;
+            s.setVelocity(nx * speed, ny * speed);
         } else {
             this.sprite.play('skeleton-idle-down', true)
+            s.setVelocity(0, 0);
         }
-	}
+    }
 }

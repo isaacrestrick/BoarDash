@@ -6,19 +6,19 @@ export type NpcConfig = {
 };
 
 export class NPC {
-    protected sprite: Phaser.GameObjects.Sprite;
+    protected sprite: Phaser.Physics.Arcade.Sprite;
     protected readonly TILE_SIZE = 32;
     protected wasNearPlayer = false;
 
     constructor(scene: Phaser.Scene, x: number, y: number, config?: NpcConfig) {
         const key = config?.key ?? 'farmer-sprite';
-        this.sprite = scene.add.sprite(x, y, key);
+        this.sprite = scene.physics.add.sprite(x, y, key);
         if (config?.scale !== undefined) this.sprite.setScale(config.scale);
     }
 
     getX(): number { return this.sprite.x; }
     getY(): number { return this.sprite.y; }
-    getSprite(): Phaser.GameObjects.Sprite { return this.sprite; }
+    getSprite(): Phaser.Physics.Arcade.Sprite { return this.sprite; }
 
     // Default proximity interaction (log only). Subclasses can override to add behavior.
     checkPlayerInteraction(playerX: number, playerY: number): void {
