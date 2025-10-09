@@ -137,7 +137,9 @@ export class Skeleton extends NPC {
 		if (eliptDist <= 1) {
             // attack handled in GameScene
             // this.triggerAttack(targetX, targetY)
-            s.play(`skeleton-idle-${this.lastDirection}`, true)
+
+            // WHEN UNCOMMENTED PREVENTING DEATH ANIM AND REMOVING FROM THE SKELETON ARRAY, fix if we need up, left, or right idling; if not - fuck it
+            // s.play(`skeleton-idle-${this.lastDirection}`, true) 
             return
         }
 
