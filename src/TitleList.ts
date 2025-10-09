@@ -22,7 +22,7 @@ export class TitleList {
       this.titles.filter(title => !title.includes('x0')).forEach((title, index) => {
         if (index === 0) {
           const mainTitle = this.scene.add.text(x, y, title, {
-            fontFamily: 'Arial',
+            //fontFamily: 'Arial',
             fontSize: '36px',
             color: '#ffffff',
             fontStyle: 'bold'
@@ -37,7 +37,7 @@ export class TitleList {
             y + extraSpacing + (index - 1) * lineSpacing, 
             title, 
             {
-              fontFamily: 'Arial',
+              //fontFamily: 'Arial',
               fontSize: '24px',
               color: '#ffffff'
             }
