@@ -4,7 +4,6 @@ import type GameScene from '../scenes/GameScene'
 
 export interface FarmerConfig extends NpcConfig{
     greetingDialogue: string;
-    idlePath: string;
     foods: string[];
     foodSingulars: Record<string, string>;
 }

@@ -8,7 +8,6 @@ export interface VillagerConfig extends NpcConfig {
     greetingDialogue: string;
     successDialogue: string;
     failureDialogue: string;
-    idlePath: string;  // may be a key instead of a path...
 }
 
 export class Villager extends NPC {
@@ -17,13 +16,13 @@ export class Villager extends NPC {
     greetingDialogue: string = "Good morning!";
     successDialogue: string = "You are a true Deliverer of Turkey Sandwiches 🥪!";
     failureDialogue: string = "I believe I ordered a Turkey Sandwich 🥪?";
-    idlePath: string = 'Cute_Fantasy/NPCs/Medieval_Mary.png'; // may be a key instead of a path...
+    idleKey: string = "villager-mary-idle";
     
     static getRequiredAssets() {
         return [
             // TODO: change the sprites to villager sprites.
-            { key: 'villager-idle', path: 'Cute_Fantasy/NPCs/Medieval_Mary.png', type: 'spritesheet', frameWidth: 512/8, frameHeight:896/(8 * 2) },
-
+            { key: 'villager-mary-idle', path: 'Cute_Fantasy/NPCs/Medieval_Mary.png', type: 'spritesheet', frameWidth: 512/8, frameHeight:896/(8 * 2) },
+            { key: 'villager-katy-idle', path: 'Cute_Fantasy/NPCs/Bartender_Katy.png', type: 'spritesheet', frameWidth: 384/6, frameHeight:448/7 }
             // TODO: villager joy animation ?? (when you successfully deliver food, maybe they do a little dance, or get a little heart or something)
             // { key: 'vampire-death', path: 'Vampires1/Death/Vampires1_Death_full.png', type: 'spritesheet', frameWidth: 64, frameHeight: 64 },
         ] as const;
@@ -31,23 +30,27 @@ export class Villager extends NPC {
 
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
-        if (!has('villager-idle')) {
-            scene.anims.create({ key: 'villager-idle', frames: scene.anims.generateFrameNames('villager-idle', { start: 0, end: 1 }), frameRate: 4, repeat: -1 });
+        if (!has('villager-mary-idle')) {
+            scene.anims.create({ key: 'villager-mary-idle', frames: scene.anims.generateFrameNames('villager-mary-idle', { start: 0, end: 5}), frameRate: 4, repeat: -1 });
+        }
+        if (!has('villager-katy-idle')) {
+            scene.anims.create({ key: 'villager-katy-idle', frames: scene.anims.generateFrameNames('villager-katy-idle', { start: 0, end: 5 }), frameRate: 4, repeat: -1 });
         }
     }
 
     constructor(scene: Phaser.Scene, x: number, y: number, scale = 2.5, config?: VillagerConfig) {//scale = 2.5, idlePath, food, title, greetingDialogue, successDialogue, failureDialogue) {
-        super(scene, x, y, { key: 'villager-idle', scale });
-        Villager.registerAnimations(scene);
+        super(scene, x, y, { key: config?.key ?? 'villager-mary-idle', scale });
         if (config) {
             this.food = config.food;
             this.title = config.title;
             this.greetingDialogue = config.greetingDialogue;
             this.successDialogue = config.successDialogue;
             this.failureDialogue = config.failureDialogue;
-            //this.idlePath =
+            this.idleKey = config.key;
         }
-        this.getSprite().play('villager-idle', true);
+
+        Villager.registerAnimations(scene);
+        this.getSprite().play(this.idleKey, true);
     }
 
     checkPlayerInteraction(playerX: number, playerY: number): void {

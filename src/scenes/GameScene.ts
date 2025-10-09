@@ -181,7 +181,7 @@ export default class GameScene extends Phaser.Scene {
     const mapHeight = map.heightInPixels;
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
 
-    const cursors = this.input.keyboard.createCursorKeys();
+    const cursors = this.input.keyboard!.createCursorKeys();
 
     const controlConfig = {
       camera: this.cameras.main,
@@ -272,8 +272,7 @@ export default class GameScene extends Phaser.Scene {
         greetingDialogue: "Howdy",
         failureDialogue: "I ordered borscht not boar!",
         successDialogue: "I guess that makes you a Borscht Dasher 🍲!",
-        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
-        key: 'villager-idle'
+        key: 'villager-mary-idle'
       },
       {
         food: "Hubert's Jakartan fusion tacos 🌮🇮🇩",
@@ -281,8 +280,7 @@ export default class GameScene extends Phaser.Scene {
         greetingDialogue: "You seem a little less pixelated than the rest of us",
         failureDialogue: "I need to bulk where are my tacos bro",
         successDialogue: "Thanks for the tacos. Needed these",
-        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
-        key: 'villager-idle'
+        key: 'villager-katy-idle'
       },
       {
         food: "Isaac's Icy Cold Brew 🧊☕",
@@ -290,8 +288,7 @@ export default class GameScene extends Phaser.Scene {
         greetingDialogue: "Good morning Boar Dasher",
         failureDialogue: "I said extra ice 🧊",
         successDialogue: "This is a lot of ice 🧊 but thanks",
-        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
-        key: 'villager-idle'
+        key: 'villager-katy-idle'
       },
       {
         food: "Ol McDonald's Fries 🍟",
@@ -299,8 +296,7 @@ export default class GameScene extends Phaser.Scene {
         greetingDialogue: "Have you seen that clown…",
         failureDialogue: "I didn't order a Kingly Burger 🍔",
         successDialogue: "Happy Frieday 🍟!",
-        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
-        key: 'villager-idle'
+        key: 'villager-mary-idle'
       },
       {
         food: "Pizza 🍕 Pizza 🍕",
@@ -308,8 +304,7 @@ export default class GameScene extends Phaser.Scene {
         greetingDialogue: "Rome wasn't built in a day, but this game took 6️⃣",
         failureDialogue: "Et Tu, Boar Dasher?",
         successDialogue: "I love pizza 🍕. Thanks!",
-        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
-        key: 'villager-idle'
+        key: 'villager-mary-idle'
       },
     ]
     const foods = [
@@ -330,7 +325,6 @@ export default class GameScene extends Phaser.Scene {
     const farmerConfig = {
       key: 'farmer-idle',
       greetingDialogue: "Good day on the farm today.",
-      idlePath: "ignored for now",
       foods: foods,
       foodSingulars: {
         "Turkey Sandwiches 🥪": "Turkey Sandwich 🥪",
