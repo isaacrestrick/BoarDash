@@ -295,7 +295,6 @@ export default class GameScene extends Phaser.Scene {
       this.skeletons.forEach(skeleton => {
         if (skeleton.isPlayerNear()) {
           skeleton.triggerDeath();
-          console.log(this.skeletons)
         }
       })
     }

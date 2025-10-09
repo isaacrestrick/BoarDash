@@ -5,63 +5,27 @@ import GameScene from '../scenes/GameScene'
 export class Skeleton extends NPC {
     static getRequiredAssets() {
         return [
-            { key: 'skeleton-idle-up', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
-            { key: 'skeleton-idle-down', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
-            { key: 'skeleton-idle-left', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
-            { key: 'skeleton-idle-right', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
-            { key: 'skeleton-walk-up', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
-            { key: 'skeleton-walk-down', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
-            { key: 'skeleton-walk-left', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
-            { key: 'skeleton-walk-right', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
+            { key: 'skeleton-idle', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
             { key: 'skeleton-death', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
         ] as const;
     }
 
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
-
-        // idle
-        if (!has('skeleton-idle-up')) {
-            scene.anims.create({ key: 'skeleton-idle-up', frames: scene.anims.generateFrameNames('skeleton-idle-up', { start: 12, end: 17 }), frameRate: 10, repeat: -1 });
+        if (!has('skeleton-idle')) {
+            scene.anims.create({ key: 'skeleton-idle', frames: scene.anims.generateFrameNames('skeleton-idle', { start: 0, end: 5 }), frameRate: 10, repeat: -1 });
         }
-        if (!has('skeleton-idle-down')) {
-            scene.anims.create({ key: 'skeleton-idle-down', frames: scene.anims.generateFrameNames('skeleton-idle-down', { start: 0, end: 5 }), frameRate: 10, repeat: -1 });
-        }
-        if (!has('skeleton-idle-left')) {
-            scene.anims.create({ key: 'skeleton-idle-left', frames: scene.anims.generateFrameNames('skeleton-idle-left', { start: 6, end: 11 }), frameRate: 10, repeat: -1 });
-        }
-        if (!has('skeleton-idle-right')) {
-            scene.anims.create({ key: 'skeleton-idle-right', frames: scene.anims.generateFrameNames('skeleton-idle-right', { start: 6, end: 11 }), frameRate: 10, repeat: -1 });
-        }
-
-        // walk
-        if (!has('skeleton-walk-up')) {
-            scene.anims.create({ key: 'skeleton-walk-up', frames: scene.anims.generateFrameNames('skeleton-walk-up', { start: 30, end: 35 }), frameRate: 10, repeat: -1 });
-        }
-        if (!has('skeleton-walk-down')) {
-            scene.anims.create({ key: 'skeleton-walk-down', frames: scene.anims.generateFrameNames('skeleton-walk-down', { start: 18, end: 23 }), frameRate: 10, repeat: -1 });
-        }
-        if (!has('skeleton-walk-left')) {
-            scene.anims.create({ key: 'skeleton-walk-left', frames: scene.anims.generateFrameNames('skeleton-walk-left', { start: 24, end: 29 }), frameRate: 10, repeat: -1 });
-        }
-        if (!has('skeleton-walk-right')) {
-            scene.anims.create({ key: 'skeleton-walk-right', frames: scene.anims.generateFrameNames('skeleton-walk-right', { start: 24, end: 29 }), frameRate: 10, repeat: -1 });
-        }
-
-        // death
         if (!has('skeleton-death')) {
             scene.anims.create({ key: 'skeleton-death', frames: scene.anims.generateFrameNames('skeleton-death', { start: 36, end: 39 }), frameRate: 8, repeat: 0 });
         }
     }
 
-    private lastDirection: 'up' | 'down' | 'left' | 'right' = 'down'
-
     private killed = false;
 
     constructor(scene: Phaser.Scene, x: number, y: number, scale = 3.5) {
-        super(scene, x, y, { key: 'skeleton-idle-down', scale });
+        super(scene, x, y, { key: 'skeleton-idle', scale });
         Skeleton.registerAnimations(scene);
-        this.getSprite().play('skeleton-idle-down', true);
+        this.getSprite().play('skeleton-idle', true);
     }
 
     checkPlayerInteraction(playerX: number, playerY: number): void {
@@ -80,9 +44,9 @@ export class Skeleton extends NPC {
     }
 
     triggerDeath(): void {
-        // if (this.killed) return
+        if (this.killed) return
         this.killed = true
-        const s = this.sprite
+        const s = this.getSprite()
         const scene = s.scene as GameScene
         s.play('skeleton-death', true)
         s.once('animationcomplete', () => {
@@ -96,14 +60,14 @@ export class Skeleton extends NPC {
                 scene.skeletons.splice(index, 1);
             }
             s.destroy()
-            console.log(scene.skeletons)
+            console.log(scene.skeletons)    
         });
     }
 
     private lastAttackTime = 0
     private cooldownTime = 1000 // 1 second between attacks
-    private attackRangeX = this.TILE_SIZE * 0.9
-    private attackRangeY = this.TILE_SIZE * 0.5
+    private attackRangeX = this.TILE_SIZE * 3.2
+    private attackRangeY = this.TILE_SIZE * 1.3
 
     triggerAttack(targetX: number, targetY: number): boolean {
         const s = this.sprite
@@ -113,7 +77,7 @@ export class Skeleton extends NPC {
         if (now < this.lastAttackTime + this.cooldownTime) return false
 
         const dx = targetX - s.x
-	    const dy = targetY - s.y + 10
+	    const dy = targetY - s.y + 25
 
         const inRange = Math.abs(dx) <= this.attackRangeX && Math.abs(dy) <= this.attackRangeY
 	    if (!inRange) return false
@@ -128,19 +92,16 @@ export class Skeleton extends NPC {
     updateFollow(targetX: number, targetY: number, speed: number = 90): void {
 		const s = this.sprite
         
-        const stopX = this.TILE_SIZE * 0.9 // stops them farter away on x axis
-        const stopY = this.TILE_SIZE * 0.5
+        const stopX = this.TILE_SIZE * 3.1 // stops them farter away on x axis
+        const stopY = this.TILE_SIZE * 1.2
 
 		const dx = targetX - s.x
-		const dy = targetY - s.y + 10 // + shifts the target relative to player sprite
+		const dy = targetY - s.y + 25 // + shifts the target relative to player sprite
 
 		const eliptDist = Math.hypot(dx/stopX, dy/stopY)
 		if (eliptDist <= 1) {
             // attack handled in GameScene
             // this.triggerAttack(targetX, targetY)
-
-            // WHEN UNCOMMENTED PREVENTING DEATH ANIM AND REMOVING FROM THE SKELETON ARRAY, fix if we need up, left, or right idling; if not - fuck it
-            // s.play(`skeleton-idle-${this.lastDirection}`, true) 
             return
         }
 
@@ -148,25 +109,6 @@ export class Skeleton extends NPC {
 		const nx = dx / dist
 		const ny = dy / dist
 		const dt = s.scene.game.loop.delta / 1000
-
-        let newDirection: 'up' | 'down' | 'left' | 'right';
-        
-        if (Math.abs(dx) > Math.abs(dy)) {
-            newDirection = dx > 0 ? 'right' : 'left';
-        } else {
-            newDirection = dy > 0 ? 'down' : 'up';
-        }
-
-        if (newDirection !== this.lastDirection) {
-            this.lastDirection = newDirection;
-        }
-        
-        s.play(`skeleton-walk-${this.lastDirection}`, true);
-        if (newDirection === 'left') {
-            s.setFlipX(true)
-        } else {
-            s.setFlipX(false)
-        }
 
 		s.x += nx * speed * dt;
 		s.y += ny * speed * dt;
