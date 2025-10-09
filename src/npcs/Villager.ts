@@ -16,7 +16,7 @@ export class Villager extends NPC {
     greetingDialogue: string = "Good morning!";
     successDialogue: string = "You are a true Deliverer of Turkey Sandwiches 🥪!";
     failureDialogue: string = "I believe I ordered a Turkey Sandwich 🥪?";
-    idleKey: string = "villager-mary-idle";
+    idleKey: string = "villager-jack-idle";
     
     static getRequiredAssets() {
         return [
