@@ -32,12 +32,12 @@ export class Player {
         this.scene = scene;
         this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
         this.sprite.setScale(0.18);
-        this.health = 30;
+        this.health = 3;
         this.lastDirection = 'front';
 
         // Enable physics collisions
         this.sprite.setCollideWorldBounds(true);
-        this.sprite.body!.setSize(this.sprite.width * 0.5, this.sprite.height * 0.5);
+        this.sprite.body!.setSize(this.sprite.width * 0.02, this.sprite.height * 0.02);
 
         Player.registerAnimations(scene);
 
@@ -236,7 +236,7 @@ export class Player {
         console.log(this.health)
         s.setTintFill(0xffaaaa)
         s.scene.time.delayedCall(120, () => s.clearTint())
-        s.scene.events.emit("health:update", this.health)
+        s.scene.events.emit("health:update", this.health < 0 ? 0 : this.health)
         return true
     }
 

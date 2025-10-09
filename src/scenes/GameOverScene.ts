@@ -5,13 +5,15 @@ export default class GameOverScene extends Phaser.Scene {
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
   private score: number = 0;
+  private win: boolean;
 
   constructor() {
     super('GameOverScene');
   }
 
-  init(data: { score: number }) {
+  init(data: { score: number, win: boolean }) {
     this.score = data.score === undefined ? 42 : data.score;
+    this.win = data.win;
   }
 
   preload() {
@@ -31,7 +33,7 @@ export default class GameOverScene extends Phaser.Scene {
     this.add.text(
         this.GRID_WIDTH * this.TILE_SIZE / 2, 
         this.GRID_HEIGHT * this.TILE_SIZE / 5, 
-        'congratulations adventurer (rip), a score of', 
+        `congratulations adventurer ${this.win ? "(!!!)" : "(rip)"}, a score of`, 
         { 
           fontSize: '50px',
           color: '#ffffff',

@@ -4,7 +4,7 @@ import { Player } from '../Player';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
 import { King } from '../npcs/King';
-import { Villager } from '../npcs/Villager'
+import { Villager, type VillagerConfig } from '../npcs/Villager'
 import { House } from '../static/House'
 import { Stone } from '../static/Stone'
 import { Bush } from '../static/Bush'
@@ -19,7 +19,7 @@ export default class GameScene extends Phaser.Scene {
   public uiGameState!: UIGameState;
   public skeletons!: Skeleton[];
   private king!: King;
-  private villager!: Villager;
+  private villagers!: Villager[];
   private houses!: House[];
   private stones!: Stone[];
   private bushes!: Bush[];
@@ -29,10 +29,10 @@ export default class GameScene extends Phaser.Scene {
   private readonly TILE_SIZE = 32;
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
+  private lastSpawnTime = 0
 
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
   private map!: Phaser.Tilemaps.Tilemap;
-  private input!: Phaser.Input.InputPlugin;
 
   constructor() {
     super('GameScene');
@@ -108,7 +108,7 @@ export default class GameScene extends Phaser.Scene {
     Castle.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
-    
+
     Farmer.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
@@ -148,7 +148,7 @@ export default class GameScene extends Phaser.Scene {
 
     map.createLayer("GrassPath", [grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
 
-    
+
     map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
 
 
@@ -166,17 +166,17 @@ export default class GameScene extends Phaser.Scene {
     console.log('Setting up collisions...');
     console.log('buildingsLayer:', buildingsLayer);
     console.log('tree1Layer:', tree1Layer);
-    
+
     buildingsLayer?.setCollisionByExclusion([-1]);
     tree1Layer?.setCollisionByExclusion([-1]);
     tree2Layer?.setCollisionByExclusion([-1]);
     tree3Layer?.setCollisionByExclusion([-1]);
-    
+
     console.log('buildingsLayer collision enabled:', buildingsLayer?.layer.collideIndexes);
 
     //tree and buildings are collision layers
 
-    
+
     const mapWidth = map.widthInPixels;
     const mapHeight = map.heightInPixels;
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
@@ -184,12 +184,12 @@ export default class GameScene extends Phaser.Scene {
     const cursors = this.input.keyboard.createCursorKeys();
 
     const controlConfig = {
-        camera: this.cameras.main,
-        left: cursors.left,
-        right: cursors.right,
-        up: cursors.up,
-        down: cursors.down,
-        speed: 0.5
+      camera: this.cameras.main,
+      left: cursors.left,
+      right: cursors.right,
+      up: cursors.up,
+      down: cursors.down,
+      speed: 0.5
     };
 
     this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
@@ -206,11 +206,11 @@ export default class GameScene extends Phaser.Scene {
     // const viewportHeight = this.cameras.main.height / this.cameras.main.zoom;
     // this.cameras.main.scrollX = mapWidth - viewportWidth;
     // this.cameras.main.scrollY = 0;
-    
-    
+
+
 
     this.player = new Player(this, 720, 528);
-    
+
     // Add collisions between player and layers
     if (buildingsLayer) this.physics.add.collider(this.player.getSprite(), buildingsLayer);
     if (tree1Layer) this.physics.add.collider(this.player.getSprite(), tree1Layer);
@@ -218,6 +218,11 @@ export default class GameScene extends Phaser.Scene {
     if (tree3Layer) this.physics.add.collider(this.player.getSprite(), tree3Layer);
 
     // Debug: Show collision boxes (remove once working)
+    // const graphics = this.add.graphics();
+    // graphics.lineStyle(2, 0x00ff00, 1);
+    // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
+
+    // this.physics.world.drawDebug = false;
     // this.physics.world.drawDebug = true;
     // const graphics = this.add.graphics();
     // graphics.lineStyle(2, 0x00ff00, 1);
@@ -237,33 +242,131 @@ export default class GameScene extends Phaser.Scene {
     // }
     
     // Camera follows player
-    this.cameras.main.startFollow(this.player.getSprite(), true, 0.1, 0.1);
+    this.cameras.main.startFollow(this.player.getSprite(), true, 1, 1);
 
-    
-    
-    // where all the shit is
+
+
+    // skeleton spawner
     this.skeletons = [
-      new Skeleton(this, 700, 300, 3.5 / 3.333),
-      new Skeleton(this, 300, 300, 3.5  / 3.333)
+      // new Skeleton(this, 700, 300, 3.5 / 3.333),
+      // new Skeleton(this, 300, 300, 3.5 / 3.333)
     ]
-    
+
+    // Add collisions between skeletons and layers
+    this.skeletons.forEach(skeleton => {
+      if (buildingsLayer) this.physics.add.collider(skeleton.getSprite(), buildingsLayer);
+      if (tree1Layer) this.physics.add.collider(skeleton.getSprite(), tree1Layer);
+      if (tree2Layer) this.physics.add.collider(skeleton.getSprite(), tree2Layer);
+      if (tree3Layer) this.physics.add.collider(skeleton.getSprite(), tree3Layer);
+    });
+
     //WHERE??
     // Place Farmer, King, and Villager near each other in the middle of the map
     const centerX = this.GRID_WIDTH * this.TILE_SIZE / 2 - 200;
     const centerY = this.GRID_HEIGHT * this.TILE_SIZE / 2 - 200;
-    this.farmer = new Farmer(this, 34 * 16 + 6, 17 * 16 + 10 , 2.5 / 3.333);
-    this.king = new King(this, centerX, centerY - 30, 2.5 / 3.333);
 
-    this.villager = new Villager(this, 20 * 16, 19 * 16, 2.5 / 3.333);
-    this.villager = new Villager(this, 38 * 16, 29 * 16, 2.5 / 3.333);
-    this.villager = new Villager(this, 16 * 16, 29 * 16, 2.5 / 3.333);
+    const villagerConfigs: Array<VillagerConfig> = [
+      {
+        food: "Boris's Borscht 🍲",
+        title: "Borscht Dasher 🍲",
+        greetingDialogue: "Howdy",
+        failureDialogue: "I ordered borscht not boar!",
+        successDialogue: "I guess that makes you a Borscht Dasher 🍲!",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+      {
+        food: "Hubert's Jakartan fusion tacos 🌮🇮🇩",
+        title: "Jakartan Spartan 🌮🇮🇩",
+        greetingDialogue: "You seem a little less pixelated than the rest of us",
+        failureDialogue: "I need to bulk where are my tacos bro",
+        successDialogue: "Thanks for the tacos. Needed these",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+      {
+        food: "Isaac's Icy Cold Brew 🧊☕",
+        title: "Ice Ice Maybe 🧊☕",
+        greetingDialogue: "Good morning Boar Dasher",
+        failureDialogue: "I said extra ice 🧊",
+        successDialogue: "This is a lot of ice 🧊 but thanks",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+      {
+        food: "Ol McDonald's Fries 🍟",
+        title: "Good Frieday 🍟",
+        greetingDialogue: "Have you seen that clown…",
+        failureDialogue: "I didn't order a Kingly Burger 🍔",
+        successDialogue: "Happy Frieday 🍟!",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+      {
+        food: "Pizza 🍕 Pizza 🍕",
+        title: "Caesar 🍕",
+        greetingDialogue: "Rome wasn't built in a day, but this game took 6️⃣",
+        failureDialogue: "Et Tu, Boar Dasher?",
+        successDialogue: "I love pizza 🍕. Thanks!",
+        idlePath: 'Cute_Fantasy/NPCs/Medieval_Mary.png',
+        key: 'villager-idle'
+      },
+    ]
+    const foods = [
+      "Turkey Sandwiches 🥪",
+      ...villagerConfigs.map(config => config.food),
+      "Kingly Burgers 🍔", 
+    ];
+    const titles = [
+      "Lord of Boars 🐗",
+      "Slayer of Skeletons ☠️",
+      "Deliverer of Turkey Sandwiches 🥪",
+      ...villagerConfigs.map(config => config.title),
+      "Favors owed by the king 👑",
+    ];
 
-    
-    this.uiGameState = new UIGameState()
+    this.uiGameState = new UIGameState(foods, titles)
 
-//    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
+    const farmerConfig = {
+      key: 'farmer-idle',
+      greetingDialogue: "Good day on the farm today.",
+      idlePath: "ignored for now",
+      foods: foods,
+      foodSingulars: {
+        "Turkey Sandwiches 🥪": "Turkey Sandwich 🥪",
+        ...Object.fromEntries(villagerConfigs.map(config => [config.food, config.food])),
+        "Kingly Burgers 🍔": "Kingly Burger 🍔"
+      }
+    }
 
-    this.scene.launch('ui', { 
+    this.farmer = new Farmer(this, 34 * 16 + 6, 17 * 16 + 10 , 2.5 / 3.333, farmerConfig);
+    //this.king = new King(this, centerX + 300, centerY - 30, 2.5 / 3.333);
+
+    this.villagers = [
+      //new Villager(this, 20 * 16, 19 * 16, 2.5 / 3.333),
+      new Villager(this, 38 * 16, 29 * 16, 2.5 / 3.333, villagerConfigs[0]),
+
+      new Villager(this, 6 * 16, 6 * 16, 2.5 / 3.333, villagerConfigs[1]),
+      new Villager(this, 15 * 16, 6 * 16, 2.5 / 3.333, villagerConfigs[2]),
+      new Villager(this, 5 * 16, 16 * 16, 2.5 / 3.333, villagerConfigs[3]),
+      new Villager(this, 6 * 16, 13 * 16, 2.5 / 3.333, villagerConfigs[4]),
+      
+      new Villager(this, 16 * 16, 13 * 16, 2.5 / 3.333),
+      new Villager(this, 21 * 16, 19 * 16, 2.5 / 3.333),
+      // [6,6], [15, 6], [5, 16], [6, 13], [16, 13], [21, 19], [52, 30], [55, 19]
+      // [71, 20], [74, 6], [63, 4], [58, 6], [53, 6], [48, 6]
+      // 
+      // KING: [5, 29], 
+      //new Villager(this, 16 * 16, 29 * 16, 2.5 / 3.333, villagerConfigs[2]),
+      //new Villager(this, 25 * 16, 15 * 16, 2.5 / 3.333, villagerConfigs[3]),
+      //new Villager(this, 35 * 16, 20 * 16, 2.5 / 3.333, villagerConfigs[4])
+    ]  
+
+    this.king = new King(this, 5 * 16, 29 * 16, 2.5 / 3.333);
+
+    //    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
+
+    this.scene.launch('ui', {
       playerHealth: this.player.getHealth(),
       titles: this.uiGameState.getTitlesList(),
       foods: this.uiGameState.getFoodCountsList(),
@@ -283,6 +386,18 @@ export default class GameScene extends Phaser.Scene {
     const playerX = this.player.getX()
     const playerY = this.player.getY()
 
+    const now = this.time.now
+    // console.log(now)
+    if (this.skeletons.length < 30) {
+      const minX = 0
+      const maxX = 79 * 16
+      const minY = 0
+      const maxY = 32 * 16
+      const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
+      const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
+      this.skeletons.push(new Skeleton(this, x, y, 3.5 / 3.333))
+    }
+
     // follow player
     this.skeletons.forEach(v => v.updateFollow(playerX, playerY, 50))
 
@@ -296,9 +411,8 @@ export default class GameScene extends Phaser.Scene {
     // handle player's death
     if (this.player.isDead()) {
       console.log('dead')
-      //this.scene.restart() // REPLACE WITH GAME OVER
       this.scene.stop('ui');
-      this.scene.start('GameOverScene', { score: this.uiGameState.getScore() });
+      this.scene.start('GameOverScene', { score: this.uiGameState.getScore(), win: false });
     }
 
     // Proximity checks handled by base NPC class; death trigger is skeleton-specific
@@ -307,7 +421,9 @@ export default class GameScene extends Phaser.Scene {
     })
     this.farmer.checkPlayerInteraction(playerX, playerY);
     this.king.checkPlayerInteraction(playerX, playerY);
-    this.villager.checkPlayerInteraction(playerX, playerY);
+    this.villagers.forEach(villager => {
+      villager.checkPlayerInteraction(playerX, playerY);
+    });
 
     if (this.player.isAttacking()) {
       this.skeletons.forEach(skeleton => {
@@ -323,7 +439,9 @@ export default class GameScene extends Phaser.Scene {
       // console.log("villager near: ", this.villager.isPlayerNear());
       if (this.farmer.isPlayerNear()) this.farmer.triggerPickUp()
       if (this.king.isPlayerNear()) this.king.triggerDelivery()
-      if (this.villager.isPlayerNear()) this.villager.triggerDelivery()
+        this.villagers.forEach(villager => {
+          if (villager.isPlayerNear()) villager.triggerDelivery();
+        });
     }
   }
 }
