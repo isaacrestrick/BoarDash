@@ -62,6 +62,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("tent-big", "map/tiles/Tent_Big.png");
     this.load.image("blacksmith-house", "map/tiles/Blacksmith_House.png");
     this.load.image("farm-land-tile", "map/tiles/FarmLand_Tile.png");
+    this.load.image("castle-tile", "map/tiles/Castle.png");
 
 
     this.load.tilemapTiledJSON('map', 'map/Boar-Knight-Map.json');
@@ -141,6 +142,7 @@ export default class GameScene extends Phaser.Scene {
     const tentBigTileset = map.addTilesetImage("Tent_Big", "tent-big");
     const blacksmithHouseTileset = map.addTilesetImage("Blacksmith_House", "blacksmith-house");
     const farmLandTileTileset = map.addTilesetImage("FarmLand_Tile", "farm-land-tile");
+    const castleTileset = map.addTilesetImage("Castle", "castle-tile")
 
 
 
@@ -150,10 +152,8 @@ export default class GameScene extends Phaser.Scene {
     map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
 
 
-    const buildingsLayer = map.createLayer("Buildings", [house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
+    const buildingsLayer = map.createLayer("Buildings", [castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
 
-
-    // map.createLayer("SmallTrees", [fruitTreeStagesTileset], 256, 0);
 
     const tree1Layer = map.createLayer("Tree 1", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
 
@@ -218,23 +218,23 @@ export default class GameScene extends Phaser.Scene {
     if (tree3Layer) this.physics.add.collider(this.player.getSprite(), tree3Layer);
 
     // Debug: Show collision boxes (remove once working)
-    this.physics.world.drawDebug = true;
-    const graphics = this.add.graphics();
-    graphics.lineStyle(2, 0x00ff00, 1);
-    buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
-    // Add debug render for other collision layers
-    if (tree1Layer) {
-      graphics.lineStyle(2, 0xff0000, 1);
-      tree1Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 0, 0, 100), faceColor: null });
-    }
-    if (tree2Layer) {
-      graphics.lineStyle(2, 0x0000ff, 1);
-      tree2Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 0, 255, 100), faceColor: null });
-    }
-    if (tree3Layer) {
-      graphics.lineStyle(2, 0xffff00, 1);
-      tree3Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 255, 0, 100), faceColor: null });
-    }
+    // this.physics.world.drawDebug = true;
+    // const graphics = this.add.graphics();
+    // graphics.lineStyle(2, 0x00ff00, 1);
+    // buildingsLayer?.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 255, 0, 100), faceColor: null });
+    // // Add debug render for other collision layers
+    // if (tree1Layer) {
+    //   graphics.lineStyle(2, 0xff0000, 1);
+    //   tree1Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 0, 0, 100), faceColor: null });
+    // }
+    // if (tree2Layer) {
+    //   graphics.lineStyle(2, 0x0000ff, 1);
+    //   tree2Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(0, 0, 255, 100), faceColor: null });
+    // }
+    // if (tree3Layer) {
+    //   graphics.lineStyle(2, 0xffff00, 1);
+    //   tree3Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 255, 0, 100), faceColor: null });
+    // }
     
     // Camera follows player
     this.cameras.main.startFollow(this.player.getSprite(), true, 0.1, 0.1);
