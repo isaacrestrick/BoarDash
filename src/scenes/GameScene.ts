@@ -237,7 +237,7 @@ export default class GameScene extends Phaser.Scene {
     }
     
     // Camera follows player
-    this.cameras.main.startFollow(this.player.getSprite(), true, 0.1, 0.1);
+    this.cameras.main.startFollow(this.player.getSprite(), true, 1, 1);
 
     
     
