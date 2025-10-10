@@ -160,7 +160,7 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    let objects = [Skeleton, King, SecondKing, Villager, House, Stone, Bush, Tree, Castle,Farmer];
+    let objects = [Skeleton, King, SecondKing, Villager,Farmer];
 
     objects.forEach((object) => {
       object.getRequiredAssets().forEach(asset => {
