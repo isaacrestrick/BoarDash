@@ -6,6 +6,7 @@ import { King } from '../npcs/King';
 import { SecondKing } from '../npcs/SecondKing';
 import { Villager, type VillagerConfig } from '../npcs/Villager'
 import { Farmer } from '../npcs/Farmer';
+import { Claude } from '../npcs/Claude';
 
 class WorldRender {
   static buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
@@ -390,6 +391,7 @@ export default class GameScene extends Phaser.Scene {
   private secondKing!: SecondKing
   private villagers!: Villager[];
   private farmer!: Farmer;
+  private claude!: Claude;
   private readonly TILE_SIZE = 16;
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
@@ -426,13 +428,17 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    let objects = [Skeleton, King, SecondKing, Villager,Farmer];
+    let objects = [Skeleton, King, SecondKing, Villager, Farmer];
 
     objects.forEach((object) => {
       object.getRequiredAssets().forEach(asset => {
         this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
       });
     })
+
+    Claude.getRequiredAssets().forEach(asset => {
+      this.load.image(asset.key, asset.path);
+    });
   }
 
   create() {
@@ -628,6 +634,8 @@ export default class GameScene extends Phaser.Scene {
     this.king = new King(this, 5 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333);
     this.secondKing = new SecondKing(this, 79 * this.TILE_SIZE, 24 * this.TILE_SIZE, 2.5 / 3.3333)
 
+    this.claude = new Claude(this, 78 * this.TILE_SIZE, 10 * this.TILE_SIZE, 2.5 / 100.333);
+
 
 
     Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
@@ -748,6 +756,7 @@ export default class GameScene extends Phaser.Scene {
     })
     this.farmer.checkPlayerInteraction(playerX, playerY);
     this.king.checkPlayerInteraction(playerX, playerY);
+    this.claude.checkPlayerInteraction(playerX, playerY);
     this.secondKing.checkPlayerInteraction(playerX, playerY);
     this.villagers.forEach(villager => {
       villager.checkPlayerInteraction(playerX, playerY);
