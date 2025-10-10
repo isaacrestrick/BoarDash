@@ -19,6 +19,7 @@ export default class GameScene extends Phaser.Scene {
 
   public uiGameState!: UIGameState;
   public skeletons!: Skeleton[];
+  private buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
   private king!: King;
   private secondKing!: SecondKing
   private villagers!: Villager[];
@@ -35,6 +36,9 @@ export default class GameScene extends Phaser.Scene {
 
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
   private map!: Phaser.Tilemaps.Tilemap;
+
+
+  private collisionLayers!: Phaser.Tilemaps.TilemapLayer[];
 
   constructor() {
     super('GameScene');
@@ -183,6 +187,7 @@ export default class GameScene extends Phaser.Scene {
     const WaterMoundLayer = map.createLayer("Water_Mound", [WaterBridgeTileSet].filter(t => t !== null), 0, 0)
 
     const buildingsLayer = map.createLayer("Buildings", [WaterBridgeTileSet, castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
+    this.buildingsLayer = buildingsLayer ?? undefined;
     
     map.createLayer("Farm", [cropsTileset, farmLandTileTileset, WaterTroughTileSet, HayTileSet].filter(t => t !== null), 0, 0);
 
@@ -206,6 +211,17 @@ export default class GameScene extends Phaser.Scene {
     tree2Layer?.setCollisionByExclusion([-1]);
     tree3Layer?.setCollisionByExclusion([-1]);
     LogsLayer?.setCollisionByExclusion([-1]);
+
+    this.collisionLayers = [];
+
+
+    if (buildingsLayer) this.collisionLayers.push(buildingsLayer)
+    if (fencesLayer) this.collisionLayers.push(fencesLayer);
+    if (tree1Layer) this.collisionLayers.push(tree1Layer);
+    if (tree2Layer) this.collisionLayers.push(tree2Layer);
+    if (tree3Layer) this.collisionLayers.push(tree3Layer);
+    if (LogsLayer) this.collisionLayers.push(LogsLayer);
+
 
     console.log('buildingsLayer collision enabled:', buildingsLayer?.layer.collideIndexes);
 
@@ -246,16 +262,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.player = new Player(this, 36 * this.TILE_SIZE, 19 * this.TILE_SIZE)//720, 528); // 35 18
 
-    // Add collisions between player and layers
-    if (buildingsLayer) this.physics.add.collider(this.player.getSprite(), buildingsLayer);
-    if (tree1Layer) this.physics.add.collider(this.player.getSprite(), tree1Layer);
-    if (tree2Layer) this.physics.add.collider(this.player.getSprite(), tree2Layer);
-    if (tree3Layer) this.physics.add.collider(this.player.getSprite(), tree3Layer);
-    if (LogsLayer) this.physics.add.collider(this.player.getSprite(), LogsLayer);
-    if (fencesLayer) this.physics.add.collider(this.player.getSprite(), fencesLayer);
-    if (WaterMoundLayer) this.physics.add.collider(this.player.getSprite(), WaterMoundLayer);
 
 
+    this.collisionLayers.forEach(layer => {
+      this.physics.add.collider(this.player.getSprite(), layer);
+    })
     // Debug: Show collision boxes (remove once working)
     // const graphics = this.add.graphics();
     // graphics.lineStyle(2, 0x00ff00, 1);
@@ -288,17 +299,7 @@ export default class GameScene extends Phaser.Scene {
     this.skeletons = []
     this.lastSpawnTime = 0
 
-    // Add collisions between skeletons and layers
-    this.skeletons.forEach(skeleton => {
-      if (buildingsLayer) this.physics.add.collider(skeleton.getSprite(), buildingsLayer);
-      if (tree1Layer) this.physics.add.collider(skeleton.getSprite(), tree1Layer);
-      if (tree2Layer) this.physics.add.collider(skeleton.getSprite(), tree2Layer);
-      if (tree3Layer) this.physics.add.collider(skeleton.getSprite(), tree3Layer);
-      if (LogsLayer) this.physics.add.collider(skeleton.getSprite(), LogsLayer);
-      if (fencesLayer) this.physics.add.collider(skeleton.getSprite(), fencesLayer);
-      if (WaterMoundLayer) this.physics.add.collider(skeleton.getSprite(), WaterMoundLayer);
-
-    });
+    
 
     const villagerConfigs: Array<VillagerConfig> = [
       {
@@ -461,12 +462,22 @@ export default class GameScene extends Phaser.Scene {
       const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
       const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
       if (now - this.lastSpawnTime > 4000) {
-        this.skeletons.push(new Skeleton(this, x, y, 3.5 / 3.333))
+
+        let skeleton = new Skeleton(this, x, y, 3.5 / 3.333)
+
+        if (this.buildingsLayer) {
+          this.physics.add.collider(skeleton.getSprite(), this.buildingsLayer);
+        }
+
+        
+        this.skeletons.push(skeleton)
         this.lastSpawnTime = now
       }
       // console.log(minX, minY, maxX, maxY, x, y)
       console.log(this.lastSpawnTime, this.skeletons.length)
     }
+
+    
 
     // follow player
     this.skeletons.forEach(v => v.updateFollow(playerX, playerY, 50))
