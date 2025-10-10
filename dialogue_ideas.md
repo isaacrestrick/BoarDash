@@ -1,3 +1,14 @@
+Launch Screen
+- Space to Play, H for Help
+- Working on interactive help screen
+
+Make this shit make sense
+
+- Finish interactive help screen.
+- Add the rest of the NPCs.
+- Make clearer what is left when talking to king.
+- NPC needs an indicator if served or not
+
 Fun
 Sound
 Tutorial / Emojis on houses (position , z axis) / moving around NPCs and mobs
