@@ -178,15 +178,15 @@ export default class GameScene extends Phaser.Scene {
 
     map.createLayer("GrassPath", [farmLandTileTileset, grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
     map.createLayer("Grass_Textures", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
-    map.createLayer("Logs", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
+    const LogsLayer = map.createLayer("Logs", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
     map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
-    map.createLayer("Water_Mound", [WaterBridgeTileSet].filter(t => t !== null), 0, 0)
+    const WaterMoundLayer = map.createLayer("Water_Mound", [WaterBridgeTileSet].filter(t => t !== null), 0, 0)
 
     const buildingsLayer = map.createLayer("Buildings", [WaterBridgeTileSet, castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
     
     map.createLayer("Farm", [cropsTileset, farmLandTileTileset, WaterTroughTileSet, HayTileSet].filter(t => t !== null), 0, 0);
 
-    map.createLayer("Fences", [FencesTileSet].filter(t => t !== null), 0, 0)
+    const fencesLayer = map.createLayer("Fences", [FencesTileSet].filter(t => t !== null), 0, 0)
 
     
     
@@ -201,9 +201,11 @@ export default class GameScene extends Phaser.Scene {
     console.log('tree1Layer:', tree1Layer);
 
     buildingsLayer?.setCollisionByExclusion([-1]);
+    fencesLayer?.setCollisionByExclusion([-1]);
     tree1Layer?.setCollisionByExclusion([-1]);
     tree2Layer?.setCollisionByExclusion([-1]);
     tree3Layer?.setCollisionByExclusion([-1]);
+    LogsLayer?.setCollisionByExclusion([-1]);
 
     console.log('buildingsLayer collision enabled:', buildingsLayer?.layer.collideIndexes);
 
@@ -249,6 +251,10 @@ export default class GameScene extends Phaser.Scene {
     if (tree1Layer) this.physics.add.collider(this.player.getSprite(), tree1Layer);
     if (tree2Layer) this.physics.add.collider(this.player.getSprite(), tree2Layer);
     if (tree3Layer) this.physics.add.collider(this.player.getSprite(), tree3Layer);
+    if (LogsLayer) this.physics.add.collider(this.player.getSprite(), LogsLayer);
+    if (fencesLayer) this.physics.add.collider(this.player.getSprite(), fencesLayer);
+    if (WaterMoundLayer) this.physics.add.collider(this.player.getSprite(), WaterMoundLayer);
+
 
     // Debug: Show collision boxes (remove once working)
     // const graphics = this.add.graphics();
@@ -288,6 +294,10 @@ export default class GameScene extends Phaser.Scene {
       if (tree1Layer) this.physics.add.collider(skeleton.getSprite(), tree1Layer);
       if (tree2Layer) this.physics.add.collider(skeleton.getSprite(), tree2Layer);
       if (tree3Layer) this.physics.add.collider(skeleton.getSprite(), tree3Layer);
+      if (LogsLayer) this.physics.add.collider(skeleton.getSprite(), LogsLayer);
+      if (fencesLayer) this.physics.add.collider(skeleton.getSprite(), fencesLayer);
+      if (WaterMoundLayer) this.physics.add.collider(skeleton.getSprite(), WaterMoundLayer);
+
     });
 
     const villagerConfigs: Array<VillagerConfig> = [
