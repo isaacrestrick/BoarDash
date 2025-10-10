@@ -1,16 +1,10 @@
 import Phaser from 'phaser';
 import { Player } from '../Player';
-// import { NPC } from './npcs/Npc';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
 import { King } from '../npcs/King';
 import { SecondKing } from '../npcs/SecondKing';
 import { Villager, type VillagerConfig } from '../npcs/Villager'
-import { House } from '../static/House'
-import { Stone } from '../static/Stone'
-import { Bush } from '../static/Bush'
-import { Tree } from '../static/Tree'
-import { Castle } from '../static/Castle'
 import { Farmer } from '../npcs/Farmer';
 
 
@@ -22,11 +16,6 @@ export default class GameScene extends Phaser.Scene {
   private king!: King;
   private secondKing!: SecondKing
   private villagers!: Villager[];
-  private houses!: House[];
-  private stones!: Stone[];
-  private bushes!: Bush[];
-  private trees!: Tree[];
-  private castle!: Castle;
   private farmer!: Farmer;
   private readonly TILE_SIZE = 16;
   private readonly GRID_WIDTH = 45;
@@ -93,26 +82,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     Villager.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    House.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    Stone.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    Bush.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    Tree.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    Castle.getRequiredAssets().forEach(asset => {
       this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
     });
 
