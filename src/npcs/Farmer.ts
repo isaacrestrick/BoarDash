@@ -59,6 +59,10 @@ export class Farmer extends NPC {
     triggerPickUp(): void {
         const s = this.getSprite();
         const scene = s.scene as GameScene;
+
+        s.setTintFill(0xaaffaa)
+        s.scene.time.delayedCall(80, () => s.clearTint())
+
         const randomFood = this.foods[Math.floor(Math.random() * this.foods.length)];
         scene.uiGameState.addFoodStuff(randomFood);
         scene.events.emit("dialogue:show", "Here is your food: 1x " + this.foodSingulars[randomFood]);

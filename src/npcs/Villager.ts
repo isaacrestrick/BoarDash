@@ -17,6 +17,8 @@ export class Villager extends NPC {
     successDialogue: string = "You are a true Deliverer of Turkey Sandwiches 🥪!";
     failureDialogue: string = "I believe I ordered a Turkey Sandwich 🥪?";
     idleKey: string = "villager-jack-idle";
+    villagerId: number;
+    hasBeenDeliveredTo: boolean = false;
     
     static getRequiredAssets() {
         return [
@@ -54,7 +56,7 @@ export class Villager extends NPC {
         }
     }
 
-    constructor(scene: Phaser.Scene, x: number, y: number, scale = 2.5, config?: VillagerConfig) {//scale = 2.5, idlePath, food, title, greetingDialogue, successDialogue, failureDialogue) {
+    constructor(scene: Phaser.Scene, x: number, y: number, scale = 2.5, villagerId: number, config?: VillagerConfig) {//scale = 2.5, idlePath, food, title, greetingDialogue, successDialogue, failureDialogue) {
         super(scene, x, y, { key: config?.key ?? 'villager-mary-idle', scale });
         if (config) {
             this.food = config.food;
@@ -64,7 +66,8 @@ export class Villager extends NPC {
             this.failureDialogue = config.failureDialogue;
             this.idleKey = config.key;
         }
-
+        this.villagerId = villagerId
+        this.hasBeenDeliveredTo = false
         Villager.registerAnimations(scene);
         this.getSprite().play(this.idleKey, true);
     }
@@ -97,10 +100,34 @@ export class Villager extends NPC {
         const hasFood = foodCountsList.some((item: string) => item.includes(this.food) && !item.includes("x0"));
         
         if (hasFood) {
+
+            s.setTintFill(0xaaffaa)
+            s.scene.time.delayedCall(80, () => {
+                s.clearTint()
+                if (!this.hasBeenDeliveredTo) {
+                    this.hasBeenDeliveredTo = true
+                    const checkmark = scene.add.text(s.x, s.y - 20, '✓', {
+                        fontSize: '32px',
+                        color: '#00ff00'
+                    }).setOrigin(0.5);
+                    
+                    scene.tweens.add({
+                        targets: checkmark,
+                        y: checkmark.y - 10,
+                        duration: 1000,
+                        yoyo: true,
+                        repeat: -1
+                    });
+                }
+            }
+            )
+
+
             scene.uiGameState.decrementFoodStuff(this.food);
             scene.uiGameState.incrementTitleCount(this.title);
             scene.events.emit("dialogue:show", this.successDialogue)
             scene.uiGameState.setScoreBasedOnTitles();
+            scene.uiGameState.markVillagerDelivered(this.villagerId); // Add this line!
 
             s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
             s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())

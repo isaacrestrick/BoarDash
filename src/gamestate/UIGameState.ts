@@ -10,12 +10,14 @@ export class UIGameState {
     ["Deliverer of Turkey Sandwiches 🥪", [2, 0]],
     ["Favors owed by the king 👑", [3, 0]],
   ]);
+  private villagersDelivered: Array<boolean>;
 
-  constructor(foods: Array<string>, titles: Array<string>) {
+  constructor(foods: Array<string>, titles: Array<string>, villagerCount: number) {
     this.foodCounts = new Map<string, number>(foods.map(food => [food, 0]))
     this.currentScore = 0;
     this.titleScoreAndCountMap = new Map<string, [number, number]>(titles.map((title, idx) => [title, [idx, 0]]));
     this.titleScoreAndCountMap.set("Lord of Boars 🐗", [0, 1])
+    this.villagersDelivered = new Array(villagerCount).fill(false);
   }
 
   getTitleCount(): number {
@@ -71,12 +73,21 @@ export class UIGameState {
     }
   }
 
+  markVillagerDelivered(villagerId: number): void {
+    if (villagerId >= 0 && villagerId < this.villagersDelivered.length) {
+      this.villagersDelivered[villagerId] = true;
+    }
+  }
+
   allowedToDeliverBurger(): boolean {
-    for (const [title, [score, count]] of this.titleScoreAndCountMap.entries()) {
-      if (count === 0 && title != "Favors owed by the king 👑") {
-        console.log(title, count)
-        return false
-      }
+    // for (const [title, [score, count]] of this.titleScoreAndCountMap.entries()) {
+    //   if (count === 0 && title != "Favors owed by the king 👑") {
+    //     console.log(title, count)
+    //     return false
+    //   }
+    // }
+    if (!this.villagersDelivered.every(Boolean)) {
+      return false;
     }
     return this.titleScoreAndCountMap.get("Slayer of Skeletons ☠️")![1] >= 2;
   }

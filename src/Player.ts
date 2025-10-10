@@ -32,7 +32,7 @@ export class Player {
         this.scene = scene;
         this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
         this.sprite.setScale(0.18);
-        this.health = 300;//000;
+        this.health = 10;//000;
         this.lastDirection = 'front';
 
         // Enable physics collisions
@@ -133,16 +133,16 @@ export class Player {
 
 
         if (!has('knight-attack-right')) {
-            scene.anims.create({ key: 'knight-attack-right', frames: scene.anims.generateFrameNumbers('knight-attack-right', { start: 0, end: 35 }), frameRate: 30, repeat: 1 });
+            scene.anims.create({ key: 'knight-attack-right', frames: scene.anims.generateFrameNumbers('knight-attack-right', { start: 0, end: 35 }), frameRate: 30, repeat: 0 });
         }
         if (!has('knight-attack-left')) {
-            scene.anims.create({ key: 'knight-attack-left', frames: scene.anims.generateFrameNumbers('knight-attack-left', { start: 0, end: 35 }), frameRate: 30, repeat: 1 });
+            scene.anims.create({ key: 'knight-attack-left', frames: scene.anims.generateFrameNumbers('knight-attack-left', { start: 0, end: 35 }), frameRate: 30, repeat: 0 });
         }
         if (!has('knight-attack-back')) {
-            scene.anims.create({ key: 'knight-attack-back', frames: scene.anims.generateFrameNumbers('knight-attack-back', { start: 0, end: 35 }), frameRate: 30, repeat: 1 });
+            scene.anims.create({ key: 'knight-attack-back', frames: scene.anims.generateFrameNumbers('knight-attack-back', { start: 0, end: 35 }), frameRate: 30, repeat: 0 });
         }
         if (!has('knight-attack-front')) {
-            scene.anims.create({ key: 'knight-attack-front', frames: scene.anims.generateFrameNumbers('knight-attack-front', { start: 0, end: 35 }), frameRate: 30, repeat: 1 });
+            scene.anims.create({ key: 'knight-attack-front', frames: scene.anims.generateFrameNumbers('knight-attack-front', { start: 0, end: 35 }), frameRate: 30, repeat: 0 });
         }
 
 
@@ -250,7 +250,7 @@ export class Player {
     }
 
     isAttacking(): boolean {
-        return Phaser.Input.Keyboard.JustDown(this.attackKey);
+        return this.attackKey.isDown;
     }
 
     justPressedFoodKey(): boolean {
