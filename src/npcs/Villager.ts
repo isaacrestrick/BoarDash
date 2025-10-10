@@ -18,7 +18,6 @@ export class Villager extends NPC {
     failureDialogue: string = "I believe I ordered a Turkey Sandwich 🥪?";
     idleKey: string = "villager-jack-idle";
     villagerId: number;
-    successfullyDelivered: boolean = false;
     
     static getRequiredAssets() {
         return [
@@ -100,14 +99,29 @@ export class Villager extends NPC {
         
         if (hasFood) {
             s.setTintFill(0xaaffaa)
-            s.scene.time.delayedCall(80, () => s.clearTint())
+            s.scene.time.delayedCall(80, () => {
+                s.clearTint()
+                const checkmark = scene.add.text(s.x, s.y - 20, '✓', {
+                    fontSize: '32px',
+                    color: '#00ff00'
+                }).setOrigin(0.5);
+                
+                scene.tweens.add({
+                    targets: checkmark,
+                    y: checkmark.y - 10,
+                    duration: 1000,
+                    yoyo: true,
+                    repeat: -1
+                });
+                }
+            )
+
 
             scene.uiGameState.decrementFoodStuff(this.food);
             scene.uiGameState.incrementTitleCount(this.title);
             scene.events.emit("dialogue:show", this.successDialogue)
             scene.uiGameState.setScoreBasedOnTitles();
             scene.uiGameState.markVillagerDelivered(this.villagerId); // Add this line!
-            //
 
             s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
             s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
