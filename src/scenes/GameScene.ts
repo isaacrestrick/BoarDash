@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser, { Tilemaps } from 'phaser';
 import { Player } from '../Player';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
@@ -48,9 +48,15 @@ class WorldRender {
     scene.load.image("water-troughs", "map/tiles/Water_Troughs.png");
     scene.load.image("hay-bales", "map/tiles/Hay_Bales.png");
     scene.load.image("fences", "map/tiles/Fences.png");
+
+    //Add the animations
+    
+    WindMillAnimation.preloadWindMillAssets(scene);
+
   }
 
   static create(scene: GameScene) {
+    WorldRender.collisionLayers = [];
     WorldRender.map = scene.make.tilemap({key: 'map'})
     const tilesets = WorldRender.map.tilesets;
     const grass2MiddleTileset = WorldRender.map.addTilesetImage("Grass_2_Middle", "grass-2-middle");
@@ -120,6 +126,28 @@ class WorldRender {
 }
 
 
+
+class WindMillAnimation {
+  static preloadWindMillAssets(scene: GameScene) {
+    scene.load.spritesheet("windmill-sprite", "Cute_Fantasy/House/Buildings/Special_Buildings/Windmill/Windmill_Sail_Anim.png", {
+      frameWidth: 256 / 4, frameHeight: 80
+    });
+  }
+  constructor(scene: GameScene, x: number, y: number) {
+    if (!scene.anims.exists('windmill-idle')) {
+        scene.anims.create({ 
+            key: 'windmill-idle', 
+            frames: scene.anims.generateFrameNumbers('windmill-sprite', { start: 0, end: 3 }), 
+            frameRate: 3, 
+            repeat: -1 
+        });
+    }
+    let windmill_sprite = scene.add.sprite(x, y, 'windmill-sprite');
+    windmill_sprite.play('windmill-idle', true);
+  }
+}
+
+
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
@@ -171,30 +199,9 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
 
-    WorldRender.create(this);
-
-    // const map = this.make.tilemap({ key: 'map' });
-    // // Get a list of the tilesets from the map
-    // const tilesets = map.tilesets;
-    // console.log(tilesets);
-
-    
-
-
-   
-
- 
-
-    
+    WorldRender.create(this);    
     this.buildingsLayer = WorldRender.buildingsLayer;
     this.collisionLayers = WorldRender.collisionLayers;
-
-
-
-
-    console.log('buildingsLayer collision enabled:', this.buildingsLayer?.layer.collideIndexes);
-
-
 
     const mapWidth = WorldRender.map.widthInPixels;
     const mapHeight = WorldRender.map.heightInPixels;
@@ -328,8 +335,6 @@ export default class GameScene extends Phaser.Scene {
       "Favors owed by the king 👑",
     ];
 
-    this.uiGameState = new UIGameState(foods, titles)
-
     const farmerConfig = {
       key: 'farmer-idle',
       greetingDialogue: "Good day on the farm today.",
@@ -341,6 +346,7 @@ export default class GameScene extends Phaser.Scene {
       }
     }
 
+    this.uiGameState = new UIGameState(foods, titles)
     this.farmer = new Farmer(this, 34 * this.TILE_SIZE + 6, 17 * this.TILE_SIZE + 10, 2.5 / 3.333, farmerConfig);
     //this.king = new King(this, centerX + 300, centerY - 30, 2.5 / 3.333);
 
@@ -374,7 +380,10 @@ export default class GameScene extends Phaser.Scene {
     this.king = new King(this, 5 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333);
     this.secondKing = new SecondKing(this, 79 * this.TILE_SIZE, 24 * this.TILE_SIZE, 2.5 / 3.3333)
 
-    //    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
+
+    new WindMillAnimation(this, 36 * this.TILE_SIZE, 13 * this.TILE_SIZE)
+
+    
 
     this.scene.launch('ui', {
       playerHealth: this.player.getHealth(),
