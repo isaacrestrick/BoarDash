@@ -332,15 +332,22 @@ export default class GameScene extends Phaser.Scene {
 
     this.villagers = [
       //new Villager(this, 20 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333),
-      new Villager(this, 38 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[0]),
-
-      new Villager(this, 6 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[1]),
-      new Villager(this, 15 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]),
-      new Villager(this, 5 * this.TILE_SIZE, 16 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]),
-      new Villager(this, 6 * this.TILE_SIZE, 13 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[4]),
-      
-      new Villager(this, 16 * this.TILE_SIZE, 13 * this.TILE_SIZE, 2.5 / 3.333),
-      new Villager(this, 21 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333),
+      new Villager(this, 38 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]), //
+      new Villager(this, 6 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]), //
+      new Villager(this, 15 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333), //
+      new Villager(this, 5 * this.TILE_SIZE, 16 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]), //
+      //new Villager(this, 6 * this.TILE_SIZE, 13 * this.TILE_SIZE, 2.5 / 3.333),
+    
+      new Villager(this, 16 * this.TILE_SIZE, 13 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]), //
+      new Villager(this, 21 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[0]), //
+      new Villager(this, 52 * this.TILE_SIZE, 30 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[0]), //
+      new Villager(this, 55 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]), //
+      new Villager(this, 71 * this.TILE_SIZE, 20 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[1]), //
+      new Villager(this, 48 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[1]),
+      new Villager(this, 53 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[4]),
+      new Villager(this, 58 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]),
+      new Villager(this, 63 * this.TILE_SIZE, 4 * this.TILE_SIZE, 2.5 / 3.333),
+      new Villager(this, 74 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]),
       // [6,6], [15, 6], [5, 16], [6, 13], [16, 13], [21, 19], [52, 30], [55, 19]
       // [71, 20], [74, 6], [63, 4], [58, 6], [53, 6], [48, 6]
       // 
