@@ -98,7 +98,7 @@ export default class HelpScene extends Phaser.Scene {
     this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 7.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Press Space to begin', { fontSize: '48px' }).setOrigin(0.5);
 
     this.input.keyboard?.on('keydown-SPACE', () => {
-        this.scene.start('GameScene');
+        this.scene.start('DDIAScene');
       });
     
   }
