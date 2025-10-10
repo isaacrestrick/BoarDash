@@ -97,6 +97,9 @@ export class Villager extends NPC {
         const hasFood = foodCountsList.some((item: string) => item.includes(this.food) && !item.includes("x0"));
         
         if (hasFood) {
+            s.setTintFill(0xaaffaa)
+            s.scene.time.delayedCall(80, () => s.clearTint())
+
             scene.uiGameState.decrementFoodStuff(this.food);
             scene.uiGameState.incrementTitleCount(this.title);
             scene.events.emit("dialogue:show", this.successDialogue)
