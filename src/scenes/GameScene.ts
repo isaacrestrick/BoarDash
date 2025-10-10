@@ -21,6 +21,8 @@ export default class GameScene extends Phaser.Scene {
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
   private lastSpawnTime = 0
+  public skeletonNumber = 12
+  public skeletonSpawnDelay = 4000
 
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
   private map!: Phaser.Tilemaps.Tilemap;
@@ -241,7 +243,7 @@ export default class GameScene extends Phaser.Scene {
     //   graphics.lineStyle(2, 0xffff00, 1);
     //   tree3Layer.renderDebug(graphics, { tileColor: null, collidingTileColor: new Phaser.Display.Color(255, 255, 0, 100), faceColor: null });
     // }
-    
+
     // Camera follows player
     this.cameras.main.startFollow(this.player.getSprite(), true, 1, 1);
 
@@ -304,7 +306,7 @@ export default class GameScene extends Phaser.Scene {
     const foods = [
       "Turkey Sandwiches 🥪",
       ...villagerConfigs.map(config => config.food),
-      "Kingly Burgers 🍔", 
+      "Kingly Burgers 🍔",
     ];
     const titles = [
       "Lord of Boars 🐗",
@@ -327,7 +329,7 @@ export default class GameScene extends Phaser.Scene {
       }
     }
 
-    this.farmer = new Farmer(this, 34 * this.TILE_SIZE + 6, 17 * this.TILE_SIZE + 10 , 2.5 / 3.333, farmerConfig);
+    this.farmer = new Farmer(this, 34 * this.TILE_SIZE + 6, 17 * this.TILE_SIZE + 10, 2.5 / 3.333, farmerConfig);
     //this.king = new King(this, centerX + 300, centerY - 30, 2.5 / 3.333);
 
     this.villagers = [
@@ -355,10 +357,10 @@ export default class GameScene extends Phaser.Scene {
       //new Villager(this, 16 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]),
       //new Villager(this, 25 * this.TILE_SIZE, 15 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]),
       //new Villager(this, 35 * this.TILE_SIZE, 20 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[4])
-    ]  
+    ]
 
     this.king = new King(this, 5 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333);
-    this.secondKing = new SecondKing(this, 79 * this.TILE_SIZE, 24 * this.TILE_SIZE,  2.5 / 3.3333)
+    this.secondKing = new SecondKing(this, 79 * this.TILE_SIZE, 24 * this.TILE_SIZE, 2.5 / 3.3333)
 
     //    this.dialogueManager.show("The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
@@ -385,24 +387,32 @@ export default class GameScene extends Phaser.Scene {
     // console.log(Math.floor(playerX), Math.floor(playerY))
 
     const now = this.time.now
-    
-    
+
+
     if (playerX > 80 * this.TILE_SIZE) {
       const playerSprite = this.player.getSprite();
       (playerSprite.body as Phaser.Physics.Arcade.Body).setGravityY(50000);
       this.time.delayedCall(500, () => {
         this.scene.stop('ui');
-        this.scene.start('GameOverScene', { 
-          score: this.uiGameState.getScore(), 
-          win: false 
+        this.scene.start('GameOverScene', {
+          score: this.uiGameState.getScore(),
+          win: false
         });
       });
     }
-    
-    
+
+    if (this.uiGameState.allowedToDeliverBurger()) {
+      this.skeletonNumber = 150
+      this.skeletonSpawnDelay = 50
+    } else {
+      this.skeletonNumber = 12
+      this.skeletonSpawnDelay = 3500
+    }
+
     // console.log(now)
-    if (this.skeletons.length < 12) {
-      
+    // console.log(this.skeletonNumber)
+    if (this.skeletons.length < this.skeletonNumber) {
+
       // spawn everywhere
       // const minX = 0
       // const maxX = 79 * 16
@@ -426,12 +436,12 @@ export default class GameScene extends Phaser.Scene {
       const maxY = randomArea[1] + randomArea[3]
       const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
       const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
-      if (now - this.lastSpawnTime > 4000) {
+      if (now - this.lastSpawnTime > this.skeletonSpawnDelay) {
         this.skeletons.push(new Skeleton(this, x, y, 3.5 / 3.333))
         this.lastSpawnTime = now
       }
       // console.log(minX, minY, maxX, maxY, x, y)
-      console.log(this.lastSpawnTime, this.skeletons.length)
+      // console.log(this.lastSpawnTime, this.skeletons.length)
     }
 
     // follow player
@@ -476,9 +486,9 @@ export default class GameScene extends Phaser.Scene {
       // console.log("villager near: ", this.villager.isPlayerNear());
       if (this.farmer.isPlayerNear()) this.farmer.triggerPickUp()
       if (this.king.isPlayerNear()) this.king.triggerDelivery()
-        this.villagers.forEach(villager => {
-          if (villager.isPlayerNear()) villager.triggerDelivery();
-        });
+      this.villagers.forEach(villager => {
+        if (villager.isPlayerNear()) villager.triggerDelivery();
+      });
     }
   }
 }
