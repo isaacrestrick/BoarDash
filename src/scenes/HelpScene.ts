@@ -66,7 +66,7 @@ export default class HelpScene extends Phaser.Scene {
 
     this.add.text(
         this.GRID_WIDTH * this.TILE_SIZE / 2, 
-        0.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 
+        1.0 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 
         'How 2 Play BoarDash', 
         { 
           fontSize: '64px',
@@ -74,12 +74,12 @@ export default class HelpScene extends Phaser.Scene {
         }
       ).setOrigin(0.5);
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 3.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, '___________________________________________', { fontSize: '48px' }).setOrigin(0.5);
+    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 1.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, '___________________________________________', { fontSize: '48px' }).setOrigin(0.5);
 
 
     this.add.text(
         this.GRID_WIDTH * this.TILE_SIZE / 2, 
-        4.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 
+        2.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 
         'WASD to move, Space to sprint', 
         { 
           fontSize: '48px',
@@ -87,17 +87,15 @@ export default class HelpScene extends Phaser.Scene {
         }
       ).setOrigin(0.5);
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 4.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, '', { fontSize: '48px' }).setOrigin(0.5);
+    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 3.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Hold H to attack, press J to pick up & drop off', { fontSize: '48px' }).setOrigin(0.5);
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 5.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Hold H to attack, press J to pick up & drop off', { fontSize: '48px' }).setOrigin(0.5);
+    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 4.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Pick up meals from the farmer', { fontSize: '48px' }).setOrigin(0.5);
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 6.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Pick up meals from the farmer', { fontSize: '48px' }).setOrigin(0.5);
+    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 5.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Drop them off to all the villagers', { fontSize: '48px' }).setOrigin(0.5);
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 7.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Drop them off to all the villagers', { fontSize: '48px' }).setOrigin(0.5);
+    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 6.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Then give the king his burger', { fontSize: '48px' }).setOrigin(0.5);
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 8.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Then give the king his burger', { fontSize: '48px' }).setOrigin(0.5);
-
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 9.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Press Space to begin', { fontSize: '48px' }).setOrigin(0.5);
+    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 7.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Press Space to begin', { fontSize: '48px' }).setOrigin(0.5);
 
     this.input.keyboard?.on('keydown-SPACE', () => {
         this.scene.start('GameScene');
