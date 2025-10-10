@@ -346,7 +346,6 @@ export default class GameScene extends Phaser.Scene {
       }
     }
 
-    this.uiGameState = new UIGameState(foods, titles)
     this.farmer = new Farmer(this, 34 * this.TILE_SIZE + 6, 17 * this.TILE_SIZE + 10, 2.5 / 3.333, farmerConfig);
     //this.king = new King(this, centerX + 300, centerY - 30, 2.5 / 3.333);
 
