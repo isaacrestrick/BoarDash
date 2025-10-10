@@ -17,6 +17,8 @@ export class Villager extends NPC {
     successDialogue: string = "You are a true Deliverer of Turkey Sandwiches 🥪!";
     failureDialogue: string = "I believe I ordered a Turkey Sandwich 🥪?";
     idleKey: string = "villager-jack-idle";
+    villagerId: number;
+    successfullyDelivered: boolean = false;
     
     static getRequiredAssets() {
         return [
@@ -54,7 +56,7 @@ export class Villager extends NPC {
         }
     }
 
-    constructor(scene: Phaser.Scene, x: number, y: number, scale = 2.5, config?: VillagerConfig) {//scale = 2.5, idlePath, food, title, greetingDialogue, successDialogue, failureDialogue) {
+    constructor(scene: Phaser.Scene, x: number, y: number, scale = 2.5, villagerId: number, config?: VillagerConfig) {//scale = 2.5, idlePath, food, title, greetingDialogue, successDialogue, failureDialogue) {
         super(scene, x, y, { key: config?.key ?? 'villager-mary-idle', scale });
         if (config) {
             this.food = config.food;
@@ -64,7 +66,7 @@ export class Villager extends NPC {
             this.failureDialogue = config.failureDialogue;
             this.idleKey = config.key;
         }
-
+        this.villagerId = villagerId
         Villager.registerAnimations(scene);
         this.getSprite().play(this.idleKey, true);
     }
@@ -101,6 +103,8 @@ export class Villager extends NPC {
             scene.uiGameState.incrementTitleCount(this.title);
             scene.events.emit("dialogue:show", this.successDialogue)
             scene.uiGameState.setScoreBasedOnTitles();
+            scene.uiGameState.markVillagerDelivered(this.villagerId); // Add this line!
+            //
 
             s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
             s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())

@@ -51,6 +51,7 @@ class WorldRender {
   }
 
   static create(scene: GameScene) {
+    WorldRender.collisionLayers = [];
     WorldRender.map = scene.make.tilemap({key: 'map'})
     const tilesets = WorldRender.map.tilesets;
     const grass2MiddleTileset = WorldRender.map.addTilesetImage("Grass_2_Middle", "grass-2-middle");
@@ -328,8 +329,6 @@ export default class GameScene extends Phaser.Scene {
       "Favors owed by the king 👑",
     ];
 
-    this.uiGameState = new UIGameState(foods, titles)
-
     const farmerConfig = {
       key: 'farmer-idle',
       greetingDialogue: "Good day on the farm today.",
@@ -346,22 +345,22 @@ export default class GameScene extends Phaser.Scene {
 
     this.villagers = [
       //new Villager(this, 20 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333),
-      new Villager(this, 38 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]), //
-      new Villager(this, 6 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]), //
-      new Villager(this, 15 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333), //
-      new Villager(this, 5 * this.TILE_SIZE, 16 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]), //
+      new Villager(this, 38 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333, 0, villagerConfigs[3]), //
+      new Villager(this, 6 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, 1, villagerConfigs[2]), //
+      new Villager(this, 15 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, 2), //
+      new Villager(this, 5 * this.TILE_SIZE, 16 * this.TILE_SIZE, 2.5 / 3.333, 3, villagerConfigs[3]), //
       //new Villager(this, 6 * this.TILE_SIZE, 13 * this.TILE_SIZE, 2.5 / 3.333),
     
-      new Villager(this, 16 * this.TILE_SIZE, 13 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]), //
-      new Villager(this, 21 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[0]), //
-      new Villager(this, 52 * this.TILE_SIZE, 30 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[0]), //
-      new Villager(this, 55 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]), //
-      new Villager(this, 71 * this.TILE_SIZE, 20 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[1]), //
-      new Villager(this, 48 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[1]),
-      new Villager(this, 53 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[4]),
-      new Villager(this, 58 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[2]),
-      new Villager(this, 63 * this.TILE_SIZE, 4 * this.TILE_SIZE, 2.5 / 3.333),
-      new Villager(this, 74 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]),
+      new Villager(this, 16 * this.TILE_SIZE, 13 * this.TILE_SIZE, 2.5 / 3.333, 4, villagerConfigs[2]), //
+      new Villager(this, 21 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333, 5, villagerConfigs[0]), //
+      new Villager(this, 52 * this.TILE_SIZE, 30 * this.TILE_SIZE, 2.5 / 3.333, 6, villagerConfigs[0]), //
+      new Villager(this, 55 * this.TILE_SIZE, 19 * this.TILE_SIZE, 2.5 / 3.333, 7, villagerConfigs[2]), //
+      new Villager(this, 71 * this.TILE_SIZE, 20 * this.TILE_SIZE, 2.5 / 3.333, 8, villagerConfigs[1]), //
+      new Villager(this, 48 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, 9, villagerConfigs[1]),
+      new Villager(this, 53 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, 10, villagerConfigs[4]),
+      new Villager(this, 58 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, 11, villagerConfigs[2]),
+      new Villager(this, 63 * this.TILE_SIZE, 4 * this.TILE_SIZE, 2.5 / 3.333, 12),
+      new Villager(this, 74 * this.TILE_SIZE, 6 * this.TILE_SIZE, 2.5 / 3.333, 13, villagerConfigs[3]),
       // [6,6], [15, 6], [5, 16], [6, 13], [16, 13], [21, 19], [52, 30], [55, 19]
       // [71, 20], [74, 6], [63, 4], [58, 6], [53, 6], [48, 6]
       // 
@@ -370,6 +369,8 @@ export default class GameScene extends Phaser.Scene {
       //new Villager(this, 25 * this.TILE_SIZE, 15 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[3]),
       //new Villager(this, 35 * this.TILE_SIZE, 20 * this.TILE_SIZE, 2.5 / 3.333, villagerConfigs[4])
     ]
+
+    this.uiGameState = new UIGameState(foods, titles, this.villagers.length)
 
     this.king = new King(this, 5 * this.TILE_SIZE, 29 * this.TILE_SIZE, 2.5 / 3.333);
     this.secondKing = new SecondKing(this, 79 * this.TILE_SIZE, 24 * this.TILE_SIZE, 2.5 / 3.3333)
