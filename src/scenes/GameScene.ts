@@ -438,13 +438,7 @@ export default class GameScene extends Phaser.Scene {
     // console.log(now)
     if (this.skeletons.length < 12) {
       
-      // spawn everywhere
-      // const minX = 0
-      // const maxX = 79 * 16
-      // const minY = 0
-      // const maxY = 32 * 16
-      // const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
-      // const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
+
 
       // spawn areas
       const spawnAreas = [
