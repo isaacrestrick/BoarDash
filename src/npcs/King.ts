@@ -59,6 +59,7 @@ export class King extends NPC {
         const hasBurger = foodCountsList.some((item: string) => item.includes(burgerFood) && !item.includes("x0"));
         
         if (hasBurger && scene.uiGameState.allowedToDeliverBurger()) {
+            
             scene.uiGameState.decrementFoodStuff(burgerFood);
             scene.uiGameState.incrementTitleCount("Favors owed by the king 👑");
             scene.uiGameState.setScoreBasedOnTitles();
