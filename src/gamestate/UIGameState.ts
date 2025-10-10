@@ -37,7 +37,7 @@ export class UIGameState {
   getScore(): number {
     return this.currentScore;
   }
-  
+
   getTitlesList(): string[] {
     const rendered: string[] = [];
     for (const [title, [, count]] of this.titleScoreAndCountMap.entries()) {

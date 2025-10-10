@@ -14,8 +14,11 @@ export class Skeleton extends NPC {
             { key: 'skeleton-walk-left', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
             { key: 'skeleton-walk-right', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
             { key: 'skeleton-death', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
+            { key: 'skeleton-death-effect', path: 'Vampires1/Death/Vampires1_Death_smoke.png', type: 'spritesheet', frameWidth: 704/11, frameHeight: 256/4 },
         ] as const;
     }
+
+    private health = 3
 
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
@@ -52,6 +55,9 @@ export class Skeleton extends NPC {
         if (!has('skeleton-death')) {
             scene.anims.create({ key: 'skeleton-death', frames: scene.anims.generateFrameNames('skeleton-death', { start: 36, end: 39 }), frameRate: 8, repeat: 0 });
         }
+        if (!has('skeleton-death-effect')) {
+            scene.anims.create({ key: 'skeleton-death-effect', frames: scene.anims.generateFrameNames('skeleton-death-effect', { start: 4, end: 10 }), frameRate: 14, repeat: 0 });
+        }
     }
 
     private lastDirection: 'up' | 'down' | 'left' | 'right' = 'down'
@@ -61,6 +67,7 @@ export class Skeleton extends NPC {
     constructor(scene: Phaser.Scene, x: number, y: number, scale = 3.5) {
         super(scene, x, y, { key: 'skeleton-idle-down', scale });
         Skeleton.registerAnimations(scene);
+        this.health = 3
 
         // collisions
         this.getSprite().setCollideWorldBounds(true);
@@ -85,29 +92,43 @@ export class Skeleton extends NPC {
     }
 
     triggerDeath(): void {
-        // if (this.killed) return
-        this.killed = true
         const s = this.sprite
         const scene = s.scene as GameScene
+        if (this.health === 1) {
+            // if (this.killed) return
+            this.killed = true
+            
 
-        s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
-        // scene.uiGameState.setScoreBasedOnTitles()
-
-        s.play('skeleton-death', true)
-        scene.events.emit("dialogue:show", "I died? Not again!")
-        //scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()])
-        const index = scene.skeletons.indexOf(this);
-        if (index > -1) {
-            scene.skeletons.splice(index, 1);
-        }
-        console.log(scene.skeletons)
-        s.once('animationcomplete', () => {
-            console.log('death anim complete')
-            scene.uiGameState.incrementTitleCount("Slayer of Skeletons ☠️")
             s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
-            s.destroy()
-        });
-        // scene.uiGameState.setScoreBasedOnTitles()
+            // scene.uiGameState.setScoreBasedOnTitles()
+
+            s.play('skeleton-death', true)
+            const deathEffect = scene.add.sprite(s.x, s.y, 'skeleton-death-effect');
+            deathEffect.play('skeleton-death-effect', true);
+            scene.events.emit("dialogue:show", "I died? Not again!")
+            //scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()])
+            const index = scene.skeletons.indexOf(this);
+            if (index > -1) {
+                scene.skeletons.splice(index, 1);
+            }
+            // console.log(scene.skeletons)
+            s.setTintFill(0xffaaaa)
+            s.scene.time.delayedCall(120, () => s.clearTint())
+            s.once('animationcomplete', () => {
+                console.log('death anim complete')
+                scene.uiGameState.incrementTitleCount("Slayer of Skeletons ☠️")
+                s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
+                s.destroy()
+                deathEffect.destroy()
+            });
+            // scene.uiGameState.setScoreBasedOnTitles()
+            console.log('killed')
+        } else {
+            console.log('-1')
+            this.health = this.health - 1
+            s.setTintFill(0xffaaaa)
+            s.scene.time.delayedCall(120, () => s.clearTint())
+        }
     }
 
     private lastAttackTime = 0
