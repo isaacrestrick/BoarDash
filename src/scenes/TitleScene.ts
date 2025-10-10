@@ -62,9 +62,16 @@ export default class TitleScene extends Phaser.Scene {
 
     this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 8 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Press Space to start', { fontSize: '48px' }).setOrigin(0.5);
 
+    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 9 * this.GRID_HEIGHT * this.TILE_SIZE / 10, '(Or H for Help)', { fontSize: '48px' }).setOrigin(0.5);
+
+
     this.input.keyboard?.on('keydown-SPACE', () => {
-        this.scene.start('GameScene');
+        this.scene.start('DDIAScene');
       });
+    
+    this.input.keyboard?.on('keydown-H', () => {
+      this.scene.start('HelpScene');
+    });
   }
 
 

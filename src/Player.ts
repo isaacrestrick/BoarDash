@@ -250,7 +250,7 @@ export class Player {
     }
 
     isAttacking(): boolean {
-        return this.attackKey.isDown;
+        return Phaser.Input.Keyboard.JustDown(this.attackKey);
     }
 
     justPressedFoodKey(): boolean {
