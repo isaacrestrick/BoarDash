@@ -54,7 +54,16 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("blacksmith-house", "map/tiles/Blacksmith_House.png");
     this.load.image("farm-land-tile", "map/tiles/FarmLand_Tile.png");
     this.load.image("castle-tile", "map/tiles/Castle.png");
-    this.load.image("food-signage", "Food-Items-Combined.png")
+    this.load.image("food-signage", "Food-Items-Combined.png");
+
+    this.load.image("water-bridge","map/tiles/Water_Bridge.png");
+    this.load.image("outdoor-decor", "map/tiles/Outdoor_Decor.png");
+    this.load.image("water-troughs", "map/tiles/Water_Troughs.png");
+    this.load.image("hay-bales", "map/tiles/Hay_Bales.png");
+    this.load.image("fences", "map/tiles/Fences.png");
+
+
+
 
 
     this.load.tilemapTiledJSON('map', 'map/Boar-Knight-Map.json');
@@ -120,22 +129,38 @@ export default class GameScene extends Phaser.Scene {
     const farmLandTileTileset = map.addTilesetImage("FarmLand_Tile", "farm-land-tile");
     const castleTileset = map.addTilesetImage("Castle", "castle-tile")
     const foodSignageTileset = map.addTilesetImage("Food-Items-Combined", "food-signage");
+    
 
 
+    // this.load.image("water-bridge","map/tiles/Water_Bridge.png");
+    // this.load.image("outdoor-decor", "map/tiles/Outdoor_Decor.png");
+    // this.load.image("water-troughs", "map/tiles/Water_Troughs.png");
+    // this.load.image("hay-bales", "map/tiles/Hay_Bales.png");
+    // this.load.image("fences", "map/tiles/Fences.png");
 
-    map.createLayer("GrassPath", [grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
+    const HayTileSet = map.addTilesetImage("Hay_Bales", "hay-bales");
+    const WaterTroughTileSet = map.addTilesetImage("Water_Troughs", "water-troughs");
+    const WaterBridgeTileSet = map.addTilesetImage("Water_Bridge", "water-bridge");
+    const FencesTileSet = map.addTilesetImage("Fences", "fences");
+    const OutdoorDecorTileSet = map.addTilesetImage("Outdoor_Decor", "outdoor-decor");
 
 
+    map.createLayer("GrassPath", [farmLandTileTileset, grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
+    map.createLayer("Grass_Textures", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
+    map.createLayer("Logs", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
     map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
+    map.createLayer("Water_Mound", [WaterBridgeTileSet].filter(t => t !== null), 0, 0)
 
+    const buildingsLayer = map.createLayer("Buildings", [WaterBridgeTileSet, castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
+    
+    map.createLayer("Farm", [cropsTileset, farmLandTileTileset, WaterTroughTileSet, HayTileSet].filter(t => t !== null), 0, 0);
 
-    const buildingsLayer = map.createLayer("Buildings", [castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
+    map.createLayer("Fences", [FencesTileSet].filter(t => t !== null), 0, 0)
 
-
+    
+    
     const tree1Layer = map.createLayer("Tree 1", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
-
     const tree2Layer = map.createLayer("Tree 2", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset, foodSignageTileset].filter(t => t !== null), 0, 0);
-
     const tree3Layer = map.createLayer("Tree 3", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
 
 
