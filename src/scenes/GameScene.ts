@@ -11,6 +11,216 @@ class WorldRender {
   static buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
   static collisionLayers: Phaser.Tilemaps.TilemapLayer[] = [];
   static map :Phaser.Tilemaps.Tilemap;
+
+  static ANIMATION_CONFIGS ={
+    windmill: {
+      imgPath: "Cute_Fantasy/House/Buildings/Special_Buildings/Windmill/Windmill_Sail_Anim.png",
+      num_columns: 4,
+      num_rows: 1,
+      name: "windmill",
+      start_frame: 0,
+      end_frame: 3,
+      frame_rate: 3,
+      repeat: -1,
+      action: "idle", 
+      x: 36, 
+      y : 13
+    },
+    idle_cow: {
+      imgPath: "Cute_Fantasy/Animals/Cow/Cow_01.png",
+      num_columns: 8,
+      num_rows: 15,
+      name: "cow",
+      start_frame: 48,
+      end_frame: 54,
+      frame_rate: 4,
+      repeat: -1,
+      action: "eating", 
+      x: 37, 
+      y : 6
+    },
+    sleeping_sheep: {
+      imgPath: "Cute_Fantasy/Animals/Sheep/Sheep_01.png",
+      num_columns: 8,
+      num_rows: 15,
+      name: "sheep",
+      start_frame: 88,
+      end_frame: 95,
+      frame_rate: 4,
+      repeat: -1,
+      action: "sleeping",
+      x: 34,
+      y: 9
+    },
+    idling_sheep: {
+      imgPath: "Cute_Fantasy/Animals/Sheep/Sheep_01.png",
+      num_columns: 8,
+      num_rows: 15,
+      name: "sheep",
+      start_frame: 88,
+      end_frame: 95,
+      frame_rate: 4,
+      repeat: -1,
+      action: "sleeping",
+      x: 34,
+      y: 9
+    },
+    idling_swan: {
+      imgPath: "Cute_Fantasy/Animals/Swan/Swan_01.png",
+      num_columns: 8,
+      num_rows: 20,
+      name: "swan",
+      start_frame: 56,
+      end_frame: 57,
+      frame_rate: 3,
+      repeat: -1, 
+      action: "idling",
+      x: 2,
+      y: 28
+    },
+    corn_growing: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 2,
+      end_frame: 5,
+      frame_rate: .3,
+      name: "corn",
+      action: "growing",
+      repeat: -1,
+      x: 29,
+      y: 6
+    },
+    corn_growing_second: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 2,
+      end_frame: 5,
+      frame_rate: .5,
+      name: "corn",
+      action: "growing-seconds",
+      repeat: -1,
+      x: 30,
+      y: 6
+    },
+    tomato_growing: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 9,
+      end_frame: 12,
+      frame_rate: .4,
+      name: "tomato",
+      action: "growing",
+      repeat: -1,
+      x: 29,
+      y: 7
+    },
+    tomato_growing_two: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 9,
+      end_frame: 12,
+      frame_rate: .6,
+      name: "tomato",
+      action: "growing-two",
+      repeat: -1,
+      x: 30,
+      y: 7
+    },
+
+    carrot_growing: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 16,
+      end_frame: 19,
+      frame_rate: .6,
+      name: "carrot",
+      action: "growing",
+      repeat: -1,
+      x: 29,
+      y: 8
+    },
+
+    carrot_growing_two: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 16,
+      end_frame: 19,
+      frame_rate: .4,
+      name: "carrot",
+      action: "growing-two",
+      repeat: -1,
+      x: 30,
+      y: 8
+    },
+
+    //23 - 26
+
+    eggplant: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 23,
+      end_frame: 26,
+      frame_rate: .8,
+      name: "eggplant",
+      action: "growing",
+      repeat: -1,
+      x: 29,
+      y: 9
+    },
+
+    eggplant_two: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 23,
+      end_frame: 26,
+      frame_rate: .4,
+      name: "eggplant",
+      action: "growing-two",
+      repeat: -1,
+      x: 30,
+      y: 9
+    },
+
+    //30 - 33
+    corn: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 30,
+      end_frame: 33,
+      frame_rate: 1,
+      name: "corn",
+      action: "growing",
+      repeat: -1,
+      x: 29,
+      y: 10
+    },
+
+    corn_two: {
+      imgPath: "Cute_Fantasy/Crops/Crops.png",
+      num_columns: 7,
+      num_rows: 22,
+      start_frame: 30,
+      end_frame: 33,
+      frame_rate: .5,
+      name: "corn",
+      action: "growing-two",
+      repeat: -1,
+      x: 30,
+      y: 10
+    }
+
+
+
+  }
   static load_assets(scene: GameScene)  {
     scene.load.image("Fruit", "map/tiles/Big_Fruit_Tree.png");
     scene.load.image("blacksmith-house", "map/tiles/Blacksmith_House.png");
@@ -43,16 +253,11 @@ class WorldRender {
     scene.load.image("fences", "map/tiles/Fences.png");
     scene.load.tilemapTiledJSON('map', 'map/Boar-Knight-Map.json');
     scene.load.image('grassy_background', 'grassy_background.png');
-     scene.load.image("water-bridge","map/tiles/Water_Bridge.png");
+    scene.load.image("water-bridge","map/tiles/Water_Bridge.png");
     scene.load.image("outdoor-decor", "map/tiles/Outdoor_Decor.png");
     scene.load.image("water-troughs", "map/tiles/Water_Troughs.png");
     scene.load.image("hay-bales", "map/tiles/Hay_Bales.png");
     scene.load.image("fences", "map/tiles/Fences.png");
-
-    //Add the animations
-    
-    WindMillAnimation.preloadWindMillAssets(scene);
-
   }
 
   static create(scene: GameScene) {
@@ -127,23 +332,50 @@ class WorldRender {
 
 
 
-class WindMillAnimation {
-  static preloadWindMillAssets(scene: GameScene) {
-    scene.load.spritesheet("windmill-sprite", "Cute_Fantasy/House/Buildings/Special_Buildings/Windmill/Windmill_Sail_Anim.png", {
-      frameWidth: 256 / 4, frameHeight: 80
+
+interface AnimationConfig {
+  imgPath: string;
+  num_columns: number;
+  num_rows: number;
+  name: string;
+  start_frame: number;
+  end_frame: number;
+  frame_rate: number;
+  repeat: number;
+  action: string;
+  x: number;
+  y: number;
+}
+
+class AnimatedSprite {
+  static async getImageDimensions(src: string): Promise<{ width: number; height: number }> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve({ width: img.width, height: img.height });
+      img.onerror = reject;
+      img.src = src;
     });
   }
-  constructor(scene: GameScene, x: number, y: number) {
-    if (!scene.anims.exists('windmill-idle')) {
-        scene.anims.create({ 
-            key: 'windmill-idle', 
-            frames: scene.anims.generateFrameNumbers('windmill-sprite', { start: 0, end: 3 }), 
-            frameRate: 3, 
-            repeat: -1 
+  static preloadAssets(scene: GameScene, config: AnimationConfig) {
+    this.getImageDimensions(config.imgPath).then(({ width, height }) => {
+      scene.load.spritesheet(`${config.name}-sprite`, config.imgPath, {
+        frameWidth: width / config.num_columns,
+        frameHeight: height / config.num_rows
+      });
+    });
+  }
+
+  static playAnimation(scene: GameScene, config: AnimationConfig, x: number, y: number) {
+    if (!scene.anims.exists(`${config.name}-${config.action}`)) {
+      scene.anims.create({
+            key: `${config.name}-${config.action}`, 
+            frames: scene.anims.generateFrameNumbers(`${config.name}-sprite`, { start: config.start_frame, end: config.end_frame }), 
+            frameRate: config.frame_rate, 
+            repeat: config.repeat
         });
     }
-    let windmill_sprite = scene.add.sprite(x, y, 'windmill-sprite');
-    windmill_sprite.play('windmill-idle', true);
+    let sprite = scene.add.sprite(x, y, `${config.name}-sprite`);
+    sprite.play(`${config.name}-${config.action}`, true);
   }
 }
 
@@ -178,6 +410,12 @@ export default class GameScene extends Phaser.Scene {
   preload() {
 
     WorldRender.load_assets(this);
+
+
+    Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
+      AnimatedSprite.preloadAssets(this, config)
+    })
+  
 
     
     Player.getRequiredAssets().forEach(asset => {
@@ -381,9 +619,14 @@ export default class GameScene extends Phaser.Scene {
     this.secondKing = new SecondKing(this, 79 * this.TILE_SIZE, 24 * this.TILE_SIZE, 2.5 / 3.3333)
 
 
-    new WindMillAnimation(this, 36 * this.TILE_SIZE, 13 * this.TILE_SIZE)
 
-    
+    Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
+      AnimatedSprite.playAnimation(this, config, config.x * this.TILE_SIZE, config.y * this.TILE_SIZE)
+    }) 
+
+
+
+
 
     this.scene.launch('ui', {
       playerHealth: this.player.getHealth(),
