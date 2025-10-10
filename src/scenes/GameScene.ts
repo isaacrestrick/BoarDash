@@ -7,12 +7,125 @@ import { SecondKing } from '../npcs/SecondKing';
 import { Villager, type VillagerConfig } from '../npcs/Villager'
 import { Farmer } from '../npcs/Farmer';
 
+class WorldRender {
+  static buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
+  static collisionLayers: Phaser.Tilemaps.TilemapLayer[] = [];
+  static map :Phaser.Tilemaps.Tilemap;
+  static load_assets(scene: GameScene)  {
+    scene.load.image("Fruit", "map/tiles/Big_Fruit_Tree.png");
+    scene.load.image("blacksmith-house", "map/tiles/Blacksmith_House.png");
+    scene.load.image("grass-2-middle", "map/tiles/Grass_2_Middle.png");
+    scene.load.image("grass-tiles-2", "map/tiles/Grass_Tiles_2.png");
+    scene.load.image("path-decorations", "map/tiles/Path_Decoration.png");
+    scene.load.image("path-middle", "map/tiles/Path_Middle.png");
+    scene.load.image("windmill", "map/tiles/Windmill.png");
+    scene.load.image("medium-fruit-tree", "map/tiles/Medium_Fruit_Tree.png");
+    scene.load.image("oak-leaf-particle", "map/tiles/Oak_Leaf_Particle.png");
+    scene.load.image("small-fruit-tree", "map/tiles/Small_Fruit_Tree.png");
+    scene.load.image("fruit-tree-stages", "map/tiles/Fruit_Tree_Stages.png");
+    scene.load.image("crops", "map/tiles/Crops.png");
+    scene.load.image("house-5-2", "map/tiles/House_5_2.png");
+    scene.load.image("house-4-5", "map/tiles/House_4_5.png");
+    scene.load.image("house-4-3", "map/tiles/House_4_3.png");
+    scene.load.image("house-2-1", "map/tiles/House_2_1.png");
+    scene.load.image("house-1-3", "map/tiles/House_1_3.png");
+    scene.load.image("house-1-2", "map/tiles/House_1_2.png");
+    scene.load.image("house-abandoned-1-4", "map/tiles/House_Abandoned_1_4.png");
+    scene.load.image("tent-big", "map/tiles/Tent_Big.png");
+    scene.load.image("blacksmith-house", "map/tiles/Blacksmith_House.png");
+    scene.load.image("farm-land-tile", "map/tiles/FarmLand_Tile.png");
+    scene.load.image("castle-tile", "map/tiles/Castle.png");
+    scene.load.image("food-signage", "Food-Items-Combined.png");
+    scene.load.image("water-bridge","map/tiles/Water_Bridge.png");
+    scene.load.image("outdoor-decor", "map/tiles/Outdoor_Decor.png");
+    scene.load.image("water-troughs", "map/tiles/Water_Troughs.png");
+    scene.load.image("hay-bales", "map/tiles/Hay_Bales.png");
+    scene.load.image("fences", "map/tiles/Fences.png");
+    scene.load.tilemapTiledJSON('map', 'map/Boar-Knight-Map.json');
+    scene.load.image('grassy_background', 'grassy_background.png');
+     scene.load.image("water-bridge","map/tiles/Water_Bridge.png");
+    scene.load.image("outdoor-decor", "map/tiles/Outdoor_Decor.png");
+    scene.load.image("water-troughs", "map/tiles/Water_Troughs.png");
+    scene.load.image("hay-bales", "map/tiles/Hay_Bales.png");
+    scene.load.image("fences", "map/tiles/Fences.png");
+  }
+
+  static create(scene: GameScene) {
+    WorldRender.map = scene.make.tilemap({key: 'map'})
+    const tilesets = WorldRender.map.tilesets;
+    const grass2MiddleTileset = WorldRender.map.addTilesetImage("Grass_2_Middle", "grass-2-middle");
+    const grassTiles2Tileset = WorldRender.map.addTilesetImage("Grass_Tiles_2", "grass-tiles-2");
+    const pathDecorationsTileset = WorldRender.map.addTilesetImage("Path_Decoration", "path-decorations");
+    const pathMiddleTileset = WorldRender.map.addTilesetImage("Path_Middle", "path-middle");
+    const windmillTileset = WorldRender.map.addTilesetImage("Windmill", "windmill");
+    const mediumFruitTreeTileset = WorldRender.map.addTilesetImage("Medium_Fruit_Tree", "medium-fruit-tree");
+    const oakLeafParticleTileset = WorldRender.map.addTilesetImage("Oak_Leaf_Particle", "oak-leaf-particle");
+    const smallFruitTreeTileset = WorldRender.map.addTilesetImage("Small_Fruit_Tree", "small-fruit-tree");
+    const fruitTreeStagesTileset = WorldRender.map.addTilesetImage("Fruit_Tree_Stages", "fruit-tree-stages");
+    const cropsTileset = WorldRender.map.addTilesetImage("Crops", "crops");
+    const house52Tileset = WorldRender.map.addTilesetImage("House_5_2", "house-5-2");
+    const house45Tileset = WorldRender.map.addTilesetImage("House_4_5", "house-4-5");
+    const house43Tileset = WorldRender.map.addTilesetImage("House_4_3", "house-4-3");
+    const house21Tileset = WorldRender.map.addTilesetImage("House_2_1", "house-2-1");
+    const house13Tileset = WorldRender.map.addTilesetImage("House_1_3", "house-1-3");
+    const house12Tileset = WorldRender.map.addTilesetImage("House_1_2", "house-1-2");
+    const houseAbandoned14Tileset = WorldRender.map.addTilesetImage("House_Abandoned_1_4", "house-abandoned-1-4");
+    const tentBigTileset = WorldRender.map.addTilesetImage("Tent_Big", "tent-big");
+    const blacksmithHouseTileset = WorldRender.map.addTilesetImage("Blacksmith_House", "blacksmith-house");
+    const farmLandTileTileset = WorldRender.map.addTilesetImage("FarmLand_Tile", "farm-land-tile");
+    const castleTileset = WorldRender.map.addTilesetImage("Castle", "castle-tile")
+    const foodSignageTileset = WorldRender.map.addTilesetImage("Food-Items-Combined", "food-signage");
+    const bigFruitTreeTileset = WorldRender.map.addTilesetImage("big-fruit-tree", "big-fruit-tree");
+    const HayTileSet = WorldRender.map.addTilesetImage("Hay_Bales", "hay-bales");
+    const WaterTroughTileSet = WorldRender.map.addTilesetImage("Water_Troughs", "water-troughs");
+    const WaterBridgeTileSet = WorldRender.map.addTilesetImage("Water_Bridge", "water-bridge");
+    const FencesTileSet = WorldRender.map.addTilesetImage("Fences", "fences");
+    const OutdoorDecorTileSet = WorldRender.map.addTilesetImage("Outdoor_Decor", "outdoor-decor");
+
+    WorldRender.map.createLayer("GrassPath", [farmLandTileTileset, grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
+    WorldRender.map.createLayer("Grass_Textures", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
+    const LogsLayer = WorldRender.map.createLayer("Logs", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
+    WorldRender.map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
+    const WaterMoundLayer = WorldRender.map.createLayer("Water_Mound", [WaterBridgeTileSet].filter(t => t !== null), 0, 0)
+
+    const buildingsLayer = WorldRender.map.createLayer("Buildings", [WaterBridgeTileSet, castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
+    
+    WorldRender.map.createLayer("Farm", [cropsTileset, farmLandTileTileset, WaterTroughTileSet, HayTileSet].filter(t => t !== null), 0, 0);
+
+
+    const fencesLayer = WorldRender.map.createLayer("Fences", [FencesTileSet].filter(t => t !== null), 0, 0)
+    const tree1Layer = WorldRender.map.createLayer("Tree 1", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
+    const tree2Layer = WorldRender.map.createLayer("Tree 2", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset, foodSignageTileset].filter(t => t !== null), 0, 0);
+    const tree3Layer = WorldRender.map.createLayer("Tree 3", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
+
+
+
+    WorldRender.buildingsLayer = buildingsLayer ?? undefined;
+    if (buildingsLayer) WorldRender.collisionLayers.push(buildingsLayer);
+    buildingsLayer?.setCollisionByExclusion([-1]);
+    if (fencesLayer) WorldRender.collisionLayers.push(fencesLayer);
+    fencesLayer?.setCollisionByExclusion([-1]);
+    if (tree1Layer) WorldRender.collisionLayers.push(tree1Layer);
+    tree1Layer?.setCollisionByExclusion([-1]);
+    if (tree2Layer) WorldRender.collisionLayers.push(tree2Layer);
+    tree2Layer?.setCollisionByExclusion([-1]);
+    if (tree3Layer) WorldRender.collisionLayers.push(tree3Layer);
+    tree3Layer?.setCollisionByExclusion([-1]);
+    if (LogsLayer) WorldRender.collisionLayers.push(LogsLayer);
+    LogsLayer?.setCollisionByExclusion([-1]);
+  }
+
+
+  
+}
+
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
   public uiGameState!: UIGameState;
   public skeletons!: Skeleton[];
+  private buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
   private king!: King;
   private secondKing!: SecondKing
   private villagers!: Villager[];
@@ -27,51 +140,18 @@ export default class GameScene extends Phaser.Scene {
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
   private map!: Phaser.Tilemaps.Tilemap;
 
+
+  private collisionLayers!: Phaser.Tilemaps.TilemapLayer[];
+
   constructor() {
     super('GameScene');
   }
 
   preload() {
 
-    this.load.image("Fruit", "map/tiles/Big_Fruit_Tree.png");
-    this.load.image("blacksmith-house", "map/tiles/Blacksmith_House.png");
-    this.load.image("grass-2-middle", "map/tiles/Grass_2_Middle.png");
-    this.load.image("grass-tiles-2", "map/tiles/Grass_Tiles_2.png");
-    this.load.image("path-decorations", "map/tiles/Path_Decoration.png");
-    this.load.image("path-middle", "map/tiles/Path_Middle.png");
-    this.load.image("windmill", "map/tiles/Windmill.png");
-    this.load.image("medium-fruit-tree", "map/tiles/Medium_Fruit_Tree.png");
-    this.load.image("oak-leaf-particle", "map/tiles/Oak_Leaf_Particle.png");
-    this.load.image("small-fruit-tree", "map/tiles/Small_Fruit_Tree.png");
-    this.load.image("fruit-tree-stages", "map/tiles/Fruit_Tree_Stages.png");
-    this.load.image("crops", "map/tiles/Crops.png");
-    this.load.image("house-5-2", "map/tiles/House_5_2.png");
-    this.load.image("house-4-5", "map/tiles/House_4_5.png");
-    this.load.image("house-4-3", "map/tiles/House_4_3.png");
-    this.load.image("house-2-1", "map/tiles/House_2_1.png");
-    this.load.image("house-1-3", "map/tiles/House_1_3.png");
-    this.load.image("house-1-2", "map/tiles/House_1_2.png");
-    this.load.image("house-abandoned-1-4", "map/tiles/House_Abandoned_1_4.png");
-    this.load.image("tent-big", "map/tiles/Tent_Big.png");
-    this.load.image("blacksmith-house", "map/tiles/Blacksmith_House.png");
-    this.load.image("farm-land-tile", "map/tiles/FarmLand_Tile.png");
-    this.load.image("castle-tile", "map/tiles/Castle.png");
-    this.load.image("food-signage", "Food-Items-Combined.png");
+    WorldRender.load_assets(this);
 
-    this.load.image("water-bridge","map/tiles/Water_Bridge.png");
-    this.load.image("outdoor-decor", "map/tiles/Outdoor_Decor.png");
-    this.load.image("water-troughs", "map/tiles/Water_Troughs.png");
-    this.load.image("hay-bales", "map/tiles/Hay_Bales.png");
-    this.load.image("fences", "map/tiles/Fences.png");
-
-
-
-
-
-    this.load.tilemapTiledJSON('map', 'map/Boar-Knight-Map.json');
-
-    this.load.image('grassy_background', 'grassy_background.png');
-
+    
     Player.getRequiredAssets().forEach(asset => {
       if (asset.type === 'spritesheet') {
         this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
@@ -80,109 +160,48 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    Skeleton.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
+    let objects = [Skeleton, King, SecondKing, Villager, House, Stone, Bush, Tree, Castle,Farmer];
 
-    King.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    SecondKing.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    Villager.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    Farmer.getRequiredAssets().forEach(asset => {
-      this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
+    objects.forEach((object) => {
+      object.getRequiredAssets().forEach(asset => {
+        this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+      });
+    })
   }
 
   create() {
 
-    const map = this.make.tilemap({ key: 'map' });
-    // Get a list of the tilesets from the map
-    const tilesets = map.tilesets;
-    console.log(tilesets);
+    WorldRender.create(this);
 
-    // const bigFruitTreeTileset = map.addTilesetImage("big-fruit-tree", "big-fruit-tree");
-    const grass2MiddleTileset = map.addTilesetImage("Grass_2_Middle", "grass-2-middle");
-    const grassTiles2Tileset = map.addTilesetImage("Grass_Tiles_2", "grass-tiles-2");
-    const pathDecorationsTileset = map.addTilesetImage("Path_Decoration", "path-decorations");
-    const pathMiddleTileset = map.addTilesetImage("Path_Middle", "path-middle");
-    const windmillTileset = map.addTilesetImage("Windmill", "windmill");
-    const mediumFruitTreeTileset = map.addTilesetImage("Medium_Fruit_Tree", "medium-fruit-tree");
-    const oakLeafParticleTileset = map.addTilesetImage("Oak_Leaf_Particle", "oak-leaf-particle");
-    const smallFruitTreeTileset = map.addTilesetImage("Small_Fruit_Tree", "small-fruit-tree");
-    const fruitTreeStagesTileset = map.addTilesetImage("Fruit_Tree_Stages", "fruit-tree-stages");
-    const cropsTileset = map.addTilesetImage("Crops", "crops");
-    const house52Tileset = map.addTilesetImage("House_5_2", "house-5-2");
-    const house45Tileset = map.addTilesetImage("House_4_5", "house-4-5");
-    const house43Tileset = map.addTilesetImage("House_4_3", "house-4-3");
-    const house21Tileset = map.addTilesetImage("House_2_1", "house-2-1");
-    const house13Tileset = map.addTilesetImage("House_1_3", "house-1-3");
-    const house12Tileset = map.addTilesetImage("House_1_2", "house-1-2");
-    const houseAbandoned14Tileset = map.addTilesetImage("House_Abandoned_1_4", "house-abandoned-1-4");
-    const tentBigTileset = map.addTilesetImage("Tent_Big", "tent-big");
-    const blacksmithHouseTileset = map.addTilesetImage("Blacksmith_House", "blacksmith-house");
-    const farmLandTileTileset = map.addTilesetImage("FarmLand_Tile", "farm-land-tile");
-    const castleTileset = map.addTilesetImage("Castle", "castle-tile")
-    const foodSignageTileset = map.addTilesetImage("Food-Items-Combined", "food-signage");
-    
-
-
-    // this.load.image("water-bridge","map/tiles/Water_Bridge.png");
-    // this.load.image("outdoor-decor", "map/tiles/Outdoor_Decor.png");
-    // this.load.image("water-troughs", "map/tiles/Water_Troughs.png");
-    // this.load.image("hay-bales", "map/tiles/Hay_Bales.png");
-    // this.load.image("fences", "map/tiles/Fences.png");
-
-    const HayTileSet = map.addTilesetImage("Hay_Bales", "hay-bales");
-    const WaterTroughTileSet = map.addTilesetImage("Water_Troughs", "water-troughs");
-    const WaterBridgeTileSet = map.addTilesetImage("Water_Bridge", "water-bridge");
-    const FencesTileSet = map.addTilesetImage("Fences", "fences");
-    const OutdoorDecorTileSet = map.addTilesetImage("Outdoor_Decor", "outdoor-decor");
-
-
-    map.createLayer("GrassPath", [farmLandTileTileset, grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
-    map.createLayer("Grass_Textures", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
-    map.createLayer("Logs", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
-    map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
-    map.createLayer("Water_Mound", [WaterBridgeTileSet].filter(t => t !== null), 0, 0)
-
-    const buildingsLayer = map.createLayer("Buildings", [WaterBridgeTileSet, castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
-    
-    map.createLayer("Farm", [cropsTileset, farmLandTileTileset, WaterTroughTileSet, HayTileSet].filter(t => t !== null), 0, 0);
-
-    map.createLayer("Fences", [FencesTileSet].filter(t => t !== null), 0, 0)
+    // const map = this.make.tilemap({ key: 'map' });
+    // // Get a list of the tilesets from the map
+    // const tilesets = map.tilesets;
+    // console.log(tilesets);
 
     
+
+
+   
+
+ 
+
     
-    const tree1Layer = map.createLayer("Tree 1", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
-    const tree2Layer = map.createLayer("Tree 2", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset, foodSignageTileset].filter(t => t !== null), 0, 0);
-    const tree3Layer = map.createLayer("Tree 3", [fruitTreeStagesTileset, mediumFruitTreeTileset, smallFruitTreeTileset].filter(t => t !== null), 0, 0);
+    this.buildingsLayer = WorldRender.buildingsLayer;
+    this.collisionLayers = WorldRender.collisionLayers;
 
 
-    // Enable collision on all tiles in these layers (excluding empty tiles with index -1)
-    console.log('Setting up collisions...');
-    console.log('buildingsLayer:', buildingsLayer);
-    console.log('tree1Layer:', tree1Layer);
-
-    buildingsLayer?.setCollisionByExclusion([-1]);
-    tree1Layer?.setCollisionByExclusion([-1]);
-    tree2Layer?.setCollisionByExclusion([-1]);
-    tree3Layer?.setCollisionByExclusion([-1]);
-
-    console.log('buildingsLayer collision enabled:', buildingsLayer?.layer.collideIndexes);
-
-    //tree and buildings are collision layers
 
 
-    const mapWidth = map.widthInPixels;
-    const mapHeight = map.heightInPixels;
+    console.log('buildingsLayer collision enabled:', this.buildingsLayer?.layer.collideIndexes);
+
+
+
+    const mapWidth = WorldRender.map.widthInPixels;
+    const mapHeight = WorldRender.map.heightInPixels;
+
+
+
+
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
 
     const cursors = this.input.keyboard!.createCursorKeys();
@@ -215,12 +234,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.player = new Player(this, 36 * this.TILE_SIZE, 19 * this.TILE_SIZE)//720, 528); // 35 18
 
-    // Add collisions between player and layers
-    if (buildingsLayer) this.physics.add.collider(this.player.getSprite(), buildingsLayer);
-    if (tree1Layer) this.physics.add.collider(this.player.getSprite(), tree1Layer);
-    if (tree2Layer) this.physics.add.collider(this.player.getSprite(), tree2Layer);
-    if (tree3Layer) this.physics.add.collider(this.player.getSprite(), tree3Layer);
 
+
+    this.collisionLayers.forEach(layer => {
+      this.physics.add.collider(this.player.getSprite(), layer);
+    })
     // Debug: Show collision boxes (remove once working)
     // const graphics = this.add.graphics();
     // graphics.lineStyle(2, 0x00ff00, 1);
@@ -253,13 +271,7 @@ export default class GameScene extends Phaser.Scene {
     this.skeletons = []
     this.lastSpawnTime = 0
 
-    // Add collisions between skeletons and layers
-    this.skeletons.forEach(skeleton => {
-      if (buildingsLayer) this.physics.add.collider(skeleton.getSprite(), buildingsLayer);
-      if (tree1Layer) this.physics.add.collider(skeleton.getSprite(), tree1Layer);
-      if (tree2Layer) this.physics.add.collider(skeleton.getSprite(), tree2Layer);
-      if (tree3Layer) this.physics.add.collider(skeleton.getSprite(), tree3Layer);
-    });
+    
 
     const villagerConfigs: Array<VillagerConfig> = [
       {
@@ -436,13 +448,20 @@ export default class GameScene extends Phaser.Scene {
       const maxY = randomArea[1] + randomArea[3]
       const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
       const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
+
       if (now - this.lastSpawnTime > this.skeletonSpawnDelay) {
-        this.skeletons.push(new Skeleton(this, x, y, 3.5 / 3.333))
+        let skeleton = new Skeleton(this, x, y, 3.5 / 3.333)
+          if (this.buildingsLayer) {
+            this.physics.add.collider(skeleton.getSprite(), this.buildingsLayer);
+          }
+        this.skeletons.push(skeleton)
         this.lastSpawnTime = now
       }
       // console.log(minX, minY, maxX, maxY, x, y)
       // console.log(this.lastSpawnTime, this.skeletons.length)
     }
+
+    
 
     // follow player
     this.skeletons.forEach(v => v.updateFollow(playerX, playerY, 50))
