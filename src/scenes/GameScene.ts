@@ -8,6 +8,8 @@ import { Villager, type VillagerConfig } from '../npcs/Villager'
 import { Farmer } from '../npcs/Farmer';
 import { Claude } from '../npcs/Claude';
 
+import { MageSkeleton } from '../npcs/MageSkeleton';
+
 class WorldRender {
   static buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
   static collisionLayers: Phaser.Tilemaps.TilemapLayer[] = [];
@@ -586,7 +588,7 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    let objects = [Skeleton, King, SecondKing, Villager, Farmer];
+    let objects = [Skeleton, King, SecondKing, Villager, Farmer, MageSkeleton];
 
     objects.forEach((object) => {
       object.getRequiredAssets().forEach(asset => {
@@ -950,7 +952,10 @@ export default class GameScene extends Phaser.Scene {
       const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
 
       if (now - this.lastSpawnTime > this.skeletonSpawnDelay) {
-        let skeleton = new Skeleton(this, x, y, 3.5 / 3.333)
+
+        let skeleton = (this.uiGameState.allowedToDeliverBurger()) ? new MageSkeleton(this, x, y, 3.5 / 3.333) : new Skeleton(this, x, y, 3.5 / 3.333)
+
+      
           if (this.buildingsLayer) {
             this.physics.add.collider(skeleton.getSprite(), this.buildingsLayer);
           }
