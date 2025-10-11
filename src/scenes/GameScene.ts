@@ -539,6 +539,7 @@ export default class GameScene extends Phaser.Scene {
   private deliveryThreeSound!: Phaser.Sound.BaseSound;
   private deliverySixSound!: Phaser.Sound.BaseSound;
   private deliveryTwelveSound!: Phaser.Sound.BaseSound;
+  public mealsSound!: Phaser.Sound.BaseSound;
   private hordeSound!: Phaser.Sound.BaseSound;
   private claudeB2bSound!: Phaser.Sound.BaseSound;
   private mouseIdleTimer?: Phaser.Time.TimerEvent;
@@ -558,9 +559,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('ui-heart', 'Heart.png');
 
 
-    this.load.audio('delivery-three', '/Audio/Success-2.mp3');
+    this.load.audio('delivery-three', '/Audio/hungry.mp3');
     this.load.audio('delivery-six', '/Audio/Success-2.mp3');
     this.load.audio('delivery-twelve', '/Audio/Success-2.mp3');
+    this.load.audio('delivery-meals', '/Audio/meals.mp3');
 
     this.load.audio('horde-activated', '/Audio/Horde.mp3');
     this.load.audio('claude-b2b', '/Audio/b2b.mp3');
@@ -665,6 +667,7 @@ export default class GameScene extends Phaser.Scene {
     this.deliveryThreeSound = this.sound.add('delivery-three', { loop: false, volume: 0.7 });
     this.deliverySixSound = this.sound.add('delivery-six', { loop: false, volume: 0.7 });
     this.deliveryTwelveSound = this.sound.add('delivery-twelve', { loop: false, volume: 0.7 });
+    this.mealsSound = this.sound.add('delivery-meals', { loop: false, volume: 0.7 });
     this.hordeSound = this.sound.add('horde-activated', { loop: false, volume: 0.8 });
     this.claudeB2bSound = this.sound.add('claude-b2b', { loop: false, volume: 0.7 });
 
@@ -1015,7 +1018,7 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.deliveredMealCount >= 3 && !this.playedThreeDeliveryAudio) {
       this.playedThreeDeliveryAudio = true;
-      //this.playSound(this.deliveryThreeSound);
+      this.playSound(this.deliveryThreeSound);
     }
 
     if (this.deliveredMealCount >= 6 && !this.playedSixDeliveryAudio) {
@@ -1029,7 +1032,7 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  private playSound(sound: Phaser.Sound.BaseSound): void {
+  public playSound(sound: Phaser.Sound.BaseSound): void {
     if (!sound) {
       return;
     }

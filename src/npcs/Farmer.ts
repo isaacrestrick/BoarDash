@@ -64,13 +64,17 @@ export class Farmer extends NPC {
         s.scene.time.delayedCall(80, () => s.clearTint())
 
         //const randomFood = this.foods[Math.floor(Math.random() * this.foods.length)];
-        scene.events.emit("dialogue:show", "Need foods? Take 1 of each buddy!");
+        scene.events.emit("dialogue:show", "Need foods? Take 4 of each buddy!");
         this.foods.forEach((currFood, index) => {
+            scene.uiGameState.addFoodStuff(currFood);
+            scene.uiGameState.addFoodStuff(currFood);
+            scene.uiGameState.addFoodStuff(currFood);
             scene.uiGameState.addFoodStuff(currFood);
             /*s.scene.time.delayedCall((index + 1) * 0, () => {
                 scene.events.emit("dialogue:show", "Here is your 1x " + this.foodSingulars[currFood]);
-            });*/
-        });
+                });*/
+            });
+        scene.playSound(scene.mealsSound);
         
         //scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
         s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
