@@ -980,6 +980,7 @@ export default class GameScene extends Phaser.Scene {
     if (this.player.isAttacking()) {
       this.skeletons.forEach(skeleton => {
         if (skeleton.isPlayerNear()) {
+          skeleton.applyKnockback(this.player.getX(), this.player.getY());
           skeleton.triggerDeath();
         }
       })

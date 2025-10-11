@@ -136,6 +136,8 @@ export class Skeleton extends NPC {
     private attackRangeX = this.TILE_SIZE * 0.9
     private attackRangeY = this.TILE_SIZE * 0.5
 
+    private isRecoiling : boolean = false;
+
     triggerAttack(targetX: number, targetY: number): boolean {
         const s = this.sprite
         if (this.killed) return false
@@ -156,7 +158,40 @@ export class Skeleton extends NPC {
         return true
     }
 
+    applyKnockback(sourceX: number, sourceY: number, strength: number = 350, duration: number = 150): void {
+        const body = this.sprite as Phaser.Physics.Arcade.Sprite | null;
+        if (!body) return;
+        const dir = new Phaser.Math.Vector2(body.x - sourceX, body.y - sourceY);
+        if (!dir.lengthSq()) return;
+        dir.normalize();
+        // body.setVelocity(dir.x * strength, dir.y * strength);
+
+        // Smooth out the knockback using acceleration instead of an instant velocity/drag
+        // First, stop any previous movement
+        body.setAcceleration(0, 0);
+        // Calculate knockback acceleration (force)
+        // Set a high acceleration for a brief burst (phasing out instantly after delay below)
+        body.setAcceleration(dir.x * strength , dir.y * strength );
+        this.isRecoiling = true;
+
+        const scene = this.sprite.scene as Phaser.Scene | null;
+        if (!scene) return;
+
+        scene.time.delayedCall(duration, () => {
+            if (!this.killed) {
+                body.setVelocity(0,0); 
+            }
+            this.isRecoiling = false;
+        } )
+    }
+
     updateFollow(targetX: number, targetY: number, speed: number = 90): void {
+
+        if (this.isRecoiling) {
+            return;
+        }
+
+
         const s = this.sprite
 
         const stopX = this.TILE_SIZE * 0.9 // stops them farter away on x axis
