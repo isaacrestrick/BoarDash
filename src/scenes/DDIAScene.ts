@@ -82,11 +82,11 @@ export default class DDIAScene extends Phaser.Scene {
         this.tweens.add({
             targets: book,
             scale: finalScale,
-            duration: 5000,
+            duration: 1250,
             ease: 'Sine.easeOut',
         });
 
-        this.time.delayedCall(5000, () => {
+        this.time.delayedCall(1250, () => {
             this.scene.start('GameScene');
         });
 
