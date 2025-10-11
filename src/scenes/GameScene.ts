@@ -1015,7 +1015,7 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.deliveredMealCount >= 3 && !this.playedThreeDeliveryAudio) {
       this.playedThreeDeliveryAudio = true;
-      this.playSound(this.deliveryThreeSound);
+      //this.playSound(this.deliveryThreeSound);
     }
 
     if (this.deliveredMealCount >= 6 && !this.playedSixDeliveryAudio) {
@@ -1025,7 +1025,7 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.deliveredMealCount >= 12 && !this.playedTwelveDeliveryAudio) {
       this.playedTwelveDeliveryAudio = true;
-      this.playSound(this.deliveryTwelveSound);
+      //this.playSound(this.deliveryTwelveSound);
     }
   }
 
