@@ -3,7 +3,7 @@ import { NPC } from './Npc';
 import GameScene from '../scenes/GameScene'
 
 export class Skeleton extends NPC {
-    static getRequiredAssets() {
+    static getRequiredAssets(): ReadonlyArray<{key: string, path: string, type: 'spritesheet', frameWidth: number, frameHeight: number}> {
         return [
             { key: 'skeleton-idle-up', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
             { key: 'skeleton-idle-down', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
@@ -15,10 +15,10 @@ export class Skeleton extends NPC {
             { key: 'skeleton-walk-right', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
             { key: 'skeleton-death', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
             { key: 'skeleton-death-effect', path: 'Vampires1/Death/Vampires1_Death_smoke.png', type: 'spritesheet', frameWidth: 704/11, frameHeight: 256/4 },
-        ] as const;
+        ];
     }
 
-    private health = 3
+    protected health = 3
 
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
@@ -60,9 +60,9 @@ export class Skeleton extends NPC {
         }
     }
 
-    private lastDirection: 'up' | 'down' | 'left' | 'right' = 'down'
+    protected lastDirection: 'up' | 'down' | 'left' | 'right' = 'down'
 
-    private killed = false;
+    protected killed = false;
 
     constructor(scene: Phaser.Scene, x: number, y: number, scale = 3.5) {
         super(scene, x, y, { key: 'skeleton-idle-down', scale });
@@ -131,12 +131,12 @@ export class Skeleton extends NPC {
         }
     }
 
-    private lastAttackTime = 0
-    private cooldownTime = 1000 // 1 second between attacks
-    private attackRangeX = this.TILE_SIZE * 0.9
-    private attackRangeY = this.TILE_SIZE * 0.5
+    protected lastAttackTime = 0
+    protected cooldownTime = 1000 // 1 second between attacks
+    protected attackRangeX = this.TILE_SIZE * 0.9
+    protected attackRangeY = this.TILE_SIZE * 0.5
 
-    private isRecoiling : boolean = false;
+    protected isRecoiling : boolean = false;
 
     triggerAttack(targetX: number, targetY: number): boolean {
         const s = this.sprite
