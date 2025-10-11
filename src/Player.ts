@@ -173,7 +173,7 @@ export class Player {
         let velocityX = 0;
         let velocityY = 0;
 
-        const speedMultiplier = this.spaceKey.isDown ? 1.7 : 1;
+        const speedMultiplier = this.spaceKey.isDown ? 2 : 1;
 
         this.sprite.anims.timeScale = speedMultiplier;
 
