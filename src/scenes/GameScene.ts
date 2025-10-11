@@ -407,7 +407,9 @@ class WorldRender {
 
 
     const LogsLayer = WorldRender.map.createLayer("Logs", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
-    WorldRender.map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
+    const boundariesLayer = WorldRender.map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
+
+    boundariesLayer?.setDepth(-2);
     const WaterMoundLayer = WorldRender.map.createLayer("Water_Mound", [WaterBridgeTileSet].filter(t => t !== null), 0, 0)
 
     const buildingsLayer = WorldRender.map.createLayer("Buildings", [WaterBridgeTileSet, castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
@@ -423,7 +425,10 @@ class WorldRender {
 
 
     WorldRender.buildingsLayer = buildingsLayer ?? undefined;
-    grassPathLayer?.setDepth(-2);
+    grassPathLayer?.setDepth(-3);
+
+
+
     if (buildingsLayer) WorldRender.collisionLayers.push(buildingsLayer);
     buildingsLayer?.setCollisionByExclusion([-1]);
     if (fencesLayer) WorldRender.collisionLayers.push(fencesLayer);
