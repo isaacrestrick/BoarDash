@@ -478,6 +478,9 @@ export default class GameScene extends Phaser.Scene {
     WorldRender.load_assets(this);
 
 
+    this.load.image('ui-heart', 'Heart.png');
+
+
     this.load.audio('delivery-three', '/Audio/Success-1.mp3');
     this.load.audio('delivery-six', '/Audio/Success-2.mp3');
     this.load.audio('delivery-twelve', '/Audio/Success-3.mp3');
