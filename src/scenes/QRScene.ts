@@ -125,7 +125,7 @@ export default class QRScene extends Phaser.Scene {
 
     const instructionStartY = 5 * (this.GRID_HEIGHT * this.TILE_SIZE) / 6 + 40;
     const instructionSpacing = 130;
-    const instructions = ['Press SPACE to begin'];
+    const instructions = ['Press SPACE to begin | boar-dash.vercel.app'];
 
     instructions.forEach((message, index) => {
       createLabel(
