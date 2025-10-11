@@ -1032,11 +1032,13 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.sound.locked) {
       this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+        this.sound.stopAll();
         sound.play();
       });
       return;
     }
 
+    this.sound.stopAll();
     sound.play();
   }
 

@@ -3,6 +3,7 @@ import Phaser from 'phaser'
 import TitleScene from './scenes/TitleScene'
 import DDIAScene from './scenes/DDIAScene'
 import HelpScene from './scenes/HelpScene'
+import QRScene from './scenes/QRScene'
 import GameScene from './scenes/GameScene'
 import UIScene from './scenes/UIScene'
 import GameOverScene from './scenes/GameOverScene'
@@ -24,7 +25,7 @@ function App() {
         antialias: false,
         roundPixels: true
       },
-      scene: [TitleScene, HelpScene, DDIAScene, GameScene, UIScene, GameOverScene],
+      scene: [TitleScene, HelpScene, QRScene, DDIAScene, GameScene, UIScene, GameOverScene],
       scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,

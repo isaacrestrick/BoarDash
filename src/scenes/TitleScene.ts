@@ -36,6 +36,7 @@ export default class TitleScene extends Phaser.Scene {
         return;
       }
 
+      this.sound.stopAll();
       this.titleMusic = this.sound.add('welcome-screen', { loop: false, volume: 0.6 });
       this.titleMusic.play();
     };
@@ -127,7 +128,7 @@ export default class TitleScene extends Phaser.Scene {
       createLabel(
         (this.GRID_WIDTH * this.TILE_SIZE) / 2,
         (9 * this.GRID_HEIGHT * this.TILE_SIZE) / 10,
-        '(Or H for Help)',
+        '(Or H for Help, Or Q for a QR Code)',
         '48px'
       );
     };
@@ -162,6 +163,10 @@ export default class TitleScene extends Phaser.Scene {
     
     this.input.keyboard?.on('keydown-H', () => {
       this.scene.start('HelpScene');
+    });
+
+    this.input.keyboard?.on('keydown-Q', () => {
+      this.scene.start('QRScene');
     });
   }
 

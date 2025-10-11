@@ -37,6 +37,7 @@ export default class GameOverScene extends Phaser.Scene {
         return;
       }
 
+      this.sound.stopAll();
       const trackKey = this.win ? 'gameover-win' : 'gameover-lose';
       this.gameOverMusic = this.sound.add(trackKey, { loop: false, volume: 0.6 });
       this.gameOverMusic.play();
@@ -172,9 +173,24 @@ export default class GameOverScene extends Phaser.Scene {
       32
     );
 
+    createLabel(
+      (this.GRID_WIDTH * this.TILE_SIZE) / 2,
+      (10 * this.GRID_HEIGHT * this.TILE_SIZE) / 11,
+      'Or press Q for a QR Code',
+      {
+        fontSize: '48px',
+      },
+      32
+    );
+
     this.input.keyboard?.on('keydown-SPACE', () => {
         this.scene.start('GameScene');
       });
+
+    this.input.keyboard?.on('keydown-Q', () => {
+      this.scene.start('QRScene');
+    });
+
   }
 
 

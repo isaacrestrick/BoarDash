@@ -1,31 +1,32 @@
 import Phaser from 'phaser';
 
-export default class HelpScene extends Phaser.Scene {
+export default class QRScene extends Phaser.Scene {
   private readonly TILE_SIZE = 32;
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
 
-  private tutorialMusic?: Phaser.Sound.BaseSound;
+  private qrMusic?: Phaser.Sound.BaseSound;
   constructor() {
-    super('HelpScene');
+    super('QRScene');
   }
 
   preload() {
     this.load.image('tutorial_background', '/plain_background.png');
-    this.load.audio('tutorial-screen', '/Audio/Tutorial.mp3');
+    this.load.image('qr', '/QR.png');
+    this.load.audio('QR-screen', '/Audio/QR.mp3');
   }
 
   create() {
     this.input.setDefaultCursor('url(/Cursor.png) 16 16, pointer');
 
     const playMusic = () => {
-      if (this.tutorialMusic?.isPlaying) {
+      if (this.qrMusic?.isPlaying) {
         return;
       }
 
       this.sound.stopAll();
-      this.tutorialMusic = this.sound.add('tutorial-screen', { loop: false, volume: 0.6 });
-      this.tutorialMusic.play();
+      this.qrMusic = this.sound.add('QR-screen', { loop: false, volume: 0.6 });
+      this.qrMusic.play();
     };
 
     if (this.sound.locked) {
@@ -46,9 +47,9 @@ export default class HelpScene extends Phaser.Scene {
     }
 
     const cleanup = () => {
-      this.tutorialMusic?.stop();
-      this.tutorialMusic?.destroy();
-      this.tutorialMusic = undefined;
+      this.qrMusic?.stop();
+      this.qrMusic?.destroy();
+      this.qrMusic = undefined;
     };
 
     this.events.once('shutdown', cleanup);
@@ -103,7 +104,7 @@ export default class HelpScene extends Phaser.Scene {
     const titleLabel = createLabel(
       (this.GRID_WIDTH * this.TILE_SIZE) / 2,
       this.GRID_HEIGHT * this.TILE_SIZE / 5 - 100,
-      'How To Play BoarDash',
+      'Play BoarDash Here:',
       {
         fontSize: '72px',
         fontStyle: 'bold',
@@ -112,16 +113,19 @@ export default class HelpScene extends Phaser.Scene {
 
     titleLabel.text.setDepth(3);
 
-    const instructionStartY = this.GRID_HEIGHT * this.TILE_SIZE / 5 + 40;
+    const qrImage = this.add.image(
+      (this.GRID_WIDTH * this.TILE_SIZE) / 2,
+      (this.GRID_HEIGHT * this.TILE_SIZE) / 2,
+      'qr'
+    );
+    qrImage.setOrigin(0.5);
+    qrImage.setDepth(2);
+
+    qrImage.setScale(0.20); 
+
+    const instructionStartY = 5 * (this.GRID_HEIGHT * this.TILE_SIZE) / 6 + 40;
     const instructionSpacing = 130;
-    const instructions = [
-      'WASD to move, SPACE to sprint',
-      'Hold H to attack, press J to pick up & drop off',
-      'Pick up meals from the farmer, next to the Windmill',
-      'Drop them off to villagers as indicated by their sign',
-      'Finally give the king his burger',
-      'Press SPACE to begin, or Q for a QR Code',
-    ];
+    const instructions = ['Press SPACE to begin'];
 
     instructions.forEach((message, index) => {
       createLabel(
@@ -133,10 +137,6 @@ export default class HelpScene extends Phaser.Scene {
 
     this.input.keyboard?.once('keydown-SPACE', () => {
       this.scene.start('DDIAScene');
-    });
-
-    this.input.keyboard?.once('keydown-Q', () => {
-      this.scene.start('QRScene');
     });
     
   }
