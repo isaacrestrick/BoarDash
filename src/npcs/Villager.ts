@@ -128,6 +128,7 @@ export class Villager extends NPC {
             scene.events.emit("dialogue:show", this.successDialogue)
             scene.uiGameState.setScoreBasedOnTitles();
             scene.uiGameState.markVillagerDelivered(this.villagerId); // Add this line!
+            scene.handleMealDelivered();
 
             s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
             s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())

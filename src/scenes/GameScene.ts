@@ -461,6 +461,15 @@ export default class GameScene extends Phaser.Scene {
 
 
   private collisionLayers!: Phaser.Tilemaps.TilemapLayer[];
+  private deliveredMealCount = 0;
+  private playedThreeDeliveryAudio = false;
+  private playedSixDeliveryAudio = false;
+  private playedHordeAudio = false;
+  private playedTwelveDeliveryAudio = false;
+  private deliveryThreeSound!: Phaser.Sound.BaseSound;
+  private deliverySixSound!: Phaser.Sound.BaseSound;
+  private deliveryTwelveSound!: Phaser.Sound.BaseSound;
+  private hordeSound!: Phaser.Sound.BaseSound;
 
   constructor() {
     super('GameScene');
@@ -469,6 +478,13 @@ export default class GameScene extends Phaser.Scene {
   preload() {
 
     WorldRender.load_assets(this);
+
+
+    this.load.audio('delivery-three', '/Audio/Success-1.mp3');
+    this.load.audio('delivery-six', '/Audio/Success-2.mp3');
+    this.load.audio('delivery-twelve', '/Audio/Success-3.mp3');
+
+    this.load.audio('horde-activated', '/Audio/Horde.mp3');
 
 
     Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
@@ -545,6 +561,16 @@ export default class GameScene extends Phaser.Scene {
 
 
     this.player = new Player(this, 36 * this.TILE_SIZE, 19 * this.TILE_SIZE)//720, 528); // 35 18
+
+    this.deliveredMealCount = 0;
+    this.playedThreeDeliveryAudio = false;
+    this.playedSixDeliveryAudio = false;
+    this.playedTwelveDeliveryAudio = false;
+    this.playedHordeAudio = false;
+    this.deliveryThreeSound = this.sound.add('delivery-three', { loop: false, volume: 0.7 });
+    this.deliverySixSound = this.sound.add('delivery-six', { loop: false, volume: 0.7 });
+    this.deliveryTwelveSound = this.sound.add('delivery-twelve', { loop: false, volume: 0.7 });
+    this.hordeSound = this.sound.add('horde-activated', { loop: false, volume: 0.8 });
 
 
 
@@ -778,6 +804,10 @@ export default class GameScene extends Phaser.Scene {
     if (this.uiGameState.allowedToDeliverBurger()) {
       this.skeletonNumber = 150
       this.skeletonSpawnDelay = 50
+      if (!this.playedHordeAudio) {
+        this.playedHordeAudio = true;
+        this.playSound(this.hordeSound);
+      }
     } else {
       this.skeletonNumber = 12
       this.skeletonSpawnDelay = 3500
@@ -872,5 +902,39 @@ export default class GameScene extends Phaser.Scene {
         if (villager.isPlayerNear()) villager.triggerDelivery();
       });
     }
+  }
+
+  public handleMealDelivered(): void {
+    this.deliveredMealCount += 1;
+
+    if (this.deliveredMealCount >= 3 && !this.playedThreeDeliveryAudio) {
+      this.playedThreeDeliveryAudio = true;
+      this.playSound(this.deliveryThreeSound);
+    }
+
+    if (this.deliveredMealCount >= 6 && !this.playedSixDeliveryAudio) {
+      this.playedSixDeliveryAudio = true;
+      this.playSound(this.deliverySixSound);
+    }
+
+    if (this.deliveredMealCount >= 12 && !this.playedTwelveDeliveryAudio) {
+      this.playedTwelveDeliveryAudio = true;
+      this.playSound(this.deliveryTwelveSound);
+    }
+  }
+
+  private playSound(sound: Phaser.Sound.BaseSound): void {
+    if (!sound) {
+      return;
+    }
+
+    if (this.sound.locked) {
+      this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+        sound.play();
+      });
+      return;
+    }
+
+    sound.play();
   }
 }
