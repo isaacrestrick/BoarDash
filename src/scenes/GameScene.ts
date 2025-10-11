@@ -468,6 +468,10 @@ export default class GameScene extends Phaser.Scene {
   private deliverySixSound!: Phaser.Sound.BaseSound;
   private deliveryTwelveSound!: Phaser.Sound.BaseSound;
   private hordeSound!: Phaser.Sound.BaseSound;
+  private mouseIdleTimer?: Phaser.Time.TimerEvent;
+  private cursorHidden = false;
+  private static readonly CUSTOM_CURSOR = 'url(/Cursor.png) 16 16, pointer';
+  private static readonly MOUSE_IDLE_DELAY = 3000;
 
   constructor() {
     super('GameScene');
@@ -517,6 +521,20 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
 
+    this.showCursor();
+    this.input.on(Phaser.Input.Events.POINTER_MOVE, this.handlePointerActivity, this);
+    this.input.on(Phaser.Input.Events.POINTER_DOWN, this.handlePointerActivity, this);
+    this.input.on(Phaser.Input.Events.POINTER_UP, this.handlePointerActivity, this);
+    this.resetMouseIdleTimer();
+
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.clearMouseIdleTimer();
+      this.input.off(Phaser.Input.Events.POINTER_MOVE, this.handlePointerActivity, this);
+      this.input.off(Phaser.Input.Events.POINTER_DOWN, this.handlePointerActivity, this);
+      this.input.off(Phaser.Input.Events.POINTER_UP, this.handlePointerActivity, this);
+      this.showCursor();
+    });
+
     WorldRender.create(this);    
     this.buildingsLayer = WorldRender.buildingsLayer;
     this.collisionLayers = WorldRender.collisionLayers;
@@ -541,6 +559,8 @@ export default class GameScene extends Phaser.Scene {
     };
 
     this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+
+    
 
 
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
@@ -775,6 +795,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.player.update();
 
+    if (this.cursorHidden && this.input.activePointer.velocity.lengthSq() > 0) {
+      this.showCursor();
+      this.resetMouseIdleTimer();
+    }
+
     const playerX = this.player.getX()
     const playerY = this.player.getY()
 
@@ -931,4 +956,36 @@ export default class GameScene extends Phaser.Scene {
 
     sound.play();
   }
+
+  private handlePointerActivity = () => {
+    this.showCursor();
+    this.resetMouseIdleTimer();
+  };
+
+  private hideCursor = () => {
+    if (this.cursorHidden || this.scene.isPaused()) {
+      return;
+    }
+
+    this.input.setDefaultCursor('none');
+    this.cursorHidden = true;
+    this.mouseIdleTimer = undefined;
+  };
+
+  private showCursor = () => {
+    this.input.setDefaultCursor(GameScene.CUSTOM_CURSOR);
+    this.cursorHidden = false;
+  };
+
+  private resetMouseIdleTimer = () => {
+    this.clearMouseIdleTimer();
+    this.mouseIdleTimer = this.time.delayedCall(GameScene.MOUSE_IDLE_DELAY, this.hideCursor);
+  };
+
+  private clearMouseIdleTimer = () => {
+    if (this.mouseIdleTimer) {
+      this.mouseIdleTimer.remove(false);
+      this.mouseIdleTimer = undefined;
+    }
+  };
 }

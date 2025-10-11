@@ -17,6 +17,8 @@ export default class DDIAScene extends Phaser.Scene {
     }
 
     create() {
+        this.input.setDefaultCursor('url(/Cursor.png) 16 16, pointer');
+
         const bg = this.add.image(0, 0, 'ddia').setOrigin(0, 0);
 
         const targetWidth = this.GRID_WIDTH * this.TILE_SIZE;
