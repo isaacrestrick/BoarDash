@@ -32,6 +32,7 @@ export class Player {
         this.scene = scene;
         this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
         this.sprite.setScale(0.18);
+        this.sprite.setDepth(1000); // Ensure player appears above all other objects
         this.health = 10;//000;
         this.lastDirection = 'front';
 
