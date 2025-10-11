@@ -74,7 +74,7 @@ export default class DDIAScene extends Phaser.Scene {
 
         const book = this.add.image(centerX, centerY + targetHeight * 0.1, 'ddia').setDepth(0);
 
-        const finalScale = Math.min((targetWidth) / book.width, (targetHeight ) / book.height);
+        const finalScale = Math.min(targetWidth / book.width, targetHeight / book.height);
         const initialScale = finalScale * 0.2;
 
         book.setScale(initialScale);
