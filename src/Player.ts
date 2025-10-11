@@ -64,7 +64,9 @@ export class Player {
         return [
             { key: 'knight-sprite', path: 'boar_knight/right/Knight-Idle-Right.png', type: 'spritesheet', frameWidth: (1584 / 6), frameHeight: (1506 / 6) },
 
+            {key: 'knight-idle-front', path: 'boar_knight/front/Knight-Idle-Front.png', type: 'spritesheet', frameWidth: (1224 / 6), frameHeight: (1632 / 6) },
 
+            {key: 'knight-idle-left', path: 'boar_knight/left/Knight-Idle-Left.png', type: 'spritesheet', frameWidth: (1584 / 6), frameHeight: (1440 / 6) },
 
             { key: 'knight-attack-back', path: 'boar_knight/back/Knight-Attack-Back.png', type: 'spritesheet', frameWidth: 432, frameHeight: 361 },
             { key: 'knight-walk-back', path: 'boar_knight/back/Knight-Walk-Back.png', type: 'spritesheet', frameWidth: 174, frameHeight: 274 },
@@ -116,8 +118,25 @@ export class Player {
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
         if (!has('knight-idle')) {
-            scene.anims.create({ key: 'knight-idle', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 0, end: 35 }), frameRate: 3, repeat: -1 });
+            scene.anims.create({ key: 'knight-idle', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 0, end: 35 }), frameRate: 12, repeat: -1 });
         }
+
+        if (!has('knight-idle-right')) {
+            scene.anims.create({ key: 'knight-idle-right', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 0, end: 35 }), frameRate: 12, repeat: -1 });
+        }
+
+        if (!has('knight-idle-left')) {
+            scene.anims.create({ key: 'knight-idle-left', frames: scene.anims.generateFrameNumbers('knight-idle-left', { start: 0, end: 35 }), frameRate: 12, repeat: -1 });
+        }
+        if (!has('knight-idle-front')) {
+            scene.anims.create({ key: 'knight-idle-front', frames: scene.anims.generateFrameNumbers('knight-idle-front', { start: 0, end: 35 }), frameRate: 12, repeat: -1 });
+        }
+
+
+
+
+
+
         if (!has('knight-walk-right')) {
             scene.anims.create({ key: 'knight-walk-right', frames: scene.anims.generateFrameNumbers('knight-walk-right', { start: 0, end: 35 }), frameRate: 16, repeat: 1 });
         }
@@ -203,7 +222,15 @@ export class Player {
         }
 
         if (velocityX === 0 && velocityY === 0) {
-            this.sprite.play(this.attackKey.isDown ? `knight-attack-${this.lastDirection}` : 'knight-idle', true);
+            if (this.attackKey.isDown) {
+                this.sprite.play(`knight-attack-${this.lastDirection}`, true);
+            } else {
+                if (this.lastDirection === 'back') {
+                    this.sprite.play('knight-idle-right', true);
+                } else {
+                    this.sprite.play(`knight-idle-${this.lastDirection}`, true);
+                }
+            }
         }
 
         // Use physics body velocity instead of manual position updates
