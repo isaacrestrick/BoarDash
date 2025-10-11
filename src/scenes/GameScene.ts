@@ -12,6 +12,9 @@ class WorldRender {
   static collisionLayers: Phaser.Tilemaps.TilemapLayer[] = [];
   static map :Phaser.Tilemaps.Tilemap;
 
+
+  //config.name-sprite will map to whatever is in imgPath
+  //config.name-config.action will map to whatever is 
   static ANIMATION_CONFIGS ={
     windmill: {
       imgPath: "Cute_Fantasy/House/Buildings/Special_Buildings/Windmill/Windmill_Sail_Anim.png",
@@ -216,11 +219,60 @@ class WorldRender {
       repeat: -1,
       x: 30,
       y: 10
+    },
+
+    anvil : {
+      imgPath: "Cute_Fantasy/House/Objects/Anvil_Anim.png",
+      num_columns: 8,
+      num_rows: 1,
+      start_frame: 0, 
+      end_frame: 7,
+      frame_rate: 12,
+      name: "anvil", 
+      action: "idle",
+      repeat: -1, 
+      x: 78,
+      y: 7
     }
 
 
 
   }
+
+
+
+  static ANIMATION_WITHOUT_X_Y = {
+    grass: {
+      imgPath: "Cute_Fantasy/Outdoor decoration/Outdoor_Decor_Animations/Grass_Animations/Grass_2_Anim.png",
+      num_columns: 8,
+      num_rows: 1,
+      name: "grass",
+      start_frame: 0,
+      end_frame: 7,
+      frame_rate: 3,
+      repeat: -1,
+      action: "idle",
+      x: [38, 43, 51,46, 44, 70],
+      y: [22, 17, 15, 13, 17, 17], 
+    }, 
+    flower_one: {
+      imgPath: "Cute_Fantasy/Outdoor decoration/Outdoor_Decor_Animations/Grass_Animations/Flower_Grass_1_Anim.png",
+      num_columns: 8,
+      num_rows: 1,
+      name: "flower-1",
+      start_frame: 0,
+      end_frame: 7,
+      frame_rate: 3,
+      repeat: -1,
+      action: "idle-1",
+      x: [33, 29, 13, 9, 14, 11, 22, 41],
+      y: [17, 14, 22, 20, 17, 29, 24, 21], 
+    }
+  }
+
+
+
+
   static load_assets(scene: GameScene)  {
     scene.load.image("Fruit", "map/tiles/Big_Fruit_Tree.png");
     scene.load.image("blacksmith-house", "map/tiles/Blacksmith_House.png");
@@ -325,15 +377,13 @@ class WorldRender {
     if (LogsLayer) WorldRender.collisionLayers.push(LogsLayer);
     LogsLayer?.setCollisionByExclusion([-1]);
   }
-
-
   
 }
 
 
 
 
-interface AnimationConfig {
+type AnimationConfig = Partial<{
   imgPath: string;
   num_columns: number;
   num_rows: number;
@@ -345,7 +395,7 @@ interface AnimationConfig {
   action: string;
   x: number;
   y: number;
-}
+}>;
 
 class AnimatedSprite {
   static async getImageDimensions(src: string): Promise<{ width: number; height: number }> {
@@ -364,19 +414,26 @@ class AnimatedSprite {
       });
     });
   }
-
-  static playAnimation(scene: GameScene, config: AnimationConfig, x: number, y: number) {
-    if (!scene.anims.exists(`${config.name}-${config.action}`)) {
+  static addAnimation(scene: GameScene, config: AnimationConfig) {
       scene.anims.create({
             key: `${config.name}-${config.action}`, 
             frames: scene.anims.generateFrameNumbers(`${config.name}-sprite`, { start: config.start_frame, end: config.end_frame }), 
             frameRate: config.frame_rate, 
             repeat: config.repeat
-        });
-    }
+      });
+  }
+  static addSpriteAndPlayAnimation(scene: GameScene, config: AnimationConfig, x: number, y: number) {
+    //AddSpriteAndPlayAnimation
     let sprite = scene.add.sprite(x, y, `${config.name}-sprite`);
     sprite.play(`${config.name}-${config.action}`, true);
   }
+
+  static playAnimation(scene: GameScene, config: AnimationConfig, x: number, y: number) {
+    //AddAnimation
+    this.addAnimation(scene, config);
+    this.addSpriteAndPlayAnimation(scene, config, x, y);
+  }
+  
 }
 
 
@@ -414,6 +471,10 @@ export default class GameScene extends Phaser.Scene {
 
     Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
       AnimatedSprite.preloadAssets(this, config)
+    })
+
+    Object.values(WorldRender.ANIMATION_WITHOUT_X_Y).forEach(config => {
+      AnimatedSprite.preloadAssets(this, config);
     })
   
 
@@ -632,7 +693,38 @@ export default class GameScene extends Phaser.Scene {
 
     Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
       AnimatedSprite.playAnimation(this, config, config.x * this.TILE_SIZE, config.y * this.TILE_SIZE)
-    }) 
+    })
+
+    
+    AnimatedSprite.addAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.grass);
+
+    let length = WorldRender.ANIMATION_WITHOUT_X_Y.grass.x.length;
+
+    for (let i = 0; i < length; i++) {
+
+      let x_val = WorldRender.ANIMATION_WITHOUT_X_Y.grass.x[i]
+      let y_val = WorldRender.ANIMATION_WITHOUT_X_Y.grass.y[i]
+
+      AnimatedSprite.addSpriteAndPlayAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.grass, x_val * this.TILE_SIZE, y_val * this.TILE_SIZE)
+
+      // AnimatedSprite.addSpriteAndPlayAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.grass, 43 * this.TILE_SIZE, 17 * this.TILE_SIZE)
+
+    }
+
+    AnimatedSprite.addAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.flower_one);
+
+    length = WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.x.length;
+    for (let i = 0; i < length; i++) {
+      let x_val = WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.x[i]
+      let y_val = WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.y[i]
+      AnimatedSprite.addSpriteAndPlayAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.flower_one, x_val * this.TILE_SIZE, y_val * this.TILE_SIZE)
+    }
+
+
+
+
+   
+
 
 
 
