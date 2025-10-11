@@ -540,6 +540,7 @@ export default class GameScene extends Phaser.Scene {
   private deliverySixSound!: Phaser.Sound.BaseSound;
   private deliveryTwelveSound!: Phaser.Sound.BaseSound;
   private hordeSound!: Phaser.Sound.BaseSound;
+  private claudeB2bSound!: Phaser.Sound.BaseSound;
   private mouseIdleTimer?: Phaser.Time.TimerEvent;
   private cursorHidden = false;
   private static readonly CUSTOM_CURSOR = 'url(/Cursor.png) 16 16, pointer';
@@ -562,6 +563,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.audio('delivery-twelve', '/Audio/Success-3.mp3');
 
     this.load.audio('horde-activated', '/Audio/Horde.mp3');
+    this.load.audio('claude-b2b', '/Audio/b2b.mp3');
 
 
     Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
@@ -664,6 +666,7 @@ export default class GameScene extends Phaser.Scene {
     this.deliverySixSound = this.sound.add('delivery-six', { loop: false, volume: 0.7 });
     this.deliveryTwelveSound = this.sound.add('delivery-twelve', { loop: false, volume: 0.7 });
     this.hordeSound = this.sound.add('horde-activated', { loop: false, volume: 0.8 });
+    this.claudeB2bSound = this.sound.add('claude-b2b', { loop: false, volume: 0.7 });
 
 
 
@@ -1033,14 +1036,27 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.sound.locked) {
       this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-        this.sound.stopAll();
         sound.play();
       });
       return;
     }
 
-    this.sound.stopAll();
     sound.play();
+  }
+
+  public playClaudeB2bSound(): void {
+    if (!this.claudeB2bSound) {
+      return;
+    }
+
+    if (this.sound.locked) {
+      this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+        this.claudeB2bSound?.play();
+      });
+      return;
+    }
+
+    this.claudeB2bSound.play();
   }
 
   private handlePointerActivity = () => {

@@ -44,6 +44,7 @@ export class Claude extends NPC {
             const scene = s.scene as GameScene;
             const msg = `You're absolutely right!`
             scene.events.emit("dialogue:show", msg)
+            scene.playClaudeB2bSound();
             console.log(msg);
         }
         this.wasNearPlayer = isNear;
