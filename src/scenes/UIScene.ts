@@ -22,6 +22,8 @@ export default class UIScene extends Phaser.Scene {
     constructor() { super({ key: 'ui', active: false }); }
 
   create(data: UIData) {
+    this.input.setDefaultCursor('url(/Cursor.png) 16 16, pointer');
+
     // Listen to the gameplay scene’s events
     const game = this.scene.get('GameScene');
 

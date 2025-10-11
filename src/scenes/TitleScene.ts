@@ -25,6 +25,8 @@ export default class TitleScene extends Phaser.Scene {
   }
 
   create() {
+    this.input.setDefaultCursor('url(/Cursor.png) 16 16, pointer');
+
     const background = this.add.image(0, 0, 'grassy_background');
     background.setOrigin(0, 0);
     background.setDisplaySize(this.GRID_WIDTH * this.TILE_SIZE, this.GRID_HEIGHT * this.TILE_SIZE);

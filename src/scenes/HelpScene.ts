@@ -16,6 +16,8 @@ export default class HelpScene extends Phaser.Scene {
   }
 
   create() {
+    this.input.setDefaultCursor('url(/Cursor.png) 16 16, pointer');
+
     const playMusic = () => {
       if (this.tutorialMusic?.isPlaying) {
         return;
