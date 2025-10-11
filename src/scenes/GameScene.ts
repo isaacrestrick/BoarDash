@@ -253,8 +253,11 @@ class WorldRender {
       frame_rate: 3,
       repeat: -1,
       action: "idle",
-      x: [38, 43, 51,46, 44, 70],
-      y: [22, 17, 15, 13, 17, 17], 
+      depth: -1,
+      // x: [38, 43, 51,46, 44, 70],
+      // y: [22, 17, 15, 13, 17, 17], 
+      x: [],
+      y: [],
     }, 
     flower_one: {
       imgPath: "Cute_Fantasy/Outdoor decoration/Outdoor_Decor_Animations/Grass_Animations/Flower_Grass_1_Anim.png",
@@ -266,8 +269,11 @@ class WorldRender {
       frame_rate: 3,
       repeat: -1,
       action: "idle-1",
-      x: [33, 29, 13, 9, 14, 11, 22, 41],
-      y: [17, 14, 22, 20, 17, 29, 24, 21], 
+      depth: -1,
+      // x: [33, 29, 13, 9, 14, 11, 22, 41],
+      // y: [17, 14, 22, 20, 17, 29, 24, 21], 
+      x: [],
+      y: [],
     }
   }
 
@@ -346,10 +352,65 @@ class WorldRender {
     const FencesTileSet = WorldRender.map.addTilesetImage("Fences", "fences");
     const OutdoorDecorTileSet = WorldRender.map.addTilesetImage("Outdoor_Decor", "outdoor-decor");
 
-    WorldRender.map.createLayer("GrassPath", [farmLandTileTileset, grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
+    const grassPathLayer = WorldRender.map.createLayer("GrassPath", [farmLandTileTileset, grass2MiddleTileset, pathMiddleTileset, pathDecorationsTileset, grassTiles2Tileset].filter(t => t !== null), 0, 0);
     WorldRender.map.createLayer("Grass_Textures", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
+
+
+    const grassTexturesLayer = WorldRender.map.getLayer('Grass_Textures')?.tilemapLayer;
+    if (!grassTexturesLayer) return;
+
+    const results: { tileX: number; tileY: number; worldX: number; worldY: number }[] = [];
+    grassTexturesLayer.forEachTile(tile => {
+      if (tile.index === -1) return; // skip empty cells
+      results.push({
+        tileX: tile.x,
+        tileY: tile.y,
+        worldX: tile.pixelX,
+        worldY: tile.pixelY,
+      });
+    });
+
+    // Choose 100 random points in results and push their x and y to ANIMATION_WITHOUT_X_Y.grass.x and .y
+    if (results.length > 0 && typeof WorldRender.ANIMATION_WITHOUT_X_Y !== 'undefined' && WorldRender.ANIMATION_WITHOUT_X_Y.grass) {
+      // Initialize x and y arrays if not exist
+      if (!Array.isArray(WorldRender.ANIMATION_WITHOUT_X_Y.grass.x)) {
+        WorldRender.ANIMATION_WITHOUT_X_Y.grass.x = [];
+      }
+      if (!Array.isArray(WorldRender.ANIMATION_WITHOUT_X_Y.grass.y)) {
+        WorldRender.ANIMATION_WITHOUT_X_Y.grass.y = [];
+      }
+      // Shuffle results and take top 100
+      const shuffled = results.slice().sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, 100);
+      selected.forEach(point => {
+        WorldRender.ANIMATION_WITHOUT_X_Y.grass.x.push(point.worldX);
+        WorldRender.ANIMATION_WITHOUT_X_Y.grass.y.push(point.worldY);
+      });
+    }
+
+    if (results.length > 0 && typeof WorldRender.ANIMATION_WITHOUT_X_Y !== 'undefined' && WorldRender.ANIMATION_WITHOUT_X_Y.flower_one) {
+      // Initialize x and y arrays if not exist
+      if (!Array.isArray(WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.x)) {
+        WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.x = [];
+      }
+      if (!Array.isArray(WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.y)) {
+        WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.y = [];
+      }
+      // Shuffle results and take top 100
+      const shuffled = results.slice().sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, 100);
+      selected.forEach(point => {
+        WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.x.push(point.worldX);
+        WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.y.push(point.worldY);
+      });
+    }
+
+
+
     const LogsLayer = WorldRender.map.createLayer("Logs", [OutdoorDecorTileSet].filter(t => t !== null), 0, 0);
-    WorldRender.map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
+    const boundariesLayer = WorldRender.map.createLayer("Boundaries", [grass2MiddleTileset, grassTiles2Tileset, pathDecorationsTileset].filter(t => t !== null), 0, 0);
+
+    boundariesLayer?.setDepth(-2);
     const WaterMoundLayer = WorldRender.map.createLayer("Water_Mound", [WaterBridgeTileSet].filter(t => t !== null), 0, 0)
 
     const buildingsLayer = WorldRender.map.createLayer("Buildings", [WaterBridgeTileSet, castleTileset, grassTiles2Tileset, house52Tileset, house45Tileset, house43Tileset, house21Tileset, house13Tileset, house12Tileset, houseAbandoned14Tileset, tentBigTileset, blacksmithHouseTileset, cropsTileset, farmLandTileTileset, windmillTileset].filter(t => t !== null), 0, 0);
@@ -365,6 +426,10 @@ class WorldRender {
 
 
     WorldRender.buildingsLayer = buildingsLayer ?? undefined;
+    grassPathLayer?.setDepth(-3);
+
+
+
     if (buildingsLayer) WorldRender.collisionLayers.push(buildingsLayer);
     buildingsLayer?.setCollisionByExclusion([-1]);
     if (fencesLayer) WorldRender.collisionLayers.push(fencesLayer);
@@ -396,6 +461,7 @@ type AnimationConfig = Partial<{
   action: string;
   x: number;
   y: number;
+  depth: number;
 }>;
 
 class AnimatedSprite {
@@ -408,6 +474,7 @@ class AnimatedSprite {
     });
   }
   static preloadAssets(scene: GameScene, config: AnimationConfig) {
+    if (!config.imgPath) return;
     this.getImageDimensions(config.imgPath).then(({ width, height }) => {
       scene.load.spritesheet(`${config.name}-sprite`, config.imgPath, {
         frameWidth: width / config.num_columns,
@@ -427,6 +494,9 @@ class AnimatedSprite {
     //AddSpriteAndPlayAnimation
     let sprite = scene.add.sprite(x, y, `${config.name}-sprite`);
     sprite.play(`${config.name}-${config.action}`, true);
+    if (typeof config.depth === 'number') {
+      sprite.setDepth(config.depth);
+    }
   }
 
   static playAnimation(scene: GameScene, config: AnimationConfig, x: number, y: number) {
@@ -757,12 +827,16 @@ export default class GameScene extends Phaser.Scene {
 
     let length = WorldRender.ANIMATION_WITHOUT_X_Y.grass.x.length;
 
+    console.log(WorldRender.ANIMATION_WITHOUT_X_Y.grass.x)
+    console.log(WorldRender.ANIMATION_WITHOUT_X_Y.grass.y)
+
+
     for (let i = 0; i < length; i++) {
 
       let x_val = WorldRender.ANIMATION_WITHOUT_X_Y.grass.x[i]
       let y_val = WorldRender.ANIMATION_WITHOUT_X_Y.grass.y[i]
 
-      AnimatedSprite.addSpriteAndPlayAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.grass, x_val * this.TILE_SIZE, y_val * this.TILE_SIZE)
+      AnimatedSprite.addSpriteAndPlayAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.grass, x_val , y_val )
 
       // AnimatedSprite.addSpriteAndPlayAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.grass, 43 * this.TILE_SIZE, 17 * this.TILE_SIZE)
 
@@ -774,7 +848,7 @@ export default class GameScene extends Phaser.Scene {
     for (let i = 0; i < length; i++) {
       let x_val = WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.x[i]
       let y_val = WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.y[i]
-      AnimatedSprite.addSpriteAndPlayAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.flower_one, x_val * this.TILE_SIZE, y_val * this.TILE_SIZE)
+      AnimatedSprite.addSpriteAndPlayAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.flower_one, x_val , y_val )
     }
 
 
