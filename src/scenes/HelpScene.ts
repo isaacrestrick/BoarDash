@@ -1,105 +1,136 @@
 import Phaser from 'phaser';
 
-import { Player } from '../Player';
-import { Farmer } from '../npcs/Farmer';
-import { King } from '../npcs/King';
-import { Villager, type VillagerConfig } from '../npcs/Villager'
-import { Skeleton } from '../npcs/Skeleton';
-
-
-
 export default class HelpScene extends Phaser.Scene {
   private readonly TILE_SIZE = 32;
   private readonly GRID_WIDTH = 45;
   private readonly GRID_HEIGHT = 33;
 
-  private player!: Player;
-  private king!: King;
-  private villagers!: Villager[];
-  public skeletons!: Skeleton[];
-
-  private farmer!: Farmer;
-
-
+  private tutorialMusic?: Phaser.Sound.BaseSound;
   constructor() {
     super('HelpScene');
   }
 
   preload() {
-    this.load.image('grassy_background', '/grassy_background.png');
-
-    Player.getRequiredAssets().forEach(asset => {
-        if (asset.type === 'spritesheet') {
-          this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-        } else if (asset.type === 'image') {
-          this.load.image(asset.key, asset.path);
-        }
-    });
-
-    Skeleton.getRequiredAssets().forEach(asset => {
-        this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-  
-    King.getRequiredAssets().forEach(asset => {
-        this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    Farmer.getRequiredAssets().forEach(asset => {
-        this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-
-    Villager.getRequiredAssets().forEach(asset => {
-        this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
-    });
-  
+    this.load.image('tutorial_background', '/plain_background.png');
+    this.load.audio('tutorial-screen', '/Audio/Tutorial.mp3');
   }
 
   create() {
-    this.player = new Player(this, 36 * this.TILE_SIZE, 19 * this.TILE_SIZE)//720, 528); // 35 18
-    this.skeletons = []
+    const playMusic = () => {
+      if (this.tutorialMusic?.isPlaying) {
+        return;
+      }
 
+      this.tutorialMusic = this.sound.add('tutorial-screen', { loop: false, volume: 0.6 });
+      this.tutorialMusic.play();
+    };
 
+    if (this.sound.locked) {
+      const unlockAndPlay = () => {
+        playMusic();
+        this.input.off(Phaser.Input.Events.POINTERDOWN, pointerHandler);
+        this.input.keyboard?.off('keydown', keyHandler);
+      };
 
-    const background = this.add.image(0, 0, 'grassy_background');
+      const pointerHandler = () => unlockAndPlay();
+      const keyHandler = () => unlockAndPlay();
+
+      this.sound.once(Phaser.Sound.Events.UNLOCKED, unlockAndPlay);
+      this.input.once(Phaser.Input.Events.POINTERDOWN, pointerHandler);
+      this.input.keyboard?.once('keydown', keyHandler);
+    } else {
+      playMusic();
+    }
+
+    const cleanup = () => {
+      this.tutorialMusic?.stop();
+      this.tutorialMusic?.destroy();
+      this.tutorialMusic = undefined;
+    };
+
+    this.events.once('shutdown', cleanup);
+    this.events.once(Phaser.Scenes.Events.DESTROY, cleanup);
+
+    const background = this.add.image(0, 0, 'tutorial_background');
     background.setOrigin(0, 0);
     background.setDisplaySize(this.GRID_WIDTH * this.TILE_SIZE, this.GRID_HEIGHT * this.TILE_SIZE);
 
-    this.add.text(
-        this.GRID_WIDTH * this.TILE_SIZE / 2, 
-        1.0 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 
-        'How 2 Play BoarDash', 
-        { 
-          fontSize: '64px',
-          color: '#ffffff'
-        }
-      ).setOrigin(0.5);
+    const baseStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+      fontFamily: 'Pixel Script',
+      color: '#ffffff',
+    };
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 1.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, '___________________________________________', { fontSize: '48px' }).setOrigin(0.5);
+    const contentStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+      ...baseStyle,
+      fontSize: '48px',
+    };
 
+    const createLabel = (
+      x: number,
+      y: number,
+      message: string,
+      options?: Partial<Phaser.Types.GameObjects.Text.TextStyle>,
+      cornerRadius = 24
+    ) => {
+      const paddingX = 32;
+      const paddingY = 16;
 
-    this.add.text(
-        this.GRID_WIDTH * this.TILE_SIZE / 2, 
-        2.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 
-        'WASD to move, Space to sprint', 
-        { 
-          fontSize: '48px',
-          wordWrap: { width: this.GRID_WIDTH * this.TILE_SIZE * 0.9 } 
-        }
-      ).setOrigin(0.5);
+      const text = this.add
+        .text(x, y, message, {
+          ...contentStyle,
+          ...options,
+        })
+        .setOrigin(0.5)
+        .setDepth(3);
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 3.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Hold H to attack, press J to pick up & drop off', { fontSize: '48px' }).setOrigin(0.5);
+      const bounds = text.getBounds();
+      const rectX = bounds.centerX - bounds.width / 2 - paddingX;
+      const rectY = bounds.centerY - bounds.height / 2 - paddingY;
+      const rectWidth = bounds.width + paddingX * 2;
+      const rectHeight = bounds.height + paddingY * 2;
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 4.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Pick up meals from the farmer', { fontSize: '48px' }).setOrigin(0.5);
+      const backgroundBox = this.add.graphics();
+      backgroundBox.fillStyle(0x444444, 0.5);
+      backgroundBox.fillRoundedRect(rectX, rectY, rectWidth, rectHeight, cornerRadius);
+      backgroundBox.setDepth(1);
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 5.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Drop them off to all the villagers', { fontSize: '48px' }).setOrigin(0.5);
+      return { text, backgroundBox };
+    };
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 6.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Then give the king his burger', { fontSize: '48px' }).setOrigin(0.5);
+    const titleLabel = createLabel(
+      (this.GRID_WIDTH * this.TILE_SIZE) / 2,
+      this.GRID_HEIGHT * this.TILE_SIZE / 5 - 100,
+      'How To Play BoarDash',
+      {
+        fontSize: '72px',
+        fontStyle: 'bold',
+      }
+    );
 
-    this.add.text(this.GRID_WIDTH * this.TILE_SIZE / 2, 7.5 * this.GRID_HEIGHT * this.TILE_SIZE / 10, 'Press Space to begin', { fontSize: '48px' }).setOrigin(0.5);
+    titleLabel.text.setDepth(3);
 
-    this.input.keyboard?.on('keydown-SPACE', () => {
-        this.scene.start('DDIAScene');
-      });
+    const instructionStartY = this.GRID_HEIGHT * this.TILE_SIZE / 5 + 40;
+    const instructionSpacing = 130;
+    const instructions = [
+      'WASD to move, SPACE to sprint',
+      'Hold H to attack, press J to pick up & drop off',
+      'Pick up meals from the farmer, next to the Windmill',
+      'Drop them off to villagers as indicated by their sign',
+      'Finally give the king his burger',
+      'Press SPACE to begin',
+    ];
+
+    instructions.forEach((message, index) => {
+      createLabel(
+        (this.GRID_WIDTH * this.TILE_SIZE) / 2,
+        instructionStartY + index * instructionSpacing,
+        message
+      );
+    });
+
+    this.input.keyboard?.once('keydown-SPACE', () => {
+      this.scene.start('DDIAScene');
+    });
     
   }
 
