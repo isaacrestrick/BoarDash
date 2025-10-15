@@ -9,6 +9,8 @@ import { Farmer } from '../npcs/Farmer';
 import { Claude } from '../npcs/Claude';
 
 import { MageSkeleton } from '../npcs/MageSkeleton';
+import { SalesEngineer } from '../npcs/SalesEngineer';
+import { type NpcAssetDefinition } from '../npcs/Npc';
 
 class WorldRender {
   static buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
@@ -588,11 +590,23 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    let objects = [Skeleton, King, SecondKing, Villager, Farmer, MageSkeleton];
+    const npcClasses: Array<{ getRequiredAssets(): ReadonlyArray<NpcAssetDefinition> }> = [
+      Skeleton,
+      King,
+      SecondKing,
+      Villager,
+      Farmer,
+      MageSkeleton,
+      SalesEngineer,
+    ];
 
-    objects.forEach((object) => {
-      object.getRequiredAssets().forEach(asset => {
-        this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+    npcClasses.forEach((npcConstructor) => {
+      npcConstructor.getRequiredAssets().forEach(asset => {
+        if (asset.type === 'spritesheet') {
+          this.load.spritesheet(asset.key, asset.path, { frameWidth: asset.frameWidth!, frameHeight: asset.frameHeight! });
+        } else {
+          this.load.image(asset.key, asset.path);
+        }
       });
     })
 
@@ -953,7 +967,16 @@ export default class GameScene extends Phaser.Scene {
 
       if (now - this.lastSpawnTime > this.skeletonSpawnDelay) {
 
-        let skeleton = (this.uiGameState.allowedToDeliverBurger()) ? new MageSkeleton(this, x, y, 3.5 / 3.333) : new Skeleton(this, x, y, 3.5 / 3.333)
+        let skeleton: Skeleton;
+
+        const spawnRoll = Math.random();
+        if (spawnRoll < 0.5) {
+          skeleton = new SalesEngineer(this, x, y);
+        } else if (this.uiGameState.allowedToDeliverBurger()) {
+          skeleton = new MageSkeleton(this, x, y, 3.5 / 3.333);
+        } else {
+          skeleton = new Skeleton(this, x, y, 3.5 / 3.333);
+        }
 
       
           if (this.buildingsLayer) {

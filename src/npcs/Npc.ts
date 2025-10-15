@@ -1,5 +1,19 @@
 import Phaser from 'phaser';
 
+export type NpcAssetDefinition =
+    | {
+        key: string;
+        path: string;
+        type: 'spritesheet';
+        frameWidth: number;
+        frameHeight: number;
+    }
+    | {
+        key: string;
+        path: string;
+        type: 'image';
+    };
+
 export type NpcConfig = {
     key: string; // texture key
     scale?: number;
