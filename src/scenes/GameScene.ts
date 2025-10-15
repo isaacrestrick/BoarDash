@@ -10,6 +10,8 @@ import { Claude } from '../npcs/Claude';
 
 import { MageSkeleton } from '../npcs/MageSkeleton';
 
+import { InputHandler } from '../Command';
+
 class WorldRender {
   static buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
   static collisionLayers: Phaser.Tilemaps.TilemapLayer[] = [];
