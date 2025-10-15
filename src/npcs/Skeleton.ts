@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
-import { NPC, type NpcAssetDefinition } from './Npc';
+import { NPC } from './Npc';
 import GameScene from '../scenes/GameScene'
 
 export class Skeleton extends NPC {
-    static getRequiredAssets(): ReadonlyArray<NpcAssetDefinition> {
+    static getRequiredAssets(): ReadonlyArray<{key: string, path: string, type: 'spritesheet', frameWidth: number, frameHeight: number}> {
         return [
             { key: 'skeleton-idle-up', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
             { key: 'skeleton-idle-down', path: 'Cute_Fantasy/Enemies/Skeleton/Skeleton.png', type: 'spritesheet', frameWidth: 32, frameHeight: 32 },
