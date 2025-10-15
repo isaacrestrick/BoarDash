@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type GameScene from './scenes/GameScene';
+import { MoveCommand } from './Command';
 
 interface AssetDefinition {
     key: string;
@@ -28,6 +29,29 @@ export class Player {
     private lastDirection: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
     private health = 3
 
+    private moveCommand: MoveCommand;
+
+
+    private _velocityX = 0;
+    private _velocityY = 0;
+
+
+    get velocityX(): number {
+        return this._velocityX;
+    }
+
+    set velocityX(value: number) {
+        this._velocityX = value;
+    }
+
+    get velocityY(): number {
+        return this._velocityY;
+    }
+
+    set velocityY(value: number) {
+        this._velocityY = value;
+    }
+
     constructor(scene: Phaser.Scene, x: number, y: number) {
         this.scene = scene;
         this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
@@ -54,6 +78,8 @@ export class Player {
         this.spaceKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.sprite.play('knight-idle');
+
+        this.moveCommand = new MoveCommand();
     }
 
     getSprite(): Phaser.Physics.Arcade.Sprite {
@@ -169,72 +195,16 @@ export class Player {
 
     }
 
+    getLastDirection() {
+        return this.lastDirection;
+    }
+
+    setLastDirection(last_direction: 'left' | 'right' | 'back' | 'front') {
+        this.lastDirection = last_direction;
+    }
+
     update(): void {
-        let velocityX = 0;
-        let velocityY = 0;
-
-        const speedMultiplier = this.spaceKey.isDown ? 2 : 1;
-
-        this.sprite.anims.timeScale = speedMultiplier;
-
-        if (this.cursors.W.isDown && this.cursors.A.isDown) {
-            this.lastDirection = 'left';
-
-            velocityX = -this.MOVE_SPEED * speedMultiplier * 0.7071;
-            velocityY = -this.MOVE_SPEED * speedMultiplier * 0.7071;
-            this.lastDirection = 'left';
-            this.sprite.play(this.attackKey.isDown ? 'knight-attack-left' : 'knight-walk-left', true);
-        } else if (this.cursors.W.isDown && this.cursors.D.isDown) {
-            this.lastDirection = 'right';
-            velocityX = this.MOVE_SPEED * speedMultiplier * 0.7071;
-            velocityY = -this.MOVE_SPEED * speedMultiplier * 0.7071;
-            this.sprite.play(this.attackKey.isDown ? 'knight-attack-right' : 'knight-walk-right', true);
-        } else if (this.cursors.S.isDown && this.cursors.A.isDown) {
-            this.lastDirection = 'left';
-            velocityX = -this.MOVE_SPEED * speedMultiplier * 0.7071;
-            velocityY = this.MOVE_SPEED * speedMultiplier * 0.7071;
-            this.sprite.play(this.attackKey.isDown ? 'knight-attack-left' : 'knight-walk-left', true);
-        } else if (this.cursors.S.isDown && this.cursors.D.isDown) {
-            this.lastDirection = 'right';
-            velocityX = this.MOVE_SPEED * speedMultiplier * 0.7071;
-            velocityY = this.MOVE_SPEED * speedMultiplier * 0.7071;
-            this.sprite.play(this.attackKey.isDown ? 'knight-attack-right' : 'knight-walk-right', true);
-        } else if (this.cursors.W.isDown) {
-            console.log("W key pressed");
-            velocityY = -this.MOVE_SPEED * speedMultiplier;
-            this.lastDirection = 'back';
-            this.sprite.play(this.attackKey.isDown ? 'knight-attack-back' : 'knight-walk-back', true);
-        } else if (this.cursors.S.isDown) {
-            console.log("S key pressed");
-            velocityY = this.MOVE_SPEED * speedMultiplier;
-            this.lastDirection = 'front';
-            this.sprite.play(this.attackKey.isDown ? 'knight-attack-front' : 'knight-walk-front', true);
-        } else if (this.cursors.A.isDown) {
-            console.log("A key pressed");
-            velocityX = -this.MOVE_SPEED * speedMultiplier;
-            this.lastDirection = 'left';
-            this.sprite.play(this.attackKey.isDown ? 'knight-attack-left' : 'knight-walk-left', true);
-        } else if (this.cursors.D.isDown) {
-            console.log("D key pressed");
-            velocityX = this.MOVE_SPEED * speedMultiplier;
-            this.lastDirection = 'right';
-            this.sprite.play(this.attackKey.isDown ? 'knight-attack-right' : 'knight-walk-right', true);
-        }
-
-        if (velocityX === 0 && velocityY === 0) {
-            if (this.attackKey.isDown) {
-                this.sprite.play(`knight-attack-${this.lastDirection}`, true);
-            } else {
-                if (this.lastDirection === 'back') {
-                    this.sprite.play('knight-idle-right', true);
-                } else {
-                    this.sprite.play(`knight-idle-${this.lastDirection}`, true);
-                }
-            }
-        }
-
-        // Use physics body velocity instead of manual position updates
-        this.sprite.setVelocity(velocityX, velocityY);
+        this.moveCommand.execute(this);
     }
 
     private constrainToBounds(): void {
