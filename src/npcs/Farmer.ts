@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { NPC, type NpcConfig } from './Npc';
 import type GameScene from '../scenes/GameScene'
 
+import { AudioManager } from '../classes/AudioManager';
 export interface FarmerConfig extends NpcConfig{
     greetingDialogue: string;
     foods: string[];
@@ -74,7 +75,7 @@ export class Farmer extends NPC {
                 scene.events.emit("dialogue:show", "Here is your 1x " + this.foodSingulars[currFood]);
                 });*/
             });
-        scene.playSound(scene.mealsSound);
+        AudioManager.playSound(scene, scene.mealsSound);
         
         //scene.foodsList.updateTitles(["Foods", ...scene.uiGameState.getFoodCountsList()]);
         s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
