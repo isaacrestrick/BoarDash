@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import type GameScene from './scenes/GameScene';
 import { MoveCommand } from './Command';
 
+import { InputHandler } from './Command';
+
 interface AssetDefinition {
     key: string;
     path: string;
@@ -30,6 +32,8 @@ export class Player {
     private health = 3
 
     private moveCommand: MoveCommand;
+
+    private inputHandler: InputHandler;
 
 
     private _velocityX = 0;
@@ -80,6 +84,8 @@ export class Player {
         this.sprite.play('knight-idle');
 
         this.moveCommand = new MoveCommand();
+
+        this.inputHandler = new InputHandler();
     }
 
     getSprite(): Phaser.Physics.Arcade.Sprite {
@@ -204,7 +210,8 @@ export class Player {
     }
 
     update(): void {
-        this.moveCommand.execute(this);
+        // this.moveCommand.execute(this);
+        this.inputHandler.update(this);
     }
 
     private constrainToBounds(): void {
