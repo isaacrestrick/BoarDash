@@ -1,8 +1,7 @@
 import Phaser from 'phaser';
 import type GameScene from './scenes/GameScene';
-import { MoveCommand } from './Command';
 
-import { InputHandler } from './Command';
+import { InputHandler } from './classes/Input';
 
 interface AssetDefinition {
     key: string;
@@ -31,7 +30,6 @@ export class Player {
     private lastDirection: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
     private health = 3
 
-    private moveCommand: MoveCommand;
 
     private inputHandler: InputHandler;
 
@@ -82,8 +80,6 @@ export class Player {
         this.spaceKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.sprite.play('knight-idle');
-
-        this.moveCommand = new MoveCommand();
 
         this.inputHandler = new InputHandler();
     }
