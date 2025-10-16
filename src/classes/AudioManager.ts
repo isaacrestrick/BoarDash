@@ -37,6 +37,8 @@ export class AudioManager {
       }
       return AudioManager.instance;
     }
+
+   
   
     static playSound(scene: Phaser.Scene, sound: Phaser.Sound.BaseSound): void {
       if (!sound) {
