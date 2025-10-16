@@ -107,11 +107,9 @@ export class Skeleton extends NPC {
             deathEffect.play('skeleton-death-effect', true);
             //scene.events.emit("dialogue:show", "I died? Not again!")
             //scene.titleList.updateTitles(["Titles", ...scene.uiGameState.getTitlesList()])
-            const index = scene.skeletons.indexOf(this);
-            if (index > -1) {
-                scene.skeletons.splice(index, 1);
-            }
-            // console.log(scene.skeletons)
+            
+            scene.events.emit("skeleton:died", this);
+
             s.setTintFill(0xffaaaa)
             s.scene.time.delayedCall(120, () => s.clearTint())
             s.once('animationcomplete', () => {
