@@ -45,7 +45,6 @@ export default class GameScene extends Phaser.Scene {
 
   constructor() {
     super('GameScene');
-    this.inputHandler = new InputHandler();
 
 
   }
@@ -67,7 +66,10 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     //Characters
-    this.player = new Player(this, 36 * this.TILE_SIZE, 19 * this.TILE_SIZE)//720, 528); // 35 18
+
+    this.inputHandler = new InputHandler(this);
+
+    this.player = new Player(this, 36 * this.TILE_SIZE, 19 * this.TILE_SIZE, this.inputHandler)//720, 528); // 35 18
     EntityFactory.renderNPCs(this);
     this.skeletonManager = new SkeletonManager(this);
 
@@ -114,7 +116,7 @@ export default class GameScene extends Phaser.Scene {
 
   update() {
 
-    this.player.update(this.inputHandler);
+    this.player.update();
 
     if (this.CursorManager.checkToShowCursor()) {
       this.CursorManager.showCursor();

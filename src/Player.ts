@@ -1,7 +1,10 @@
 import Phaser, { Input } from 'phaser';
 import type GameScene from './scenes/GameScene';
 
+import type { ICommand } from './classes/Command';
 import { InputHandler } from './classes/Input';
+
+import { Move, Idle } from './classes/Command';
 
 interface AssetDefinition {
     key: string;
@@ -14,22 +17,16 @@ interface AssetDefinition {
 export class Player {
     private sprite: Phaser.Physics.Arcade.Sprite;
     private scene: Phaser.Scene;
-    private cursors: {
-        W: Phaser.Input.Keyboard.Key;
-        A: Phaser.Input.Keyboard.Key;
-        S: Phaser.Input.Keyboard.Key;
-        D: Phaser.Input.Keyboard.Key;
-    };
-    private attackKey: Phaser.Input.Keyboard.Key;
-    private spaceKey: Phaser.Input.Keyboard.Key;
-    private foodKey: Phaser.Input.Keyboard.Key;
-    private readonly MOVE_SPEED = 120;
-    private readonly TILE_SIZE = 32;
-    private readonly GRID_WIDTH = 45;
-    private readonly GRID_HEIGHT = 33;
+    public readonly MOVE_SPEED = 120;
+    public readonly TILE_SIZE = 32;
+    public readonly GRID_WIDTH = 45;
+    public readonly GRID_HEIGHT = 33;
     private lastDirection: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
+    private animationDirection: Map<string, 'up' | 'down' | 'left' | 'right' | 'front' | 'back'>;
     private health = 3
+    private commandMap: Map<string, ICommand>;
 
+    
 
     private _velocityX = 0;
     private _velocityY = 0;
@@ -49,39 +46,6 @@ export class Player {
 
     set velocityY(value: number) {
         this._velocityY = value;
-    }
-
-    constructor(scene: Phaser.Scene, x: number, y: number) {
-        this.scene = scene;
-        this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
-        this.sprite.setScale(0.18);
-        this.sprite.setDepth(1000); // Ensure player appears above all other objects
-        this.health = 10;//000;
-        this.lastDirection = 'front';
-
-        // Enable physics collisions
-        this.sprite.setCollideWorldBounds(true);
-        //this.sprite.body!.setOffset(240, 132)
-        this.sprite.body!.setSize(this.sprite.width * 0.07, this.sprite.height * 0.07);
-
-        Player.registerAnimations(scene);
-
-        this.cursors = {
-            W: scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-            A: scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-            S: scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-            D: scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-        };
-        this.attackKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.H);
-        this.foodKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.J);
-        this.spaceKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-        this.sprite.play('knight-idle');
-
-    }
-
-    getSprite(): Phaser.Physics.Arcade.Sprite {
-        return this.sprite;
     }
 
     static getRequiredAssets(): AssetDefinition[] {
@@ -157,10 +121,6 @@ export class Player {
         }
 
 
-
-
-
-
         if (!has('knight-walk-right')) {
             scene.anims.create({ key: 'knight-walk-right', frames: scene.anims.generateFrameNumbers('knight-walk-right', { start: 0, end: 35 }), frameRate: 16, repeat: 1 });
         }
@@ -193,6 +153,83 @@ export class Player {
 
     }
 
+    constructor(scene: Phaser.Scene, x: number, y: number, private inputHandler: InputHandler) {
+        const diagonalUpLeft = new Move(-1, -1, "left", true);
+        const diagonalBottomRight = new Move(1, -1, "right", true);
+        const diagonalBottomLeft = new Move(-1, 1, "left", true);
+        const diagonalUpRight = new Move(1,1, "right", true);
+        const bottom = new Move(0, 1, "front", false);
+        const up = new Move(0, -1, "back", false);
+        const right = new Move(1, 0, "right", false);
+        const left = new Move(-1, 0, "left", false);
+
+        this.commandMap = new Map([
+            ['W+A', diagonalUpLeft],
+            ['W+D', diagonalBottomRight],
+            ['S+A', diagonalBottomLeft],
+            ['S+D', diagonalUpRight],
+            ['W', up],
+            ['A', left],
+            ['S', bottom],
+            ['D', right]
+        ])
+
+        this.animationDirection = new Map([
+            ['W+A', "left"],
+            ['W+D', "right"],
+            ['S+A', "left"],
+            ['S+D', "right"],
+            ['W', "back"],
+            ['A', "left"],
+            ['S', "front"],
+            ['D', "right"]
+        ])
+        
+        this.scene = scene;
+        this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
+        this.sprite.setScale(0.18);
+        this.sprite.setDepth(1000); // Ensure player appears above all other objects
+        this.health = 10;//000;
+        this.lastDirection = 'front';
+
+        // Enable physics collisions
+        this.sprite.setCollideWorldBounds(true);
+        //this.sprite.body!.setOffset(240, 132)
+        this.sprite.body!.setSize(this.sprite.width * 0.07, this.sprite.height * 0.07);
+
+        Player.registerAnimations(scene);
+
+       
+        this.sprite.play('knight-idle');
+
+    }
+    
+
+    update(): void {
+        // this.moveCommand.execute(this);
+        this.velocityX = 0;
+        this.velocityY = 0;
+
+        const speedMultiplier = this.inputHandler.getSpaceKeyPressed() ? 2 : 1;
+        this.getSprite().anims.timeScale = speedMultiplier;
+
+        const pressedKeys = this.inputHandler.getPressedKeys();
+        let command = this.commandMap.get(pressedKeys) || new Idle();
+
+        let lastDirection = this.animationDirection.get(pressedKeys);
+
+        if (lastDirection) {
+            this.lastDirection = lastDirection
+        }
+
+        command.execute(this, this.inputHandler);
+        this.getSprite().setVelocity(this.velocityX, this.velocityY);
+    }
+
+    getSprite(): Phaser.Physics.Arcade.Sprite {
+        return this.sprite;
+    }
+
     getLastDirection() {
         return this.lastDirection;
     }
@@ -201,24 +238,7 @@ export class Player {
         this.lastDirection = last_direction;
     }
 
-    update(inputHandler : InputHandler): void {
-        // this.moveCommand.execute(this);
-        inputHandler.update(this);
-    }
-
-    private constrainToBounds(): void {
-        const halfSize = (this.TILE_SIZE - 4) / 2;
-        this.sprite.x = Phaser.Math.Clamp(
-            this.sprite.x,
-            halfSize,
-            this.GRID_WIDTH * this.TILE_SIZE - halfSize
-        );
-        this.sprite.y = Phaser.Math.Clamp(
-            this.sprite.y,
-            halfSize,
-            this.GRID_HEIGHT * this.TILE_SIZE - halfSize
-        );
-    }
+    
 
     getHealth(): number {
         return this.health;
@@ -247,10 +267,10 @@ export class Player {
     }
 
     isAttacking(): boolean {
-        return this.attackKey.isDown;
+        return this.inputHandler.getHKeyPressed();
     }
 
     justPressedFoodKey(): boolean {
-        return Phaser.Input.Keyboard.JustDown(this.foodKey);
+        return this.inputHandler.getJJustDown();
     }
 }
