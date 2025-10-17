@@ -1,5 +1,5 @@
 import type { VillagerConfig } from "../npcs/Villager";
-
+import { AnimatedSprite } from "../classes/AnimatedSprite";
 export class WorldRender {
     static buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
     static collisionLayers: Phaser.Tilemaps.TilemapLayer[] = [];
@@ -382,6 +382,16 @@ export class WorldRender {
       scene.load.image("water-troughs", "map/tiles/Water_Troughs.png");
       scene.load.image("hay-bales", "map/tiles/Hay_Bales.png");
       scene.load.image("fences", "map/tiles/Fences.png");
+      scene.load.image('ui-heart', 'Heart.png');
+
+
+      Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
+        AnimatedSprite.preloadAssets(scene, config)
+      })
+  
+      Object.values(WorldRender.ANIMATION_WITHOUT_X_Y).forEach(config => {
+        AnimatedSprite.preloadAssets(scene, config);
+      })
     }
   
     static create(scene: GameScene) {
@@ -507,6 +517,58 @@ export class WorldRender {
       tree3Layer?.setCollisionByExclusion([-1]);
       if (LogsLayer) WorldRender.collisionLayers.push(LogsLayer);
       LogsLayer?.setCollisionByExclusion([-1]);
+
+
+
+
+
+
+
+
+
+    Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
+      AnimatedSprite.playAnimation(scene, config, config.x * scene.TILE_SIZE, config.y * scene.TILE_SIZE)
+    })
+
+    
+    AnimatedSprite.addAnimation(scene, WorldRender.ANIMATION_WITHOUT_X_Y.grass);
+
+    let length = WorldRender.ANIMATION_WITHOUT_X_Y.grass.x.length;
+
+
+
+
+    for (let i = 0; i < length; i++) {
+
+      let x_val = WorldRender.ANIMATION_WITHOUT_X_Y.grass.x[i]
+      let y_val = WorldRender.ANIMATION_WITHOUT_X_Y.grass.y[i]
+
+      AnimatedSprite.addSpriteAndPlayAnimation(scene, WorldRender.ANIMATION_WITHOUT_X_Y.grass, x_val , y_val )
+
+      // AnimatedSprite.addSpriteAndPlayAnimation(this, WorldRender.ANIMATION_WITHOUT_X_Y.grass, 43 * this.TILE_SIZE, 17 * this.TILE_SIZE)
+
+    }
+
+    AnimatedSprite.addAnimation(scene, WorldRender.ANIMATION_WITHOUT_X_Y.flower_one);
+
+    length = WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.x.length;
+    for (let i = 0; i < length; i++) {
+      let x_val = WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.x[i]
+      let y_val = WorldRender.ANIMATION_WITHOUT_X_Y.flower_one.y[i]
+      AnimatedSprite.addSpriteAndPlayAnimation(scene, WorldRender.ANIMATION_WITHOUT_X_Y.flower_one, x_val , y_val )
+    }
+
+
+
+
+
+
+
+
+
+
+    
+
     }
     
   }

@@ -39,14 +39,14 @@ export class Claude extends NPC {
         const threshold = 2 * this.TILE_SIZE;
         const isNear = dist <= threshold;
         if (isNear && !this.wasNearPlayer) {
-            this.sprite.visible = true
-            this.getSprite().play('claude-idle', true);
-            const s = this.getSprite();
-            const scene = s.scene as GameScene;
-            const msg = `You're absolutely right!`
-            scene.events.emit("dialogue:show", msg)
-            AudioManager.playClaudeB2bSound();
-            console.log(msg);
+        this.sprite.visible = true
+        this.getSprite().play('claude-idle', true);
+        const s = this.getSprite();
+        const scene = s.scene as GameScene;
+        const msg = `You're absolutely right!`
+        scene.events.emit("dialogue:show", msg)
+        AudioManager.playClaudeB2bSound(scene);
+        console.log(msg);
         }
         this.wasNearPlayer = isNear;
     }

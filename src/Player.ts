@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser, { Input } from 'phaser';
 import type GameScene from './scenes/GameScene';
 
 import { InputHandler } from './classes/Input';
@@ -29,9 +29,6 @@ export class Player {
     private readonly GRID_HEIGHT = 33;
     private lastDirection: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
     private health = 3
-
-
-    private inputHandler: InputHandler;
 
 
     private _velocityX = 0;
@@ -81,7 +78,6 @@ export class Player {
 
         this.sprite.play('knight-idle');
 
-        this.inputHandler = new InputHandler();
     }
 
     getSprite(): Phaser.Physics.Arcade.Sprite {
@@ -205,9 +201,9 @@ export class Player {
         this.lastDirection = last_direction;
     }
 
-    update(): void {
+    update(inputHandler : InputHandler): void {
         // this.moveCommand.execute(this);
-        this.inputHandler.update(this);
+        inputHandler.update(this);
     }
 
     private constrainToBounds(): void {

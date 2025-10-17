@@ -11,12 +11,13 @@ export class SkeletonManager {
     private scene: GameScene;
     private spawnAreas: number[][];
   
-    constructor(
-       scene: GameScene,
-      spawnAreas: number[][]
-    ) {
+    constructor(scene: GameScene) {
       this.scene = scene;
-      this.spawnAreas = spawnAreas;
+      this.spawnAreas = [
+        [425, 430, 75, 35], // position of the center on x, on y, half-width on x, on y 
+        [520, 130, 170, 130],
+        [1060, 455, 140, 30],
+      ];
       this.scene.events.on("skeleton:died", (skeleton: Skeleton) => {
         console.log("died")
         const index = this._skeletons.indexOf(skeleton);

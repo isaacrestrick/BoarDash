@@ -55,20 +55,20 @@ export class AudioManager {
       sound.play();
     }
   
-    public  playClaudeB2bSound(): void {
-      if (!this.scene.claudeB2bSound) {
-        return;
-      }
-  
-      if (this.scene.sound.locked) {
-        this.scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-          this.scene.claudeB2bSound?.play();
-        });
-        return;
-      }
-  
-      this.scene.claudeB2bSound.play();
+  static playClaudeB2bSound(scene: Phaser.Scene): void {
+    if (!scene.claudeB2bSound) {
+      return;
     }
+
+    if (scene.sound.locked) {
+      scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+        scene.claudeB2bSound?.play();
+      });
+      return;
+    }
+
+    scene.claudeB2bSound.play();
+  }
   
     
     // Extracted from GameScene lines 1040-1068

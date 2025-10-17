@@ -12,3 +12,11 @@ Medieval doordash simulator
 6) Make the art consistent.
 7) Have gameplay that is actually challenging.
 8) Fix the attack animation and interactions
+
+
+
+9) Refactoring the player to not contain InputControl. Look at line 110 of Player
+10) UIGameState -> GameState (the actual business logic) Merge this with Progression Manager?
+
+11) Think about Input -> GameState -> Render 
+12) So Render will need 
