@@ -18,13 +18,22 @@ import { AnimatedSprite } from '../classes/AnimatedSprite';
 import type { AnimationConfig } from '../classes/AnimatedSprite';
 
 
+import { SkeletonManager } from '../classes/SkeletonManager';
+
+
+import { AudioManager } from '../classes/AudioManager';
+
+import { CursorManager } from '../classes/CursorManager';
+
+
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
 
   public uiGameState!: UIGameState;
   public skeletons!: Skeleton[];
-  private buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
+  private skeletonManager!: SkeletonManager;
+  public buildingsLayer?: Phaser.Tilemaps.TilemapLayer;
   private king!: King;
   private secondKing!: SecondKing
   private villagers!: Villager[];
@@ -55,8 +64,10 @@ export default class GameScene extends Phaser.Scene {
   private claudeB2bSound!: Phaser.Sound.BaseSound;
   private mouseIdleTimer?: Phaser.Time.TimerEvent;
   private cursorHidden = false;
-  private static readonly CUSTOM_CURSOR = 'url(/Cursor.png) 16 16, pointer';
-  private static readonly MOUSE_IDLE_DELAY = 3000;
+
+  private CursorManager!: CursorManager;
+  
+
 
   constructor() {
     super('GameScene');
@@ -70,13 +81,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('ui-heart', 'Heart.png');
 
 
-    this.load.audio('delivery-three', '/Audio/hungry.mp3');
-    this.load.audio('delivery-six', '/Audio/Success-2.mp3');
-    this.load.audio('delivery-twelve', '/Audio/Success-2.mp3');
-    this.load.audio('delivery-meals', '/Audio/meals.mp3');
-
-    this.load.audio('horde-activated', '/Audio/Horde.mp3');
-    this.load.audio('claude-b2b', '/Audio/b2b.mp3');
+    AudioManager.loadAudio(this);
 
 
     Object.values(WorldRender.ANIMATION_CONFIGS).forEach(config => {
@@ -112,19 +117,17 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
 
-    this.showCursor();
-    this.input.on(Phaser.Input.Events.POINTER_MOVE, this.handlePointerActivity, this);
-    this.input.on(Phaser.Input.Events.POINTER_DOWN, this.handlePointerActivity, this);
-    this.input.on(Phaser.Input.Events.POINTER_UP, this.handlePointerActivity, this);
-    this.resetMouseIdleTimer();
+    AudioManager.createSounds(this);
 
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.clearMouseIdleTimer();
-      this.input.off(Phaser.Input.Events.POINTER_MOVE, this.handlePointerActivity, this);
-      this.input.off(Phaser.Input.Events.POINTER_DOWN, this.handlePointerActivity, this);
-      this.input.off(Phaser.Input.Events.POINTER_UP, this.handlePointerActivity, this);
-      this.showCursor();
-    });
+    this.CursorManager = new CursorManager(this);
+
+
+    ////////////CURSOR//////////////
+
+    
+
+
+    ////////////////WorldRender
 
     WorldRender.create(this);    
     this.buildingsLayer = WorldRender.buildingsLayer;
@@ -134,10 +137,22 @@ export default class GameScene extends Phaser.Scene {
     const mapHeight = WorldRender.map.heightInPixels;
 
 
+    //VISUALS
 
 
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
 
+    // this.cameras.main.setZoom(2);
+    this.cameras.main.setZoom(4)
+
+
+    // const viewportWidth = this.cameras.main.width / this.cameras.main.zoom;
+    // const viewportHeight = this.cameras.main.height / this.cameras.main.zoom;
+    // this.cameras.main.scrollX = mapWidth - viewportWidth;
+    // this.cameras.main.scrollY = 0;
+
+    
+    //KEYBOARD INPUT
     const cursors = this.input.keyboard!.createCursorKeys();
 
     const controlConfig = {
@@ -149,22 +164,7 @@ export default class GameScene extends Phaser.Scene {
       speed: 0.5
     };
 
-    this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
-
-    
-
-
-    this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
-
-
-    // this.cameras.main.setZoom(2);
-    this.cameras.main.setZoom(4)
-
-
-    // const viewportWidth = this.cameras.main.width / this.cameras.main.zoom;
-    // const viewportHeight = this.cameras.main.height / this.cameras.main.zoom;
-    // this.cameras.main.scrollX = mapWidth - viewportWidth;
-    // this.cameras.main.scrollY = 0;
+    this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);    
 
 
 
@@ -175,12 +175,9 @@ export default class GameScene extends Phaser.Scene {
     this.playedSixDeliveryAudio = false;
     this.playedTwelveDeliveryAudio = false;
     this.playedHordeAudio = false;
-    this.deliveryThreeSound = this.sound.add('delivery-three', { loop: false, volume: 0.7 });
-    this.deliverySixSound = this.sound.add('delivery-six', { loop: false, volume: 0.7 });
-    this.deliveryTwelveSound = this.sound.add('delivery-twelve', { loop: false, volume: 0.7 });
-    this.mealsSound = this.sound.add('delivery-meals', { loop: false, volume: 0.7 });
-    this.hordeSound = this.sound.add('horde-activated', { loop: false, volume: 0.8 });
-    this.claudeB2bSound = this.sound.add('claude-b2b', { loop: false, volume: 0.7 });
+
+    //initialized sound there;
+    
 
 
 
@@ -214,10 +211,6 @@ export default class GameScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player.getSprite(), true, 1, 1);
 
 
-
-    // 0 skeletons initially
-    this.skeletons = []
-    this.lastSpawnTime = 0
 
 
     const { villagerConfigs, foods, titles, farmerConfig }: { villagerConfigs: Array<VillagerConfig>, foods, titles, farmerConfig} = WorldRender.loadConfigsAndDialogues();
@@ -324,6 +317,15 @@ export default class GameScene extends Phaser.Scene {
     this.scene.bringToTop('ui');
     this.events.emit("dialogue:show", "The journey of a thousand Turkey Sandwiches 🥪 begins with a single boar.")
 
+
+    const spawnAreas = [
+      [425, 430, 75, 35], // position of the center on x, on y, half-width on x, on y 
+      [520, 130, 170, 130],
+      [1060, 455, 140, 30],
+    ]
+    this.skeletonManager = new SkeletonManager(this, spawnAreas);
+    // this.skeletons = this.skeletonManager.getSkeletons();
+
   }
 
 
@@ -331,9 +333,9 @@ export default class GameScene extends Phaser.Scene {
 
     this.player.update();
 
-    if (this.cursorHidden && this.input.activePointer.velocity.lengthSq() > 0) {
-      this.showCursor();
-      this.resetMouseIdleTimer();
+    if (this.CursorManager.checkToShowCursor()) {
+      this.CursorManager.showCursor();
+      this.CursorManager.resetMouseIdleTimer();
     }
 
     const playerX = this.player.getX()
@@ -357,68 +359,30 @@ export default class GameScene extends Phaser.Scene {
       });
     }
 
-    if (this.uiGameState.allowedToDeliverBurger()) {
-      this.skeletonNumber = 150
-      this.skeletonSpawnDelay = 50
-      if (!this.playedHordeAudio) {
-        this.playedHordeAudio = true;
-        this.playSound(this.hordeSound);
-      }
-    } else {
-      this.skeletonNumber = 12
-      this.skeletonSpawnDelay = 3500
+    if (this.uiGameState.allowedToDeliverBurger() && !this.playedHordeAudio) {
+      this.playedHordeAudio = true;
+      AudioManager.playSound(this, this.hordeSound);
     }
+
+
+
+    this.skeletonManager.checkEndGameAndUpdateSkeletonNumber();
+
+    
 
     // console.log(now)
     // console.log(this.skeletonNumber)
-    if (this.skeletons.length < this.skeletonNumber) {
 
-      // spawn everywhere
-      // const minX = 0
-      // const maxX = 79 * 16
-      // const minY = 0
-      // const maxY = 32 * 16
-      // const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
-      // const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
-
-      // spawn areas
-      const spawnAreas = [
-        [425, 430, 75, 35], // position of the center on x, on y, half-width on x, on y 
-        [520, 130, 170, 130],
-        [1060, 455, 140, 30],
-      ]
-      const randomArea = spawnAreas[
-        Math.floor(Math.random() * spawnAreas.length)
-      ]
-      const minX = randomArea[0] - randomArea[2]
-      const maxX = randomArea[0] + randomArea[2]
-      const minY = randomArea[1] - randomArea[3]
-      const maxY = randomArea[1] + randomArea[3]
-      const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
-      const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
-
-      if (now - this.lastSpawnTime > this.skeletonSpawnDelay) {
-
-        let skeleton = (this.uiGameState.allowedToDeliverBurger()) ? new MageSkeleton(this, x, y, 3.5 / 3.333) : new Skeleton(this, x, y, 3.5 / 3.333)
-
-      
-          if (this.buildingsLayer) {
-            this.physics.add.collider(skeleton.getSprite(), this.buildingsLayer);
-          }
-        this.skeletons.push(skeleton)
-        this.lastSpawnTime = now
-      }
-      // console.log(minX, minY, maxX, maxY, x, y)
-      // console.log(this.lastSpawnTime, this.skeletons.length)
-    }
+    this.skeletonManager.createSkeletonAtRandomArea();
+    
 
     
 
     // follow player
-    this.skeletons.forEach(v => v.updateFollow(playerX, playerY, 50))
+    this.skeletonManager.getSkeletons().forEach(v => v.updateFollow(playerX, playerY, 50))
 
     // attack player
-    this.skeletons.forEach(s => {
+    this.skeletonManager.getSkeletons().forEach(s => {
       if (s.triggerAttack(playerX, playerY)) {
         this.player.damageReceived()
       }
@@ -432,7 +396,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     // Proximity checks handled by base NPC class; death trigger is skeleton-specific
-    this.skeletons.forEach(skeleton => {
+    this.skeletonManager.getSkeletons().forEach(skeleton => {
       skeleton.checkPlayerInteraction(playerX, playerY);
     })
     this.farmer.checkPlayerInteraction(playerX, playerY);
@@ -444,7 +408,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     if (this.player.isAttacking()) {
-      this.skeletons.forEach(skeleton => {
+      this.skeletonManager.getSkeletons().forEach(skeleton => {
         if (skeleton.isPlayerNear()) {
           skeleton.applyKnockback(this.player.getX(), this.player.getY());
           skeleton.triggerDeath();
@@ -469,79 +433,17 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.deliveredMealCount >= 3 && !this.playedThreeDeliveryAudio) {
       this.playedThreeDeliveryAudio = true;
-      this.playSound(this.deliveryThreeSound);
+      AudioManager.playSound(this, this.deliveryThreeSound);
     }
 
     if (this.deliveredMealCount >= 6 && !this.playedSixDeliveryAudio) {
       this.playedSixDeliveryAudio = true;
-      this.playSound(this.deliverySixSound);
+      AudioManager.playSound(this, this.deliverySixSound);
     }
 
-    if (this.deliveredMealCount >= 12 && !this.playedTwelveDeliveryAudio) {
-      this.playedTwelveDeliveryAudio = true;
-      //this.playSound(this.deliveryTwelveSound);
-    }
+
   }
 
-  public playSound(sound: Phaser.Sound.BaseSound): void {
-    if (!sound) {
-      return;
-    }
-
-    if (this.sound.locked) {
-      this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-        sound.play();
-      });
-      return;
-    }
-
-    sound.play();
-  }
-
-  public playClaudeB2bSound(): void {
-    if (!this.claudeB2bSound) {
-      return;
-    }
-
-    if (this.sound.locked) {
-      this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-        this.claudeB2bSound?.play();
-      });
-      return;
-    }
-
-    this.claudeB2bSound.play();
-  }
-
-  private handlePointerActivity = () => {
-    this.showCursor();
-    this.resetMouseIdleTimer();
-  };
-
-  private hideCursor = () => {
-    if (this.cursorHidden || this.scene.isPaused()) {
-      return;
-    }
-
-    this.input.setDefaultCursor('none');
-    this.cursorHidden = true;
-    this.mouseIdleTimer = undefined;
-  };
-
-  private showCursor = () => {
-    this.input.setDefaultCursor(GameScene.CUSTOM_CURSOR);
-    this.cursorHidden = false;
-  };
-
-  private resetMouseIdleTimer = () => {
-    this.clearMouseIdleTimer();
-    this.mouseIdleTimer = this.time.delayedCall(GameScene.MOUSE_IDLE_DELAY, this.hideCursor);
-  };
-
-  private clearMouseIdleTimer = () => {
-    if (this.mouseIdleTimer) {
-      this.mouseIdleTimer.remove(false);
-      this.mouseIdleTimer = undefined;
-    }
-  };
+  
+ 
 }

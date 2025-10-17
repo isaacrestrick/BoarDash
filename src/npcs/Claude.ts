@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { NPC } from './Npc';
 import type GameScene from '../scenes/GameScene'
 
+import { AudioManager } from '../classes/AudioManager';
 export class Claude extends NPC {
     static getRequiredAssets() {
         return [
@@ -44,7 +45,7 @@ export class Claude extends NPC {
             const scene = s.scene as GameScene;
             const msg = `You're absolutely right!`
             scene.events.emit("dialogue:show", msg)
-            scene.playClaudeB2bSound();
+            AudioManager.playClaudeB2bSound();
             console.log(msg);
         }
         this.wasNearPlayer = isNear;
