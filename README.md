@@ -20,3 +20,6 @@ Medieval doordash simulator
 
 11) Think about Input -> GameState -> Render 
 12) So Render will need 
+
+13) What is the point of Command being seperated out of player?
+14) I think Skeleton and MageSkeleton can be "compressed"

@@ -1,10 +1,4 @@
-import Phaser, { Input } from 'phaser';
-import type GameScene from './scenes/GameScene';
-
-import type { ICommand } from './classes/Command';
-import { InputHandler } from './classes/Input';
-
-import { Move, Idle } from './classes/Command';
+import Phaser from 'phaser';
 
 interface AssetDefinition {
     key: string;
@@ -14,40 +8,7 @@ interface AssetDefinition {
     frameHeight?: number;
 }
 
-export class Player {
-    private sprite: Phaser.Physics.Arcade.Sprite;
-    private scene: Phaser.Scene;
-    public readonly MOVE_SPEED = 120;
-    public readonly TILE_SIZE = 32;
-    public readonly GRID_WIDTH = 45;
-    public readonly GRID_HEIGHT = 33;
-    private lastDirection: 'up' | 'down' | 'left' | 'right' | 'front' | 'back';
-    private animationDirection: Map<string, 'up' | 'down' | 'left' | 'right' | 'front' | 'back'>;
-    private health = 3
-    private commandMap: Map<string, ICommand>;
-
-    
-
-    private _velocityX = 0;
-    private _velocityY = 0;
-
-
-    get velocityX(): number {
-        return this._velocityX;
-    }
-
-    set velocityX(value: number) {
-        this._velocityX = value;
-    }
-
-    get velocityY(): number {
-        return this._velocityY;
-    }
-
-    set velocityY(value: number) {
-        this._velocityY = value;
-    }
-
+export class PlayerAssets {
     static getRequiredAssets(): AssetDefinition[] {
         return [
             { key: 'knight-sprite', path: 'boar_knight/right/Knight-Idle-Right.png', type: 'spritesheet', frameWidth: (1584 / 6), frameHeight: (1506 / 6) },
@@ -105,6 +66,7 @@ export class Player {
 
     static registerAnimations(scene: Phaser.Scene): void {
         const has = (key: string) => scene.anims.exists(key);
+        
         if (!has('knight-idle')) {
             scene.anims.create({ key: 'knight-idle', frames: scene.anims.generateFrameNumbers('knight-sprite', { start: 0, end: 35 }), frameRate: 12, repeat: -1 });
         }
@@ -116,161 +78,42 @@ export class Player {
         if (!has('knight-idle-left')) {
             scene.anims.create({ key: 'knight-idle-left', frames: scene.anims.generateFrameNumbers('knight-idle-left', { start: 0, end: 35 }), frameRate: 12, repeat: -1 });
         }
+        
         if (!has('knight-idle-front')) {
             scene.anims.create({ key: 'knight-idle-front', frames: scene.anims.generateFrameNumbers('knight-idle-front', { start: 0, end: 35 }), frameRate: 12, repeat: -1 });
         }
 
-
         if (!has('knight-walk-right')) {
             scene.anims.create({ key: 'knight-walk-right', frames: scene.anims.generateFrameNumbers('knight-walk-right', { start: 0, end: 35 }), frameRate: 16, repeat: 1 });
         }
+        
         if (!has('knight-walk-left')) {
             scene.anims.create({ key: 'knight-walk-left', frames: scene.anims.generateFrameNumbers('knight-walk-left', { start: 0, end: 35 }), frameRate: 16, repeat: 1 });
         }
+        
         if (!has('knight-walk-back')) {
             scene.anims.create({ key: 'knight-walk-back', frames: scene.anims.generateFrameNumbers('knight-walk-back', { start: 0, end: 35 }), frameRate: 24, repeat: 1 });
         }
+        
         if (!has('knight-walk-front')) {
             scene.anims.create({ key: 'knight-walk-front', frames: scene.anims.generateFrameNumbers('knight-walk-front', { start: 0, end: 35 }), frameRate: 24, repeat: 1 });
         }
 
-
-
         if (!has('knight-attack-right')) {
             scene.anims.create({ key: 'knight-attack-right', frames: scene.anims.generateFrameNumbers('knight-attack-right', { start: 0, end: 35 }), frameRate: 30, repeat: 0 });
         }
+        
         if (!has('knight-attack-left')) {
             scene.anims.create({ key: 'knight-attack-left', frames: scene.anims.generateFrameNumbers('knight-attack-left', { start: 0, end: 35 }), frameRate: 30, repeat: 0 });
         }
+        
         if (!has('knight-attack-back')) {
             scene.anims.create({ key: 'knight-attack-back', frames: scene.anims.generateFrameNumbers('knight-attack-back', { start: 0, end: 35 }), frameRate: 30, repeat: 0 });
         }
+        
         if (!has('knight-attack-front')) {
             scene.anims.create({ key: 'knight-attack-front', frames: scene.anims.generateFrameNumbers('knight-attack-front', { start: 0, end: 35 }), frameRate: 30, repeat: 0 });
         }
-
-
-
-    }
-
-    constructor(scene: Phaser.Scene, x: number, y: number, private inputHandler: InputHandler) {
-        const diagonalUpLeft = new Move(-1, -1, "left", true);
-        const diagonalBottomRight = new Move(1, -1, "right", true);
-        const diagonalBottomLeft = new Move(-1, 1, "left", true);
-        const diagonalUpRight = new Move(1,1, "right", true);
-        const bottom = new Move(0, 1, "front", false);
-        const up = new Move(0, -1, "back", false);
-        const right = new Move(1, 0, "right", false);
-        const left = new Move(-1, 0, "left", false);
-
-        this.commandMap = new Map([
-            ['W+A', diagonalUpLeft],
-            ['W+D', diagonalBottomRight],
-            ['S+A', diagonalBottomLeft],
-            ['S+D', diagonalUpRight],
-            ['W', up],
-            ['A', left],
-            ['S', bottom],
-            ['D', right]
-        ])
-
-        this.animationDirection = new Map([
-            ['W+A', "left"],
-            ['W+D', "right"],
-            ['S+A', "left"],
-            ['S+D', "right"],
-            ['W', "back"],
-            ['A', "left"],
-            ['S', "front"],
-            ['D', "right"]
-        ])
-        
-        this.scene = scene;
-        this.sprite = scene.physics.add.sprite(x, y, 'knight-sprite');
-        this.sprite.setScale(0.18);
-        this.sprite.setDepth(1000); // Ensure player appears above all other objects
-        this.health = 10;//000;
-        this.lastDirection = 'front';
-
-        // Enable physics collisions
-        this.sprite.setCollideWorldBounds(true);
-        //this.sprite.body!.setOffset(240, 132)
-        this.sprite.body!.setSize(this.sprite.width * 0.07, this.sprite.height * 0.07);
-
-        Player.registerAnimations(scene);
-
-       
-        this.sprite.play('knight-idle');
-
-    }
-    
-
-    update(): void {
-        // this.moveCommand.execute(this);
-        this.velocityX = 0;
-        this.velocityY = 0;
-
-        const speedMultiplier = this.inputHandler.getSpaceKeyPressed() ? 2 : 1;
-        this.getSprite().anims.timeScale = speedMultiplier;
-
-        const pressedKeys = this.inputHandler.getPressedKeys();
-        let command = this.commandMap.get(pressedKeys) || new Idle();
-
-        let lastDirection = this.animationDirection.get(pressedKeys);
-
-        if (lastDirection) {
-            this.lastDirection = lastDirection
-        }
-
-        command.execute(this, this.inputHandler);
-        this.getSprite().setVelocity(this.velocityX, this.velocityY);
-    }
-
-    getSprite(): Phaser.Physics.Arcade.Sprite {
-        return this.sprite;
-    }
-
-    getLastDirection() {
-        return this.lastDirection;
-    }
-
-    setLastDirection(last_direction: 'left' | 'right' | 'back' | 'front') {
-        this.lastDirection = last_direction;
-    }
-
-    
-
-    getHealth(): number {
-        return this.health;
-    }
-
-    isDead(): boolean {
-        return this.health <= 0;
-    }
-
-    damageReceived(): boolean {
-        const s = this.sprite
-        this.health = this.health - 1
-        console.log(this.health)
-        s.setTintFill(0xffaaaa)
-        s.scene.time.delayedCall(120, () => s.clearTint())
-        s.scene.events.emit("health:update", this.health < 0 ? 0 : this.health)
-        return true
-    }
-
-    getX(): number {
-        return this.sprite.x;
-    }
-
-    getY(): number {
-        return this.sprite.y;
-    }
-
-    isAttacking(): boolean {
-        return this.inputHandler.getHKeyPressed();
-    }
-
-    justPressedFoodKey(): boolean {
-        return this.inputHandler.getJJustDown();
     }
 }
+

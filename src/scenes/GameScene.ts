@@ -1,5 +1,5 @@
 import Phaser, { Input } from 'phaser';
-import { Player } from '../Player';
+import { Player } from '../player';
 import { UIGameState } from '../gamestate/UIGameState';
 import { Skeleton } from '../npcs/Skeleton';
 import { King } from '../npcs/King';
@@ -105,7 +105,7 @@ export default class GameScene extends Phaser.Scene {
 
     //UI STUFF 
     this.scene.launch('ui', {
-      playerHealth: this.player.getHealth(),
+      playerHealth: this.player.health.getHealth(),
       titles: this.uiGameState.getTitlesList(),
       foods: this.uiGameState.getFoodCountsList(),
     });
@@ -158,12 +158,12 @@ export default class GameScene extends Phaser.Scene {
     // attack player
     this.skeletonManager.getSkeletons().forEach(s => {
       if (s.triggerAttack(playerX, playerY)) {
-        this.player.damageReceived()
+        this.player.health.damageReceived()
       }
     })
 
     // handle player's death
-    if (this.player.isDead()) {
+    if (this.player.health.isDead()) {
       console.log('dead')
       this.scene.stop('ui');
       this.scene.start('GameOverScene', { score: this.uiGameState.getScore(), win: false });
