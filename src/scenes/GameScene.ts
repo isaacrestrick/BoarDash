@@ -7,25 +7,15 @@ import { SecondKing } from '../npcs/SecondKing';
 import { Villager, type VillagerConfig } from '../npcs/Villager'
 import { Farmer } from '../npcs/Farmer';
 import { Claude } from '../npcs/Claude';
-
 import { MageSkeleton } from '../npcs/MageSkeleton';
-
-
 import { WorldRender } from './WorldRender';
-
-
 import { AnimatedSprite } from '../classes/AnimatedSprite';
 import type { AnimationConfig } from '../classes/AnimatedSprite';
-
-
 import { SkeletonManager } from '../classes/SkeletonManager';
-
-
 import { AudioManager } from '../classes/AudioManager';
-
 import { CursorManager } from '../classes/CursorManager';
 
-
+import { ProgressionManager } from '../classes/ProgressionManager';
 
 export default class GameScene extends Phaser.Scene {
   private player!: Player;
@@ -40,32 +30,18 @@ export default class GameScene extends Phaser.Scene {
   private farmer!: Farmer;
   private claude!: Claude;
   private readonly TILE_SIZE = 16;
-  private readonly GRID_WIDTH = 45;
-  private readonly GRID_HEIGHT = 33;
-  private lastSpawnTime = 0
   public skeletonNumber = 12
   public skeletonSpawnDelay = 4000
 
-  private controls!: Phaser.Cameras.Controls.FixedKeyControl;
-  private map!: Phaser.Tilemaps.Tilemap;
-
-
   private collisionLayers!: Phaser.Tilemaps.TilemapLayer[];
-  private deliveredMealCount = 0;
-  private playedThreeDeliveryAudio = false;
-  private playedSixDeliveryAudio = false;
+
   private playedHordeAudio = false;
-  private playedTwelveDeliveryAudio = false;
-  private deliveryThreeSound!: Phaser.Sound.BaseSound;
-  private deliverySixSound!: Phaser.Sound.BaseSound;
-  private deliveryTwelveSound!: Phaser.Sound.BaseSound;
   public mealsSound!: Phaser.Sound.BaseSound;
   private hordeSound!: Phaser.Sound.BaseSound;
-  private claudeB2bSound!: Phaser.Sound.BaseSound;
-  private mouseIdleTimer?: Phaser.Time.TimerEvent;
-  private cursorHidden = false;
+
 
   private CursorManager!: CursorManager;
+
   
 
 
@@ -170,11 +146,6 @@ export default class GameScene extends Phaser.Scene {
 
     this.player = new Player(this, 36 * this.TILE_SIZE, 19 * this.TILE_SIZE)//720, 528); // 35 18
 
-    this.deliveredMealCount = 0;
-    this.playedThreeDeliveryAudio = false;
-    this.playedSixDeliveryAudio = false;
-    this.playedTwelveDeliveryAudio = false;
-    this.playedHordeAudio = false;
 
     //initialized sound there;
     
@@ -423,27 +394,9 @@ export default class GameScene extends Phaser.Scene {
       if (this.farmer.isPlayerNear()) this.farmer.triggerPickUp()
       if (this.king.isPlayerNear()) this.king.triggerDelivery()
       this.villagers.forEach(villager => {
-        if (villager.isPlayerNear()) villager.triggerDelivery();
+        if (villager.isPlayerNear()) villager.triggerDelivery(ProgressionManager.getInstance(this));
       });
     }
-  }
-
-  public handleMealDelivered(): void {
-    this.deliveredMealCount += 1;
-
-    if (this.deliveredMealCount >= 3 && !this.playedThreeDeliveryAudio) {
-      this.playedThreeDeliveryAudio = true;
-      AudioManager.playSound(this, this.deliveryThreeSound);
-    }
-
-    if (this.deliveredMealCount >= 6 && !this.playedSixDeliveryAudio) {
-      this.playedSixDeliveryAudio = true;
-      AudioManager.playSound(this, this.deliverySixSound);
-    }
-
-
-  }
-
-  
+  }  
  
 }

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { NPC, type NpcConfig } from './Npc';
 import type GameScene from '../scenes/GameScene';
+import type { ProgressionManager } from '../scenes/GameScene';
 
 export interface VillagerConfig extends NpcConfig {
     food: string;
@@ -92,7 +93,7 @@ export class Villager extends NPC {
         s.once('animationcomplete', () => s.setVisible(false));
     }
 
-    triggerDelivery(): void {
+    triggerDelivery(ProgressionManager: ProgressionManager): void {
         const s = this.getSprite();
         const scene = s.scene as GameScene;
         
@@ -128,7 +129,7 @@ export class Villager extends NPC {
             scene.events.emit("dialogue:show", this.successDialogue)
             scene.uiGameState.setScoreBasedOnTitles();
             scene.uiGameState.markVillagerDelivered(this.villagerId); // Add this line!
-            scene.handleMealDelivered();
+            ProgressionManager.handleMealDelivered();
 
             s.scene.events.emit("foods:update", scene.uiGameState.getFoodCountsList())
             s.scene.events.emit("titles:update", scene.uiGameState.getTitlesList())
