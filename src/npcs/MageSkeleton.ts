@@ -95,10 +95,8 @@ export class MageSkeleton extends Skeleton {
             const deathEffect = scene.add.sprite(s.x, s.y, 'mage-skeleton-death-effect');
             deathEffect.play('mage-skeleton-death-effect', true);
             
-            const index = scene.skeletons.indexOf(this);
-            if (index > -1) {
-                scene.skeletons.splice(index, 1);
-            }
+            scene.events.emit("skeleton:died", this);
+
             s.setTintFill(0xffaaaa);
             s.scene.time.delayedCall(120, () => s.clearTint());
             s.once('animationcomplete', () => {
